@@ -1,6 +1,9 @@
+#include "Reader/Reader.h"
 #include <stdio.h>
 
 int main(int argc, const char* argv[])
 {
-	printf("\nHello World\n\n");
+	Reader *input = new Reader();
+	input->LoadValidFile("test.txt");
+	input->LogInputCube();
 }

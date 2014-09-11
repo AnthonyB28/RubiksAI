@@ -2,5 +2,27 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Cube\Face.cpp">
+      <Filter>Cube</Filter>
+    </ClCompile>
+    <ClCompile Include="Reader\Reader.cpp">
+      <Filter>Reader</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Reader">
+      <UniqueIdentifier>{6ea9ea6c-3f07-42c2-94a9-a95962d5cc3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cube">
+      <UniqueIdentifier>{d9641dd2-de05-4896-9eb8-b0184bd91673}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Reader\Reader.h">
+      <Filter>Reader</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube\Face.h">
+      <Filter>Cube</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
