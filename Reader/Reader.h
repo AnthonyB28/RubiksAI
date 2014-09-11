@@ -10,5 +10,7 @@ public:
 	void LogInputCube();
 
 private :
-	Cube::Face * m_Cube[6];
+
+	void BuildFace(int cube, int row, const std::string * const values);
+	Cube::Face m_Cube[6];
 };
