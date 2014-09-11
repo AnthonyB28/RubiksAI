@@ -4,6 +4,6 @@
 int main(int argc, const char* argv[])
 {
 	Reader *input = new Reader();
-	input->LoadValidFile("test.txt");
+	input->LoadValidFile("input.txt");
 	input->LogInputCube();
 }
