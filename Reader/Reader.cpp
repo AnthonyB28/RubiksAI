@@ -13,7 +13,9 @@ bool Reader::LoadValidFile(std::string filePath)
 		int processedLines = 0;
 		while (std::getline(input, inputLine))
 		{
+#ifdef DEBUG_MODE
 			std::cout << inputLine << '\n';
+#endif
 			if (!BuildFace(facesDone, row, &inputLine))
 			{
 				isValid = false;
@@ -139,5 +141,4 @@ void Reader::LogInputCube()
 			std::cout << '\n';
 		}
 	}
-	system("pause");
 }

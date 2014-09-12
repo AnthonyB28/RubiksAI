@@ -7,13 +7,14 @@ int main(int argc, const char* argv[])
 	
 	if (input->LoadValidFile("input.txt"))
 	{
+		std::cout << "VALID_INPUT\n";
+#ifdef DEBUG_MODE
 		input->LogInputCube();
+#endif
 	}
 	else
 	{
 		std::cout << "INVALID_INPUT\n";
-		system("pause");
 	}
-
-	
+	system("pause");
 }
