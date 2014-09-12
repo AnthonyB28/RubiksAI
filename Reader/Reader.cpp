@@ -5,32 +5,50 @@ bool Reader::LoadValidFile(std::string filePath)
 	std::ifstream input(filePath);
 	std::string inputLine;
 
+	bool isValid = true;
 	int facesDone = 0;
 	int row = 0;
-
-	while (std::getline(input,inputLine))
+	try
 	{
-		std::cout << inputLine << '\n';
-		BuildFace(facesDone, row, &inputLine);
-		++row;
-		if (row == RUBIKS_WIDTH)
+		int processedLines = 0;
+		while (std::getline(input, inputLine))
 		{
-			if (facesDone == 1)
+			std::cout << inputLine << '\n';
+			if (!BuildFace(facesDone, row, &inputLine))
 			{
-				facesDone = 4;
+				isValid = false;
+				break;
 			}
-			else
+			++row;
+			if (row == RUBIKS_WIDTH)
 			{
-				++facesDone;
+				if (facesDone == 1)
+				{
+					facesDone = 4;
+				}
+				else
+				{
+					++facesDone;
+				}
+				row = 0;
 			}
-			row = 0;
+			++processedLines;
+		}
+		if (processedLines != RUBIKS_WIDTH * 4)
+		{
+			isValid = false;
 		}
 	}
+	catch (int e)
+	{
+		isValid = false;
+	}
+
 	input.close();
-	return true;
+	return isValid;
 }
 
-void Reader::BuildFace(int cube, int row, const std::string * const values)
+bool Reader::BuildFace(int cube, int row, const std::string * const values)
 {
 	int i = 0;
 	for (const char& c : *values)
@@ -55,6 +73,9 @@ void Reader::BuildFace(int cube, int row, const std::string * const values)
 		case 'O':
 			m_Cube[cube].m_ValuesArrays[row][i] = 5;
 			break;
+		default :
+			return false;
+			break;
 		}
 		++i;
 		if (i == RUBIKS_WIDTH)
@@ -62,10 +83,20 @@ void Reader::BuildFace(int cube, int row, const std::string * const values)
 			break;
 		}
 	}
-	if (values->length() > 3)
+
+	int size = values->length();
+	if (size % 3)
+	{
+		return false;
+	}
+	else if (size > 3)
 	{
 		std::string substr = values->substr(3);
-		BuildFace(cube + 1, row, &substr);
+		return BuildFace(cube + 1, row, &substr);
+	}
+	else
+	{
+		return true;
 	}
 }
 

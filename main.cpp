@@ -4,6 +4,16 @@
 int main(int argc, const char* argv[])
 {
 	Reader *input = new Reader();
-	input->LoadValidFile("input.txt");
-	input->LogInputCube();
+	
+	if (input->LoadValidFile("input.txt"))
+	{
+		input->LogInputCube();
+	}
+	else
+	{
+		std::cout << "INVALID_INPUT\n";
+		system("pause");
+	}
+
+	
 }
