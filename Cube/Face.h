@@ -1,4 +1,4 @@
-#define RUBIKS_WIDTH 3
+#define RUBIKS_WIDTH 3 // This won't work with anything other than 3x3 I think
 #define RUBIKS_KEY "RED 0 GREEN 1 YELLOW 2 BLUE 3 ORANGE 4 WHITE 5 "
 #define RED 0
 #define GREEN 1
@@ -15,12 +15,8 @@ namespace Cube
 	{
 	public:
 		Face();
-		int GetCenterColor();
 
-		static const int CENTER = static_cast<int>((RUBIKS_WIDTH / 2) + 0.5);
-
-		// 2D array of face values
-		// [row][index]
-		int ** m_ValuesArrays;
+		int ** m_ValuesArrays; // 2D array of face values [row][index]
+		static const int CENTER = static_cast<int>((RUBIKS_WIDTH / 2.0) + 0.5 - 1);
 	};
 }

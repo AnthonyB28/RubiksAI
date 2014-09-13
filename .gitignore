@@ -39,3 +39,4 @@ Icon
 *.sdf
 *.opensdf
 Debug/
+Release/

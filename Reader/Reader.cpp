@@ -8,7 +8,7 @@ Reader::Reader()
 	for (int i = 0; i < 6; ++i)
 	{
 		m_ColorCount[i] = 0;
-		m_CenterColorsMade[i] = false;
+		//m_CenterColorsMade[i] = false;
 	}
 }
 
@@ -116,17 +116,30 @@ bool Reader::BuildFace(int face, int row, const std::string * const values)
 		}
 
 		// Center cube of a face
-		// Check that we don't have multiple center cubes of same color!
 		if (i == Cube::Face::CENTER && row == Cube::Face::CENTER)
 		{
-			if (m_CenterColorsMade[colorToAdd])
+			/* 
+				Professor specific input check
+				Color of face goes IN ORDER
+				EG the face # happens to represent the color
+				R is always 0, G is always 1
+			*/
+			if (colorToAdd != face)
 			{
 				return false;
 			}
-			else
-			{
-				m_CenterColorsMade[colorToAdd] = true;
-			}
+
+			/*  THE ABOVE CHECK ELIMINATES THIS, BUT STILL NICE TO HAVE!
+				// Check that we don't have multiple center cubes of same color!
+				if (m_CenterColorsMade[colorToAdd])
+				{
+					return false;
+				}
+				else
+				{
+					m_CenterColorsMade[colorToAdd] = true;
+				}
+			*/
 		}
 		
 		// Check if our color exceeds the maximum we should have!!

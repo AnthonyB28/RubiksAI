@@ -8,23 +8,22 @@
 int main(int argc, const char* argv[])
 {
 	Reader *input = new Reader();
-	
+
+#ifdef DEBUG_MODE
 	if (input->LoadValidFile("input.txt"))
 	{
-#ifdef DEBUG_MODE
+
 		std::cout << "VALID_INPUT\n";
 		input->LogInputCube();
-#else
-		std::cout << "true";
-#endif
 	}
 	else
 	{
-#ifdef DEBUG_MODE
 		std::cout << "INVALID_INPUT\n";
-#else
-		std::cout << "false";
-#endif
 	}
 	system("pause");
+#else
+	std::cout << std::boolalpha << input->LoadValidFile("input.txt");
+	system("pause");
+#endif
+	
 }
