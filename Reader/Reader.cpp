@@ -4,9 +4,11 @@ Reader::Reader()
 	: m_ColorCount()
 	, m_Cube()
 {
+	// Init color trackers
 	for (int i = 0; i < 6; ++i)
 	{
 		m_ColorCount[i] = 0;
+		m_CenterColorsMade[i] = false;
 	}
 }
 
@@ -36,7 +38,7 @@ bool Reader::LoadValidFile(std::string filePath)
 			++row;
 			if (row == RUBIKS_WIDTH)
 			{
-				// Special case for Carle's input
+				// Special case for professor input
 				// Second cube face will have 2 more faces like a + horizontally to its right
 				if (facesDone == 1)
 				{
@@ -54,10 +56,10 @@ bool Reader::LoadValidFile(std::string filePath)
 
 		if (isValid)
 		{
-			// Check valid color face count
+			// Check valid color count
 			for (int i = 0; i < 6; ++i)
 			{
-				if (m_ColorCount[i] != RUBIKS_MAXCOLORCOUNT)
+				if (m_ColorCount[i] != Cube::MAX_COLOR_COUNT)
 				{
 					isValid = false;
 				}
@@ -113,14 +115,28 @@ bool Reader::BuildFace(int face, int row, const std::string * const values)
 			break;
 		}
 
-		m_Cube[face].m_ValuesArrays[row][i] = colorToAdd;
-
+		// Center cube of a face
+		// Check that we don't have multiple center cubes of same color!
+		if (i == Cube::Face::CENTER && row == Cube::Face::CENTER)
+		{
+			if (m_CenterColorsMade[colorToAdd])
+			{
+				return false;
+			}
+			else
+			{
+				m_CenterColorsMade[colorToAdd] = true;
+			}
+		}
+		
 		// Check if our color exceeds the maximum we should have!!
 		++m_ColorCount[colorToAdd];
-		if (m_ColorCount[colorToAdd] > RUBIKS_MAXCOLORCOUNT)
+		if (m_ColorCount[colorToAdd] > Cube::MAX_COLOR_COUNT)
 		{
 			return false;
 		}
+		
+		m_Cube[face].m_ValuesArrays[row][i] = colorToAdd;
 
 		++i;
 
