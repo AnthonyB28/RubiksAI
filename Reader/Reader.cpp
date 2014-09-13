@@ -1,5 +1,15 @@
 #include "Reader.h"
 
+Reader::Reader()
+	: m_ColorCount()
+	, m_Cube()
+{
+	for (int i = 0; i < 6; ++i)
+	{
+		m_ColorCount[i] = 0;
+	}
+}
+
 bool Reader::LoadValidFile(std::string filePath)
 {	
 	std::ifstream input(filePath);
@@ -10,7 +20,9 @@ bool Reader::LoadValidFile(std::string filePath)
 	int row = 0;
 	try
 	{
-		int processedLines = 0;
+		int processedLines = 0; // Should have RUBIKS_WIDTH * 4 lines of input
+
+		// Parse input by lines = rows of a cube(s) face(s)
 		while (std::getline(input, inputLine))
 		{
 #ifdef DEBUG_MODE
@@ -24,6 +36,8 @@ bool Reader::LoadValidFile(std::string filePath)
 			++row;
 			if (row == RUBIKS_WIDTH)
 			{
+				// Special case for Carle's input
+				// Second cube face will have 2 more faces like a + horizontally to its right
 				if (facesDone == 1)
 				{
 					facesDone = 4;
@@ -36,67 +50,99 @@ bool Reader::LoadValidFile(std::string filePath)
 			}
 			++processedLines;
 		}
-		if (processedLines != RUBIKS_WIDTH * 4)
+
+
+		if (isValid)
 		{
-			isValid = false;
+			// Check valid color face count
+			for (int i = 0; i < 6; ++i)
+			{
+				if (m_ColorCount[i] != RUBIKS_MAXCOLORCOUNT)
+				{
+					isValid = false;
+				}
+			}
+
+			// Are there too many rows in the input file?
+			if (processedLines != RUBIKS_WIDTH * 4)
+			{
+				isValid = false;
+			}
 		}
 	}
 	catch (int e)
 	{
-		isValid = false;
+		isValid = false; // If we somehow encounter a parse issue, input is invalid!
 	}
 
 	input.close();
 	return isValid;
 }
 
-bool Reader::BuildFace(int cube, int row, const std::string * const values)
+// Builds upon a face of a cube given a row number and the string line of input color 
+// upper face (0) - second row (2) - 'RGR'
+// returns if the input is a valid for our rubiks cube
+bool Reader::BuildFace(int face, int row, const std::string * const values)
 {
 	int i = 0;
+	int colorToAdd = 0;
 	for (const char& c : *values)
 	{
 		switch (c)
 		{
 		case 'R':
-			m_Cube[cube].m_ValuesArrays[row][i] = 0;
+			colorToAdd = RED;
 			break;
 		case 'B':
-			m_Cube[cube].m_ValuesArrays[row][i] = 1;
+			colorToAdd = BLUE;
 			break;
 		case 'G':
-			m_Cube[cube].m_ValuesArrays[row][i] = 2;
+			colorToAdd = GREEN;
 			break;
 		case 'Y':
-			m_Cube[cube].m_ValuesArrays[row][i] = 3;
+			colorToAdd = YELLOW;
 			break;
 		case 'W':
-			m_Cube[cube].m_ValuesArrays[row][i] = 4;
+			colorToAdd = WHITE;
 			break;
 		case 'O':
-			m_Cube[cube].m_ValuesArrays[row][i] = 5;
+			colorToAdd = ORANGE;
 			break;
 		default :
 			return false;
 			break;
 		}
+
+		m_Cube[face].m_ValuesArrays[row][i] = colorToAdd;
+
+		// Check if our color exceeds the maximum we should have!!
+		++m_ColorCount[colorToAdd];
+		if (m_ColorCount[colorToAdd] > RUBIKS_MAXCOLORCOUNT)
+		{
+			return false;
+		}
+
 		++i;
-		if (i == RUBIKS_WIDTH)
+
+		// End of row? Stop!
+		if (i == RUBIKS_WIDTH) 
 		{
 			break;
 		}
 	}
 
+	// Valid input with size in 3 steps
 	int size = values->length();
-	if (size % 3)
+	if (size % RUBIKS_WIDTH) // If our input is not divisible by the number of cubes in a row, its invalid.
 	{
 		return false;
 	}
-	else if (size > 3)
+	else if (size > RUBIKS_WIDTH) // Input line can be multi-faced, need to recursively build the next face.
 	{
-		std::string substr = values->substr(3);
-		return BuildFace(cube + 1, row, &substr);
+		std::string substr = values->substr(RUBIKS_WIDTH);
+		return BuildFace(face + 1, row, &substr);
 	}
-	else
+	else // Otherwise we should be valid
 	{
 		return true;
 	}
