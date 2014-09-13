@@ -9,21 +9,28 @@ int main(int argc, const char* argv[])
 {
 	Reader *input = new Reader();
 
-#ifdef DEBUG_MODE
-	if (input->LoadValidFile("input.txt"))
+	if (argv[1])
 	{
+#ifdef DEBUG_MODE
+		if (input->LoadValidFile(argv[1]))
+		{
 
-		std::cout << "VALID_INPUT\n";
-		input->LogInputCube();
+			std::cout << "VALID_INPUT\n";
+			input->LogInputCube();
+		}
+		else
+		{
+			std::cout << "INVALID_INPUT\n";
+		}
+		system("pause");
+#else
+		std::cout << std::boolalpha << input->LoadValidFile(argv[1]);
+		system("pause");
+#endif
 	}
 	else
 	{
-		std::cout << "INVALID_INPUT\n";
+		std::cout << "Please provide input file path as argument before execution\n";
+		system("pause");
 	}
-	system("pause");
-#else
-	std::cout << std::boolalpha << input->LoadValidFile("input.txt");
-	system("pause");
-#endif
-	
 }

@@ -121,7 +121,7 @@ bool Reader::BuildFace(int face, int row, const std::string * const values)
 			/* 
 				Professor specific input check
 				Color of face goes IN ORDER
-				EG the face # happens to represent the color
+				EG the face # happens to represent the color by order of appearence
 				R is always 0, G is always 1
 			*/
 			if (colorToAdd != face)
