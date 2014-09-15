@@ -21,6 +21,9 @@
     <ClInclude Include="Cube\Face.h" />
     <ClInclude Include="Reader\Reader.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="input.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E98F9011-8D74-4B09-8B6E-12ABC6806327}</ProjectGuid>
     <RootNamespace>RubiksAI</RootNamespace>
@@ -56,6 +59,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>DEBUG_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Anthony\Programming\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

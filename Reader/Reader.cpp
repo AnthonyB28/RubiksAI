@@ -33,8 +33,8 @@ bool Reader::LoadValidFile(std::string filePath)
 #endif
 			if (!BuildFace(facesDone, row, &inputLine))
 			{
-				isValid = false;
-				break;
+				input.close();
+				return false;
 			}
 			++row;
 			if (row == 3)
@@ -61,14 +61,21 @@ bool Reader::LoadValidFile(std::string filePath)
 
 		if (isValid)
 		{
+			// Are there too many rows in the input file?
+			if (processedLines != 12)
+			{
+				input.close();
+				return false;
+			}
+
 			// Check valid color count
 			// Check is done earlier too, but just to be sure!
 			for (int i = 0; i < 6; ++i)
 			{
 				if (m_ColorCount[i] != 9)
 				{
-					isValid = false;
-					break;
+					input.close();
+					return false;
 				}
 			}
 
@@ -77,19 +84,16 @@ bool Reader::LoadValidFile(std::string filePath)
 			{
 				if (m_CornerColorCount[i] != 4 || m_EdgeColorCount[i] != 4)
 				{
-					isValid = false;
-					break;
+					input.close();
+					return false;
 				}
 			}
 
-
 			// Check valid corners
-			//isValid = m_Cube.CheckValidCorners();
-
-			// Are there too many rows in the input file?
-			if (processedLines != 12)
+			if (!m_Cube.CheckValidCorners())
 			{
-				isValid = false;
+				input.close();
+				return false;
 			}
 		}
 	}

@@ -11,9 +11,6 @@ namespace Rubiks
 		int * orangeCorners = m_Faces[4].GetCorners();
 		int * whiteCorners = m_Faces[5].GetCorners();
 
-		int ** cornerCombos;
-		int * cornersCombosArray[8];
-		cornerCombos = cornersCombosArray;
 		// 8 corners should exist
 		// RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
 		int RGW[3] = { redCorners[0], greenCorners[0], whiteCorners[2] };
@@ -22,20 +19,56 @@ namespace Rubiks
 		int RBY[3] = { redCorners[3], blueCorners[0], yellowCorners[1] };
 		int GOW[3] = { greenCorners[2], orangeCorners[2], whiteCorners[0] };
 		int GOY[3] = { greenCorners[3], orangeCorners[0], yellowCorners[2] };
-		int YOB[3] = { yellowCorners[3], orangeCorners[1], blueCorners[2] };
+		int BOY[3] = { blueCorners[2], orangeCorners[1], yellowCorners[3] };
 		int BOW[3] = { blueCorners[3], orangeCorners[3], whiteCorners[1] };
 
-		cornerCombos[0] = RGW;
-		cornerCombos[1] = RBW;
-		cornerCombos[2] = RGY;
-		cornerCombos[3] = RBY;
-		cornerCombos[4] = GOW;
-		cornerCombos[5] = GOY;
-		cornerCombos[6] = YOB;
-		cornerCombos[7] = BOW;
+		int totalValue = 0;
+		for (int i = 0; i < 3; ++i)
+		{
+			totalValue += CheckCornerValue(RGW, i);
+			totalValue += CheckCornerValue(RBW, i);
+			totalValue += CheckCornerValue(RGY, i);
+			totalValue += CheckCornerValue(RBY, i);
+			totalValue += CheckCornerValue(GOW, i);
+			totalValue += CheckCornerValue(GOY, i);
+			totalValue += CheckCornerValue(BOY, i);
+			totalValue += CheckCornerValue(BOW, i);
+		}
 
 		bool isValid = true;
 
+		// Total must be divisible by 3
+		if (totalValue % 3)
+		{
+			isValid = false;
+		}
+
 		return isValid;
+	}
+
+	// correct orientation = 0
+	// clockwise = 1
+	// anti-clockwise = 2
+	int Cube::CheckCornerValue(int cornerValues[3], int index)
+	{
+		if (cornerValues[index] == WHITE || cornerValues[index] == YELLOW)
+		{
+			if (index == 0)
+			{
+				return 1;
+			}
+			else if (index == 1)
+			{
+				return 2;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+		else
+		{
+			return 0;
+		}
 	}
 }
