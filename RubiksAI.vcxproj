@@ -11,11 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Cube\Cube.cpp" />
     <ClCompile Include="Cube\Face.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Reader\Reader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Cube\Cube.h" />
     <ClInclude Include="Cube\Face.h" />
     <ClInclude Include="Reader\Reader.h" />
   </ItemGroup>

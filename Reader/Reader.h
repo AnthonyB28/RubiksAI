@@ -1,4 +1,4 @@
-#include "../Cube/Face.h"
+#include "../Cube/Cube.h"
 #include <fstream>
 #include <string>
 #include <iostream>
@@ -13,8 +13,10 @@ public:
 private :
 	bool BuildFace(int cube, int row, const std::string * const values);
 
-	Cube::Face m_Cube[6]; // Rubik's Cube representation - note for assignment each index happens to represent face color!
+	Rubiks::Cube m_Cube;
 
 	unsigned int m_ColorCount[6]; // # of times a color is created
+	unsigned int m_CornerColorCount[6];
+	unsigned int m_EdgeColorCount[6];
 	//bool m_CenterColorsMade[6]; // has center color been created yet?
 };

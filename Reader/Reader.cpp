@@ -1,13 +1,14 @@
 #include "Reader.h"
 
 Reader::Reader()
-	: m_ColorCount()
-	, m_Cube()
+	: m_Cube()
 {
 	// Init color trackers
 	for (int i = 0; i < 6; ++i)
 	{
 		m_ColorCount[i] = 0;
+		m_CornerColorCount[i] = 0;
+		m_EdgeColorCount[i] = 0;
 		//m_CenterColorsMade[i] = false;
 	}
 }
@@ -36,7 +37,7 @@ bool Reader::LoadValidFile(std::string filePath)
 				break;
 			}
 			++row;
-			if (row == RUBIKS_WIDTH)
+			if (row == 3)
 			{
 				// Special case for professor input
 				// Second cube face will have 2 more faces like a + horizontally to its right
@@ -51,22 +52,42 @@ bool Reader::LoadValidFile(std::string filePath)
 				row = 0;
 			}
 			++processedLines;
+			if (processedLines == 12)
+			{
+				break;
+			}
 		}
 
 
 		if (isValid)
 		{
 			// Check valid color count
+			// Check is done earlier too, but just to be sure!
 			for (int i = 0; i < 6; ++i)
 			{
-				if (m_ColorCount[i] != Cube::MAX_COLOR_COUNT)
+				if (m_ColorCount[i] != 9)
 				{
 					isValid = false;
+					break;
 				}
 			}
 
+			// Check corner and edges color count
+			for (int i = 0; i < 6; ++i)
+			{
+				if (m_CornerColorCount[i] != 4 || m_EdgeColorCount[i] != 4)
+				{
+					isValid = false;
+					break;
+				}
+			}
+
+
+			// Check valid corners
+			//isValid = m_Cube.CheckValidCorners();
+
 			// Are there too many rows in the input file?
-			if (processedLines != RUBIKS_WIDTH * 4)
+			if (processedLines != 12)
 			{
 				isValid = false;
 			}
@@ -74,6 +95,7 @@ bool Reader::LoadValidFile(std::string filePath)
 	}
 	catch (int e)
 	{
+		e = 0;
 		isValid = false; // If we somehow encounter a parse issue, input is invalid!
 	}
 
@@ -116,7 +138,7 @@ bool Reader::BuildFace(int face, int row, const std::string * const values)
 		}
 
 		// Center cube of a face
-		if (i == Cube::Face::CENTER && row == Cube::Face::CENTER)
+		if (i == 1 && row == 1)
 		{
 			/* 
 				Professor specific input check
@@ -142,19 +164,38 @@ bool Reader::BuildFace(int face, int row, const std::string * const values)
 			*/
 		}
 		
-		// Check if our color exceeds the maximum we should have!!
+		// Check if our color exceed 9
 		++m_ColorCount[colorToAdd];
-		if (m_ColorCount[colorToAdd] > Cube::MAX_COLOR_COUNT)
+		if (m_ColorCount[colorToAdd] > 9)
 		{
 			return false;
 		}
+
+		// Check the corner & edge colors don't exceed 4 times
+		if (
+			(row == 0 && i == 0) ||
+			(row == 0 && i == 2) ||
+			(row == 2 && i == 0) ||
+			(row == 2 && i == 2))
+		{
+			++m_CornerColorCount[colorToAdd];
+		}
+		else if (
+			(row == 0 && i == 1) ||
+			(row == 1 && i == 1) ||
+			(row == 1 && i == 2) ||
+			(row == 2 && i == 1))
+		{
+			++m_EdgeColorCount[colorToAdd];
+		}
+
 		
-		m_Cube[face].m_ValuesArrays[row][i] = colorToAdd;
+		m_Cube.m_Faces[face].m_ValuesArrays[row][i] = colorToAdd;
 
 		++i;
 
 		// End of row? Stop!
-		if (i == RUBIKS_WIDTH) 
+		if (i == 3) 
 		{
 			break;
 		}
@@ -162,13 +203,13 @@ bool Reader::BuildFace(int face, int row, const std::string * const values)
 
 	// Valid input with size in 3 steps
 	int size = values->length();
-	if (size % RUBIKS_WIDTH) // If our input is not divisible by the number of cubes in a row, its invalid.
+	if (size % 3) // If our input is not divisible by the number of cubes in a row, its invalid.
 	{
 		return false;
 	}
-	else if (size > RUBIKS_WIDTH) // Input line can be multi-faced, need to recursively build the next face.
+	else if (size > 3) // Input line can be multi-faced, need to recursively build the next face.
 	{
-		std::string substr = values->substr(RUBIKS_WIDTH);
+		std::string substr = values->substr(3);
 		return BuildFace(face + 1, row, &substr);
 	}
 	else // Otherwise we should be valid
@@ -181,23 +222,23 @@ void Reader::LogInputCube()
 {
 	std::cout << "----------\n";
 	std::cout << RUBIKS_KEY << '\n';
-	for (int x = 0; x < RUBIKS_WIDTH; ++x)
+	for (int x = 0; x < 3; ++x)
 	{
-		for (int y = 0; y < RUBIKS_WIDTH; ++y)
+		for (int y = 0; y < 3; ++y)
 		{
-			std::cout << m_Cube[0].m_ValuesArrays[x][y];
+			std::cout << m_Cube.m_Faces[0].m_ValuesArrays[x][y];
 		}
 
 		std::cout << '\n';
 	}
 
-	for (int x = 0; x < RUBIKS_WIDTH; ++x)
+	for (int x = 0; x < 3; ++x)
 	{
 		for (int z = 1; z < 4; ++z)
 		{
-			for (int y = 0; y < RUBIKS_WIDTH; ++y)
+			for (int y = 0; y < 3; ++y)
 			{
-				std::cout << m_Cube[z].m_ValuesArrays[x][y];
+				std::cout << m_Cube.m_Faces[z].m_ValuesArrays[x][y];
 			}
 			
 		}
@@ -206,11 +247,11 @@ void Reader::LogInputCube()
 
 	for (int z = 4; z < 6; ++z)
 	{
-		for (int x = 0; x < RUBIKS_WIDTH; ++x)
+		for (int x = 0; x < 3; ++x)
 		{
-			for (int y = 0; y < RUBIKS_WIDTH; ++y)
+			for (int y = 0; y < 3; ++y)
 			{
-				std::cout << m_Cube[z].m_ValuesArrays[x][y];
+				std::cout << m_Cube.m_Faces[z].m_ValuesArrays[x][y];
 			}
 
 			std::cout << '\n';
