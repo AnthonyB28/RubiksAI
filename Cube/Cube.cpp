@@ -2,7 +2,7 @@
 
 namespace Rubiks
 {
-	bool Cube::CheckValidCorners()
+	int ** Cube::GetCornerCubies()
 	{
 		int * redCorners = m_Faces[0].GetCorners();
 		int * greenCorners = m_Faces[1].GetCorners();
@@ -11,6 +11,7 @@ namespace Rubiks
 		int * orangeCorners = m_Faces[4].GetCorners();
 		int * whiteCorners = m_Faces[5].GetCorners();
 
+		int ** cornerCubies = new int*;
 		// 8 corners should exist
 		// RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
 		int RGW[3] = { redCorners[0], greenCorners[0], whiteCorners[2] };
@@ -21,18 +22,23 @@ namespace Rubiks
 		int GOY[3] = { greenCorners[3], orangeCorners[0], yellowCorners[2] };
 		int BOY[3] = { blueCorners[2], orangeCorners[1], yellowCorners[3] };
 		int BOW[3] = { blueCorners[3], orangeCorners[3], whiteCorners[1] };
-
+		return cornerCubies;
+	}
+	
+	bool Cube::CheckValidCorners()
+	{
+		int ** cornerCubies = GetCornerCubies();
 		int totalValue = 0;
 		for (int i = 0; i < 3; ++i)
 		{
-			totalValue += CheckCornerValue(RGW, i);
-			totalValue += CheckCornerValue(RBW, i);
-			totalValue += CheckCornerValue(RGY, i);
-			totalValue += CheckCornerValue(RBY, i);
-			totalValue += CheckCornerValue(GOW, i);
-			totalValue += CheckCornerValue(GOY, i);
-			totalValue += CheckCornerValue(BOY, i);
-			totalValue += CheckCornerValue(BOW, i);
+			totalValue += CheckCornerValue(cornerCubies[0], i);
+			totalValue += CheckCornerValue(cornerCubies[1], i);
+			totalValue += CheckCornerValue(cornerCubies[2], i);
+			totalValue += CheckCornerValue(cornerCubies[3], i);
+			totalValue += CheckCornerValue(cornerCubies[4], i);
+			totalValue += CheckCornerValue(cornerCubies[5], i);
+			totalValue += CheckCornerValue(cornerCubies[6], i);
+			totalValue += CheckCornerValue(cornerCubies[7], i);
 		}
 
 		bool isValid = true;

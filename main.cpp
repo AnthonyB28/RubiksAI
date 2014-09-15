@@ -1,6 +1,6 @@
 #include "Reader/Reader.h"
 #include <stdio.h>
-#include <boost/timer.hpp>
+//#include <boost/timer.hpp>
 
 // DEBUG_MODE is my preprocessor macro in the sln file
 // Define only when testing code for additional output.
@@ -8,7 +8,7 @@
 
 int main(int argc, const char* argv[])
 {
-	boost::timer t;
+	//boost::timer t;
 	Reader *input = new Reader();
 
 	if (argv[1])
@@ -24,7 +24,7 @@ int main(int argc, const char* argv[])
 		{
 			std::cout << "INVALID_INPUT\n";
 		}
-		std::cout << t.elapsed();
+		//std::cout << t.elapsed();
 		system("pause");
 #else
 		std::cout << std::boolalpha << input->LoadValidFile(argv[1]);
