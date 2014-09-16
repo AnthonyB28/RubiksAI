@@ -17,6 +17,7 @@ namespace Rubiks
 
 		int ** GetEdgeCubies();
 		void DeleteEdgeCubies(int ** edgeCubies);
+		// RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW1
 		bool CheckValidEdgePair(int edge[2]);
 	};
 }

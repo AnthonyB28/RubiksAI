@@ -109,6 +109,7 @@ namespace Rubiks
 		// if so then do reverse moves
 		// check whether all 20 edges checked. If yes, then go to next otherwise go back to a
 		// n = total number of flips / 2
+		// RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW
 		int n = 0;
 		bool isValid = true;
 		for (int i = 0; i < 12; ++i)
@@ -116,7 +117,160 @@ namespace Rubiks
 			int edgeToValidate[2] = { edgeCubies[i][0], edgeCubies[i][1] };
 			if (CheckValidEdgePair(edgeToValidate))
 			{
-				//TODO edge parity test
+				if (i == 0) // RW
+				{
+					if (edgeToValidate[0] == WHITE && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == RED && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == RED && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == WHITE && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == WHITE && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+				}
+				else if (i == 1) // RG
+				{
+					if (edgeToValidate[0] == GREEN && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == RED && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == YELLOW)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == YELLOW)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == YELLOW)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+				}
+				else if (i == 2) // RB
+				{
+					if (edgeToValidate[0] == RED && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == RED && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == RED && edgeToValidate[1] == YELLOW)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == YELLOW)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == YELLOW)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == YELLOW)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+
+				}
 			}
 			else
 			{
