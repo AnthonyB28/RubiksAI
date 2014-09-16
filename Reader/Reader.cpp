@@ -95,6 +95,13 @@ bool Reader::LoadValidFile(std::string filePath)
 				input.close();
 				return false;
 			}
+
+			// Check valid edges
+			if (!m_Cube.CheckValidEdges())
+			{
+				input.close();
+				return false;
+			}
 		}
 	}
 	catch (int e)
@@ -186,7 +193,7 @@ bool Reader::BuildFace(int face, int row, const std::string * const values)
 		}
 		else if (
 			(row == 0 && i == 1) ||
-			(row == 1 && i == 1) ||
+			(row == 1 && i == 0) ||
 			(row == 1 && i == 2) ||
 			(row == 2 && i == 1))
 		{
