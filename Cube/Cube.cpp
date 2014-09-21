@@ -271,11 +271,478 @@ namespace Rubiks
 					}
 
 				}
+				else if (i == 3) // RY
+				{
+					if (edgeToValidate[0] == WHITE && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == RED && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == RED && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == WHITE && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == WHITE && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == WHITE && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+				}
+				else if (i == 4) // GW
+				{
+					if (edgeToValidate[0] == RED && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == WHITE && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == WHITE && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+				}
+				else if (i == 5) // GY
+				{
+					if (edgeToValidate[0] ==  WHITE && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == WHITE && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == WHITE && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == WHITE && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+				}
+				else if (i == 6) // GO
+				{
+					if (edgeToValidate[0] == RED && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == RED && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == RED && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == RED && edgeToValidate[1] == YELLOW)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == YELLOW)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == YELLOW)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == YELLOW)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == BLUE )
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+				}
+				else if (i == 7) // YB
+				{
+					if (edgeToValidate[0] == WHITE && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == YELLOW)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == YELLOW)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == WHITE && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+				}
+				else if (i == 8) // YO
+				{
+					if (edgeToValidate[0] == RED && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == RED && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == RED && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == RED && edgeToValidate[1] == YELLOW)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == WHITE && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == YELLOW)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == YELLOW)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == WHITE && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+				}
+				else if (i == 9) // BW
+				{
+					if (edgeToValidate[0] == WHITE && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == WHITE && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == WHITE && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == WHITE && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+				}
+				else if (i == 10) // BO
+				{
+					if (edgeToValidate[0] == RED && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == RED && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == RED && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == RED && edgeToValidate[1] == YELLOW)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == YELLOW)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == YELLOW)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == YELLOW)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == WHITE)
+					{
+						n += 1;
+					}
+				}
+				else if (i == 11) // OW
+				{
+					if (edgeToValidate[0] == WHITE && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == RED && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == RED && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == RED)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == WHITE && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == GREEN)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == WHITE && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == BLUE)
+					{
+						n += 1;
+					}
+					else if (edgeToValidate[0] == WHITE && edgeToValidate[1] == ORANGE)
+					{
+						n += 1;
+					}
+				}
 			}
 			else
 			{
 				isValid = false;
 				break;
+			}
+		} 
+
+		if (isValid)
+		{
+			if (n % 2)
+			{
+				isValid = false;
 			}
 		}
 
