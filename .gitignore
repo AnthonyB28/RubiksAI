@@ -40,6 +40,8 @@ Icon
 *.opensdf
 Debug/
 Release/
+Invalid/
+Valid/
 *.user
 *.psess
 *.vspx

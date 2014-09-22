@@ -57,6 +57,7 @@ namespace Rubiks
 					if (expectingSwap)
 					{
 						++edgeSwaps;
+						expectingSwap = false;
 					}
 					else
 					{
@@ -76,6 +77,7 @@ namespace Rubiks
 					if (expectingSwap)
 					{
 						++edgeSwaps;
+						expectingSwap = false;
 					}
 					else
 					{
@@ -95,6 +97,7 @@ namespace Rubiks
 					if (expectingSwap)
 					{
 						++edgeSwaps;
+						expectingSwap = false;
 					}
 					else
 					{
@@ -114,6 +117,7 @@ namespace Rubiks
 					if (expectingSwap)
 					{
 						++edgeSwaps;
+						expectingSwap = false;
 					}
 					else
 					{
@@ -133,6 +137,7 @@ namespace Rubiks
 					if (expectingSwap)
 					{
 						++edgeSwaps;
+						expectingSwap = false;
 					}
 					else
 					{
@@ -152,6 +157,7 @@ namespace Rubiks
 					if (expectingSwap)
 					{
 						++edgeSwaps;
+						expectingSwap = false;
 					}
 					else
 					{
@@ -171,6 +177,7 @@ namespace Rubiks
 					if (expectingSwap)
 					{
 						++edgeSwaps;
+						expectingSwap = false;
 					}
 					else
 					{
@@ -190,6 +197,7 @@ namespace Rubiks
 					if (expectingSwap)
 					{
 						++edgeSwaps;
+						expectingSwap = false;
 					}
 					else
 					{
@@ -209,6 +217,7 @@ namespace Rubiks
 					if (expectingSwap)
 					{
 						++edgeSwaps;
+						expectingSwap = false;
 					}
 					else
 					{
@@ -228,6 +237,7 @@ namespace Rubiks
 					if (expectingSwap)
 					{
 						++edgeSwaps;
+						expectingSwap = false;
 					}
 					else
 					{
@@ -247,6 +257,7 @@ namespace Rubiks
 					if (expectingSwap)
 					{
 						++edgeSwaps;
+						expectingSwap = false;
 					}
 					else
 					{
@@ -299,6 +310,7 @@ namespace Rubiks
 					if (expectingSwap)
 					{
 						++cornerSwaps;
+						expectingSwap = false;
 					}
 					else
 					{
@@ -322,6 +334,7 @@ namespace Rubiks
 					if (expectingSwap)
 					{
 						++cornerSwaps;
+						expectingSwap = false;
 					}
 					else
 					{
@@ -345,6 +358,7 @@ namespace Rubiks
 					if (expectingSwap)
 					{
 						++cornerSwaps;
+						expectingSwap = false;
 					}
 					else
 					{
@@ -368,6 +382,7 @@ namespace Rubiks
 					if (expectingSwap)
 					{
 						++cornerSwaps;
+						expectingSwap = false;
 					}
 					else
 					{
@@ -391,6 +406,7 @@ namespace Rubiks
 					if (expectingSwap)
 					{
 						++cornerSwaps;
+						expectingSwap = false;
 					}
 					else
 					{
@@ -414,6 +430,7 @@ namespace Rubiks
 					if (expectingSwap)
 					{
 						++cornerSwaps;
+						expectingSwap = false;
 					}
 					else
 					{
@@ -437,6 +454,7 @@ namespace Rubiks
 					if (expectingSwap)
 					{
 						++cornerSwaps;
+						expectingSwap = false;
 					}
 					else
 					{
@@ -502,17 +520,15 @@ namespace Rubiks
 	bool Cube::CheckValidCorners(int ** cornerCubies)
 	{
 		int totalValue = 0;
-		for (int i = 0; i < 3; ++i)
-		{
-			totalValue += CheckCornerValue(cornerCubies[0], i);
-			totalValue += CheckCornerValue(cornerCubies[1], i);
-			totalValue += CheckCornerValue(cornerCubies[2], i);
-			totalValue += CheckCornerValue(cornerCubies[3], i);
-			totalValue += CheckCornerValue(cornerCubies[4], i);
-			totalValue += CheckCornerValue(cornerCubies[5], i);
-			totalValue += CheckCornerValue(cornerCubies[6], i);
-			totalValue += CheckCornerValue(cornerCubies[7], i);
-		}
+
+		totalValue += CheckCornerValue(cornerCubies[0]);
+		totalValue += CheckCornerValue(cornerCubies[1]);
+		totalValue += CheckCornerValue(cornerCubies[2]);
+		totalValue += CheckCornerValue(cornerCubies[3]);
+		totalValue += CheckCornerValue(cornerCubies[4]);
+		totalValue += CheckCornerValue(cornerCubies[5]);
+		totalValue += CheckCornerValue(cornerCubies[6]);
+		totalValue += CheckCornerValue(cornerCubies[7]);
 
 		bool isValid = true;
 
@@ -528,27 +544,28 @@ namespace Rubiks
 	// correct orientation = 0
 	// clockwise = 1
 	// anti-clockwise = 2
-	int Cube::CheckCornerValue(int cornerValues[3], int index)
+	int Cube::CheckCornerValue(int cornerValues[3])
 	{
-		if (cornerValues[index] == WHITE || cornerValues[index] == YELLOW)
+		int x = cornerValues[0];
+		int y = cornerValues[1];
+		int z = cornerValues[2];
+		int total = 0;
+		for (int i = 0; i < 3; ++i)
 		{
-			if (index == 0)
+			if (cornerValues[i] == WHITE || cornerValues[i] == YELLOW)
 			{
-				return 1;
-			}
-			else if (index == 1)
-			{
-				return 2;
-			}
-			else
-			{
-				return 0;
+				if (i == 0)
+				{
+					total += 1;
+				}
+				else if (i == 1)
+				{
+					total += 2;
+				}
 			}
 		}
-		else
-		{
-			return 0;
-		}
+
+		return total;
 	}
 
 	// Edge cubie parity test
