@@ -6,18 +6,22 @@ namespace Rubiks
 	class Cube
 	{
 	public:
-		bool CheckValidCorners();
-		bool CheckValidEdges();
+		bool CheckValidParity();
+
 		Rubiks::Face m_Faces[6]; // Rubik's Cube representation - note for assignment each index happens to represent face color!
 	
 	private :
-		int CheckCornerValue(int cornerValues[3], int index);
-		int ** GetCornerCubies();
+		bool CheckValidPositions(int ** cornerCubies, int ** edgeCubies);
+		
+		int ** GetCornerCubies(); // RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
 		void DeleteCornerCubies(int ** cornerCubies);
+		bool CheckValidCorners(int ** cornerCubies);
+		int CheckCornerValue(int cornerValues[3], int index);
 
-		int ** GetEdgeCubies();
+		
+		int ** GetEdgeCubies(); // RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW
 		void DeleteEdgeCubies(int ** edgeCubies);
-		// RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW1
+		bool CheckValidEdges(int ** edgeCubies);
 		bool CheckValidEdgePair(int edge[2]);
 	};
 }

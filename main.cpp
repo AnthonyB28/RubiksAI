@@ -18,7 +18,6 @@ int main(int argc, const char* argv[])
 #ifdef DEBUG_MODE
 		if (input->LoadValidFile(argv[1]))
 		{
-
 			std::cout << "VALID_INPUT\n";
 			input->LogInputCube();
 		}

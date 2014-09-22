@@ -89,15 +89,8 @@ bool Reader::LoadValidFile(std::string filePath)
 				}
 			}
 
-			// Check valid corners
-			if (!m_Cube.CheckValidCorners())
-			{
-				input.close();
-				return false;
-			}
-
-			// Check valid edges
-			if (!m_Cube.CheckValidEdges())
+			// Do our parity tests
+			if (!m_Cube.CheckValidParity())
 			{
 				input.close();
 				return false;
