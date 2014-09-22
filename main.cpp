@@ -34,17 +34,23 @@ int main(int argc, const char* argv[])
 	}
 	else if (test)
 	{
-		for (int i = 1; i <= 9; ++i)
+		int passed = 0;
+		for (int i = 0; i < 2000; ++i)
 		{
 			input = new Reader();
 			std::stringstream file;
-			file << "test\\test" << i << ".txt";
+			file << "valid\\test" << i << ".txt";
 			if (!input->LoadValidFile(file.str()))
 			{
 				std::cout << "Test " << i << " failed\n";
 			}
+			else
+			{
+				++passed;
+			}
 		}
-		std::cout << "Finished all tests";
+
+		std::cout << "Finished all tests " << " Passed:" << passed << "\n";
 		system("pause");
 	}
 	else

@@ -16,7 +16,7 @@ namespace Rubiks
 		int ** GetCornerCubies(); // RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
 		void DeleteCornerCubies(int ** cornerCubies);
 		bool CheckValidCorners(int ** cornerCubies);
-		int CheckCornerValue(int cornerValues[3]);
+		int CheckCornerValue(int cornerValues[3], int corner);
 
 		
 		int ** GetEdgeCubies(); // RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW
