@@ -415,7 +415,7 @@ namespace Rubiks
 					}
 					else
 					{
-						expectingSwap = true;
+						expectingSwap = true; // should never happen?
 					}
 				}
 			}
