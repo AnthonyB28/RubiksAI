@@ -41,3 +41,5 @@ Icon
 Debug/
 Release/
 *.user
+*.psess
+*.vspx

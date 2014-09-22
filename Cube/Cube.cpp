@@ -752,18 +752,18 @@ namespace Rubiks
 	bool Cube::CheckValidEdgePair(int edge[2])
 	{
 		if (
-			(edge[0] == RED && edge[1] == WHITE) || (edge[0] == RED && edge[1] == WHITE) ||
-			(edge[0] == RED && edge[1] == BLUE) || (edge[0] == RED && edge[1] == BLUE) ||
-			(edge[0] == RED && edge[1] == GREEN) || (edge[0] == RED && edge[1] == GREEN) ||
-			(edge[0] == RED && edge[1] == YELLOW) || (edge[0] == RED && edge[1] == YELLOW) ||
-			(edge[0] == GREEN && edge[1] == WHITE) || (edge[0] == GREEN && edge[1] == WHITE) ||
-			(edge[0] == GREEN && edge[1] == YELLOW) || (edge[0] == GREEN && edge[1] == YELLOW) ||
-			(edge[0] == GREEN && edge[1] == ORANGE) || (edge[0] == GREEN && edge[1] == ORANGE) ||
-			(edge[0] == YELLOW && edge[1] == BLUE) || (edge[0] == YELLOW && edge[1] == BLUE) ||
-			(edge[0] == YELLOW && edge[1] == ORANGE) || (edge[0] == YELLOW && edge[1] == ORANGE) ||
-			(edge[0] == BLUE && edge[1] == WHITE) || (edge[0] == BLUE && edge[1] == WHITE) ||
-			(edge[0] == BLUE && edge[1] == ORANGE) || (edge[0] == BLUE && edge[1] == ORANGE) ||
-			(edge[0] == ORANGE && edge[1] == WHITE) || (edge[0] == ORANGE && edge[1] == WHITE)
+			(edge[0] == RED && edge[1] == WHITE) || (edge[0] == WHITE && edge[1] == RED) ||
+			(edge[0] == RED && edge[1] == BLUE) || (edge[0] == BLUE && edge[1] == RED) ||
+			(edge[0] == RED && edge[1] == GREEN) || (edge[0] == GREEN && edge[1] == RED) ||
+			(edge[0] == RED && edge[1] == YELLOW) || (edge[0] == YELLOW && edge[1] == RED) ||
+			(edge[0] == GREEN && edge[1] == WHITE) || (edge[0] == WHITE && edge[1] == GREEN) ||
+			(edge[0] == GREEN && edge[1] == YELLOW) || (edge[0] == YELLOW && edge[1] == GREEN) ||
+			(edge[0] == GREEN && edge[1] == ORANGE) || (edge[0] == ORANGE && edge[1] == GREEN) ||
+			(edge[0] == YELLOW && edge[1] == BLUE) || (edge[0] == BLUE && edge[1] == YELLOW) ||
+			(edge[0] == YELLOW && edge[1] == ORANGE) || (edge[0] == ORANGE && edge[1] == YELLOW) ||
+			(edge[0] == BLUE && edge[1] == WHITE) || (edge[0] == WHITE && edge[1] == BLUE) ||
+			(edge[0] == BLUE && edge[1] == ORANGE) || (edge[0] == ORANGE && edge[1] == BLUE) ||
+			(edge[0] == ORANGE && edge[1] == WHITE) || (edge[0] == WHITE && edge[1] == ORANGE)
 			)
 		{
 			return true;

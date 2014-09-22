@@ -1,5 +1,6 @@
 #include "Reader/Reader.h"
 #include <stdio.h>
+#include <sstream>
 //#include <boost/timer.hpp>
 
 // DEBUG_MODE is my preprocessor macro in the sln file
@@ -8,10 +9,11 @@
 
 int main(int argc, const char* argv[])
 {
+	bool test = true;
 	//boost::timer t;
 	Reader *input = new Reader();
 
-	if (argv[1])
+	if (argv[1] && !test)
 	{
 #ifdef DEBUG_MODE
 		if (input->LoadValidFile(argv[1]))
@@ -30,6 +32,21 @@ int main(int argc, const char* argv[])
 		std::cout << std::boolalpha << input->LoadValidFile(argv[1]);
 		system("pause");
 #endif
+	}
+	else if (test)
+	{
+		for (int i = 1; i <= 9; ++i)
+		{
+			input = new Reader();
+			std::stringstream file;
+			file << "test\\test" << i << ".txt";
+			if (!input->LoadValidFile(file.str()))
+			{
+				std::cout << "Test " << i << " failed\n";
+			}
+		}
+		std::cout << "Finished all tests";
+		system("pause");
 	}
 	else
 	{
