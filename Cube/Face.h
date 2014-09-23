@@ -14,7 +14,20 @@ namespace Rubiks
 		Face();
 		int * GetCorners(); // Gets the array of corner values
 		int * GetEdges(); // Gets the array of edge values
+		
+		void SetColor(int row, int column, int val);
+		unsigned int GetColor(int row, int column);
 
-		int ** m_ValuesArrays; // 2D array of face values [row][index]
+		// three-bit unsigned field,
+		// allowed values are 0...7
+		unsigned int m_TopLeft : 3;
+		unsigned int m_TopMiddle : 3;
+		unsigned int m_TopRight : 3;
+		unsigned int m_CenterLeft : 3;
+		unsigned int m_CenterMiddle : 3;
+		unsigned int m_CenterRight : 3;
+		unsigned int m_BottomLeft : 3;
+		unsigned int m_BottomMiddle : 3;
+		unsigned int m_BottomRight : 3;
 	};
 }
