@@ -9,9 +9,9 @@ namespace Rubiks
 		int ** edgeCubies = GetEdgeCubies();
 		bool isValid = true;
 
-		if (!CheckValidPositions(cornerCubies, edgeCubies) ||
-			!CheckValidCorners(cornerCubies) ||
-			!CheckValidEdges(edgeCubies))
+		if (!CheckValidPositions(cornerCubies, edgeCubies))
+			//!CheckValidCorners(cornerCubies) ||
+			//!CheckValidEdges(edgeCubies))
 		{
 			isValid = false;
 		}
@@ -58,6 +58,92 @@ namespace Rubiks
 			delete[] cornerCubies[i];
 		}
 		delete[] cornerCubies;
+	}
+
+	int Cube::GetCornerPermutationValue(int cornerCubie[3])
+	{
+		int x = cornerCubie[0];
+		int y = cornerCubie[1];
+		int z = cornerCubie[2];
+
+		if ((x == RED && y == GREEN && z == WHITE) ||
+			(x == RED && y == WHITE && z == GREEN) ||
+			(x == GREEN && y == RED && z == WHITE) ||
+			(x == GREEN && y == WHITE && z == RED) ||
+			(x == WHITE && y == RED && z == GREEN) ||
+			(x == WHITE && y == GREEN && z == RED))
+		{
+			return 0;
+		}
+		else if((x == RED && y == BLUE && z == WHITE) ||
+				(x == RED && y == WHITE && z == BLUE) ||
+				(x == BLUE && y == RED && z == WHITE) ||
+				(x == BLUE && y == WHITE && z == RED) ||
+				(x == WHITE && y == RED && z == BLUE) ||
+				(x == WHITE && y == BLUE && z == RED))
+		{
+			return 1;
+		}
+		else if((x == RED && y == GREEN && z == YELLOW) ||
+				(x == RED && y == YELLOW && z == GREEN) ||
+				(x == YELLOW && y == RED && z == GREEN) ||
+				(x == YELLOW && y == GREEN && z == RED) ||
+				(x == GREEN && y == RED && z == YELLOW) ||
+				(x == GREEN && y == YELLOW && z == RED))
+		{
+			return 2;
+		}
+		else if((x == RED && y == BLUE && z == YELLOW) ||
+				(x == RED && y == YELLOW && z == BLUE) ||
+				(x == BLUE && y == RED && z == YELLOW) ||
+				(x == BLUE && y == YELLOW && z == RED) ||
+				(x == YELLOW && y == BLUE && z == YELLOW) ||
+				(x == YELLOW && y == YELLOW && z == BLUE))
+		{
+			return 3;
+		}
+		else if((x == ORANGE && y == GREEN && z == WHITE) ||
+				(x == ORANGE && y == WHITE && z == GREEN) ||
+				(x == WHITE && y == ORANGE && z == GREEN) ||
+				(x == WHITE && y == GREEN && z == ORANGE) ||
+				(x == GREEN && y == ORANGE && z == WHITE) ||
+				(x == GREEN && y == WHITE && z == ORANGE))
+		{
+			return 4;
+		}
+		else if((x == ORANGE && y == GREEN && z == YELLOW) ||
+				(x == ORANGE && y == YELLOW && z == GREEN) ||
+				(x == YELLOW && y == ORANGE && z == GREEN) ||
+				(x == YELLOW && y == GREEN && z == ORANGE) ||
+				(x == GREEN && y == ORANGE && z == YELLOW) ||
+				(x == GREEN && y == YELLOW && z == ORANGE))
+		{
+			return 5;
+		}
+		else if((x == ORANGE && y == BLUE && z == YELLOW) ||
+				(x == ORANGE && y == YELLOW && z == BLUE) ||
+				(x == YELLOW && y == ORANGE && z == BLUE) ||
+				(x == YELLOW && y == BLUE && z == ORANGE) ||
+				(x == BLUE && y == ORANGE && z == YELLOW) ||
+				(x == BLUE && y == YELLOW && z == ORANGE))
+		{
+			return 6;
+		}
+
+		else if ((x == ORANGE && y == BLUE && z == WHITE) ||
+			(x == ORANGE && y == WHITE && z == BLUE) ||
+			(x == WHITE && y == ORANGE && z == BLUE) ||
+			(x == WHITE && y == BLUE && z == ORANGE) ||
+			(x == BLUE && y == ORANGE && z == WHITE) ||
+			(x == BLUE && y == WHITE && z == ORANGE))
+		{
+			return 7;
+		}
+		else
+		{
+			// Completely invalid cube?
+			return 0;
+		}
 	}
 	
 	// Corner cubie parity test
@@ -109,7 +195,7 @@ namespace Rubiks
 	}
 
 	// Edges are either one of two color combinations
-	bool Cube::CheckValidEdgePair(int edge[2])
+	bool Cube::CheckValidEdgeColors(int edge[2])
 	{
 		if (
 			(edge[0] == RED && edge[1] == WHITE) || (edge[0] == WHITE && edge[1] == RED) ||
@@ -176,452 +262,123 @@ namespace Rubiks
 		delete[] edgeCubies;
 	}
 
+	int Cube::GetEdgePermutationValue(int edgeCubie[2])
+	{
+		int x = edgeCubie[0];
+		int y = edgeCubie[1];
+		if ((x == RED && y == WHITE) ||
+			(x == WHITE && y == RED))
+		{
+			return 0;
+		}
+		else if ((x == RED && y == GREEN) ||
+			(x == GREEN && y == RED))
+		{
+			return 1;
+		}
+		else if ((x == RED && y == BLUE) ||
+			(x == BLUE && y == RED))
+		{
+			return 2;
+		}
+		else if ((x == RED && y == YELLOW) ||
+			(x == YELLOW && y == RED))
+		{
+			return 3;
+		}
+
+		else if ((x == GREEN && y == WHITE) ||
+			(x == WHITE && y == GREEN))
+		{
+			return 4;
+		}
+		else if ((x == GREEN && y == YELLOW) ||
+			(x == YELLOW && y == GREEN))
+		{
+			return 5;
+		}
+		else if ((x == GREEN && y == ORANGE) ||
+			(x == ORANGE && y == GREEN))
+		{
+			return 6;
+		}
+		else if ((x == YELLOW && y == BLUE) ||
+			(x == BLUE && y == YELLOW))
+		{
+			return 7;
+		}
+		else if ((x == YELLOW && y == ORANGE) ||
+			(x == ORANGE && y == YELLOW))
+		{
+			return 8;
+		}
+		else if ((x == BLUE && y == WHITE) ||
+			(x == WHITE && y == BLUE))
+		{
+			return 9;
+		}
+		else if ((x == BLUE && y == ORANGE) ||
+			(x == ORANGE && y == BLUE))
+		{
+			return 10;
+		}
+		else if ((x == WHITE && y == ORANGE) ||
+			(x == ORANGE && y == WHITE))
+		{
+			return 11;
+		} 
+		else
+		{
+			// Completely invalid cube?
+			return 0;
+		}
+	}
+
 	// Checks for permutation parity
 	bool Cube::CheckValidPositions(int ** cornerCubies, int ** edgeCubies)
 	{
-		int edgeSwaps = 0;
-		bool expectingSwap = false;
+		int edgePositions[12];
 		// Check number of edge swaps
 		// RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW
 		for (int i = 0; i < 12; ++i)
 		{
-			int x = edgeCubies[i][0];
-			int y = edgeCubies[i][1];
-			if (i == 0)
+			edgePositions[i] = GetEdgePermutationValue(edgeCubies[i]);
+		}
+
+		int edgeInversions = 0;
+		for (int begin = 0; begin < 12; ++begin)
+		{
+			for (int end = begin + 1; end < 12; ++end)
 			{
-				if ((x == RED && y == WHITE) ||
-					(x == WHITE && y == RED))
+				if (edgePositions[begin] > edgePositions[end])
 				{
-					// We're in position
-				}
-				else
-				{
-					expectingSwap = true;
-				}
-			}
-			else if (i == 1)
-			{
-				if ((x == RED && y == GREEN) ||
-					(x == GREEN && y == RED))
-				{
-					// We're in position
-				}
-				else
-				{
-					if (expectingSwap)
-					{
-						++edgeSwaps;
-						expectingSwap = false;
-					}
-					else
-					{
-						expectingSwap = true;
-					}
-				}
-			}
-			else if (i == 2)
-			{
-				if ((x == RED && y == BLUE) ||
-					(x == BLUE && y == RED))
-				{
-					// We're in position
-				}
-				else
-				{
-					if (expectingSwap)
-					{
-						++edgeSwaps;
-						expectingSwap = false;
-					}
-					else
-					{
-						expectingSwap = true;
-					}
-				}
-			}
-			else if (i == 3)
-			{
-				if ((x == RED && y == YELLOW) ||
-					(x == YELLOW && y == RED))
-				{
-					// We're in position
-				}
-				else
-				{
-					if (expectingSwap)
-					{
-						++edgeSwaps;
-						expectingSwap = false;
-					}
-					else
-					{
-						expectingSwap = true;
-					}
-				}
-			}
-			else if (i == 4)
-			{
-				if ((x == GREEN && y == WHITE) ||
-					(x == WHITE && y == GREEN))
-				{
-					// We're in position
-				}
-				else
-				{
-					if (expectingSwap)
-					{
-						++edgeSwaps;
-						expectingSwap = false;
-					}
-					else
-					{
-						expectingSwap = true;
-					}
-				}
-			}
-			else if (i == 5)
-			{
-				if ((x == GREEN && y == YELLOW) ||
-					(x == YELLOW && y == GREEN))
-				{
-					// We're in position
-				}
-				else
-				{
-					if (expectingSwap)
-					{
-						++edgeSwaps;
-						expectingSwap = false;
-					}
-					else
-					{
-						expectingSwap = true;
-					}
-				}
-			}
-			else if (i == 6)
-			{
-				if ((x == GREEN && y == ORANGE) ||
-					(x == ORANGE && y == GREEN))
-				{
-					// We're in position
-				}
-				else
-				{
-					if (expectingSwap)
-					{
-						++edgeSwaps;
-						expectingSwap = false;
-					}
-					else
-					{
-						expectingSwap = true;
-					}
-				}
-			}
-			else if (i == 7)
-			{
-				if ((x == YELLOW && y == BLUE) ||
-					(x == BLUE && y == YELLOW))
-				{
-					// We're in position
-				}
-				else
-				{
-					if (expectingSwap)
-					{
-						++edgeSwaps;
-						expectingSwap = false;
-					}
-					else
-					{
-						expectingSwap = true;
-					}
-				}
-			}
-			else if (i == 8)
-			{
-				if ((x == YELLOW && y == ORANGE) ||
-					(x == ORANGE && y == YELLOW))
-				{
-					// We're in position
-				}
-				else
-				{
-					if (expectingSwap)
-					{
-						++edgeSwaps;
-						expectingSwap = false;
-					}
-					else
-					{
-						expectingSwap = true;
-					}
-				}
-			}
-			else if (i == 9)
-			{
-				if ((x == BLUE && y == WHITE) ||
-					(x == WHITE && y == BLUE))
-				{
-					// We're in position
-				}
-				else
-				{
-					if (expectingSwap)
-					{
-						++edgeSwaps;
-						expectingSwap = false;
-					}
-					else
-					{
-						expectingSwap = true;
-					}
-				}
-			}
-			else if (i == 10)
-			{
-				if ((x == BLUE && y == ORANGE) ||
-					(x == ORANGE && y == BLUE))
-				{
-					// We're in position
-				}
-				else
-				{
-					if (expectingSwap)
-					{
-						++edgeSwaps;
-						expectingSwap = false;
-					}
-					else
-					{
-						expectingSwap = true;
-					}
-				}
-			}
-			else if (i == 11)
-			{
-				if ((x == WHITE && y == ORANGE) ||
-					(x == ORANGE && y == WHITE))
-				{
-					// We're in position
-				}
-				else
-				{
-					if (expectingSwap)
-					{
-						++edgeSwaps;
-						expectingSwap = false;
-					}
-					else
-					{
-						expectingSwap = true; // should never happen?
-					}
+					++edgeInversions;
 				}
 			}
 		}
 
-		//TODO: maybe is expecting swap, return false?
-
-		int cornerSwaps = 0;
-		expectingSwap = false;
-		// Check number of corner swaps
+		int cornerPositions[8];
+		// Check number of corner inversions
 		// RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
 		for (int i = 0; i < 8; ++i)
 		{
-			int x = cornerCubies[i][0];
-			int y = cornerCubies[i][1];
-			int z = cornerCubies[i][2];
-			if (i == 0)
+			cornerPositions[i] = GetCornerPermutationValue(cornerCubies[i]);
+		}
+
+		int cornerInversions = 0;
+		for (int begin = 0; begin < 8; ++begin)
+		{
+			for (int end = begin + 1; end < 8; ++end)
 			{
-				if ((x == RED && y == GREEN && z == WHITE) ||
-					(x == RED && y == WHITE && z == GREEN) ||
-					(x == GREEN && y == RED && z == WHITE) ||
-					(x == GREEN && y == WHITE && z == RED) ||
-					(x == WHITE && y == RED && z == GREEN) ||
-					(x == WHITE && y == GREEN && z == RED))
+				if (cornerPositions[begin] > cornerPositions[end])
 				{
-					// We're in position.
-				}
-				else
-				{
-					expectingSwap = true;
-				}
-			}
-			else if (i == 1)
-			{
-				if ((x == RED && y == BLUE && z == WHITE) ||
-					(x == RED && y == WHITE && z == BLUE) ||
-					(x == BLUE && y == RED && z == WHITE) ||
-					(x == BLUE && y == WHITE && z == RED) ||
-					(x == WHITE && y == RED && z == BLUE) ||
-					(x == WHITE && y == BLUE && z == RED))
-				{
-					// We're in position.
-				}
-				else
-				{
-					if (expectingSwap)
-					{
-						++cornerSwaps;
-						expectingSwap = false;
-					}
-					else
-					{
-						expectingSwap = true;
-					}
-				}
-			}
-			else if (i == 2)
-			{
-				if ((x == RED && y == GREEN && z == YELLOW) ||
-					(x == RED && y == YELLOW && z == GREEN) ||
-					(x == YELLOW && y == RED && z == GREEN) ||
-					(x == YELLOW && y == GREEN && z == RED) ||
-					(x == GREEN && y == RED && z == YELLOW) ||
-					(x == GREEN && y == YELLOW && z == RED))
-				{
-					// We're in position.
-				}
-				else
-				{
-					if (expectingSwap)
-					{
-						++cornerSwaps;
-						expectingSwap = false;
-					}
-					else
-					{
-						expectingSwap = true;
-					}
-				}
-			}
-			else if (i == 3)
-			{
-				if ((x == RED && y == BLUE && z == YELLOW) ||
-					(x == RED && y == YELLOW && z == BLUE) ||
-					(x == BLUE && y == RED && z == YELLOW) ||
-					(x == BLUE && y == YELLOW && z == RED) ||
-					(x == YELLOW && y == BLUE && z == YELLOW) ||
-					(x == YELLOW && y == YELLOW && z == BLUE))
-				{
-					// We're in position.
-				}
-				else
-				{
-					if (expectingSwap)
-					{
-						++cornerSwaps;
-						expectingSwap = false;
-					}
-					else
-					{
-						expectingSwap = true;
-					}
-				}
-			}
-			else if (i == 4)
-			{
-				if ((x == ORANGE && y == GREEN && z == WHITE) ||
-					(x == ORANGE && y == WHITE && z == GREEN) ||
-					(x == WHITE && y == ORANGE && z == GREEN) ||
-					(x == WHITE && y == GREEN && z == ORANGE) ||
-					(x == GREEN && y == ORANGE && z == WHITE) ||
-					(x == GREEN && y == WHITE && z == ORANGE))
-				{
-					// We're in position.
-				}
-				else
-				{
-					if (expectingSwap)
-					{
-						++cornerSwaps;
-						expectingSwap = false;
-					}
-					else
-					{
-						expectingSwap = true;
-					}
-				}
-			}
-			else if (i == 5)
-			{
-				if ((x == ORANGE && y == GREEN && z == YELLOW) ||
-					(x == ORANGE && y == YELLOW && z == GREEN) ||
-					(x == YELLOW && y == ORANGE && z == GREEN) ||
-					(x == YELLOW && y == GREEN && z == ORANGE) ||
-					(x == GREEN && y == ORANGE && z == YELLOW) ||
-					(x == GREEN && y == YELLOW && z == ORANGE))
-				{
-					// We're in position.
-				}
-				else
-				{
-					if (expectingSwap)
-					{
-						++cornerSwaps;
-						expectingSwap = false;
-					}
-					else
-					{
-						expectingSwap = true;
-					}
-				}
-			}
-			else if (i == 6)
-			{
-				if ((x == ORANGE && y == BLUE && z == YELLOW) ||
-					(x == ORANGE && y == YELLOW && z == BLUE) ||
-					(x == YELLOW && y == ORANGE && z == BLUE) ||
-					(x == YELLOW && y == BLUE && z == ORANGE) ||
-					(x == BLUE && y == ORANGE && z == YELLOW) ||
-					(x == BLUE && y == YELLOW && z == ORANGE))
-				{
-					// We're in position.
-				}
-				else
-				{
-					if (expectingSwap)
-					{
-						++cornerSwaps;
-						expectingSwap = false;
-					}
-					else
-					{
-						expectingSwap = true;
-					}
-				}
-			}
-			else if (i == 7)
-			{
-				if ((x == ORANGE && y == BLUE && z == WHITE) ||
-					(x == ORANGE && y == WHITE && z == BLUE) ||
-					(x == WHITE && y == ORANGE && z == BLUE) ||
-					(x == WHITE && y == BLUE && z == ORANGE) ||
-					(x == BLUE && y == ORANGE && z == WHITE) ||
-					(x == BLUE && y == WHITE && z == ORANGE))
-				{
-					// We're in position.
-				}
-				else
-				{
-					if (expectingSwap)
-					{
-						++cornerSwaps;
-						expectingSwap = false;
-					}
-					else
-					{
-						expectingSwap = true;
-					}
+					++cornerInversions;
 				}
 			}
 		}
 
-		//TODO: maybe is expecting swap, return false?
-
 		// Total swaps must be even
-		if (((cornerSwaps + edgeSwaps) & 1) == 0)
+		if (((cornerInversions + edgeInversions) & 1) == 0)
 		{
 			return true;
 		}
@@ -653,7 +410,7 @@ namespace Rubiks
 		for (int i = 0; i < 12; ++i)
 		{
 			int edgeToValidate[2] = { edgeCubies[i][0], edgeCubies[i][1] };
-			if (CheckValidEdgePair(edgeToValidate))
+			if (CheckValidEdgeColors(edgeToValidate))
 			{
 				if (i == 0) // RW
 				{
