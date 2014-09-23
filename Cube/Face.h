@@ -12,6 +12,7 @@ namespace Rubiks
 	{
 	public:
 		Face();
+		~Face();
 		int * GetCorners(); // Gets the array of corner values
 		int * GetEdges(); // Gets the array of edge values
 
