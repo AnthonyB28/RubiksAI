@@ -9,8 +9,8 @@ namespace Rubiks
 		int ** edgeCubies = GetEdgeCubies();
 		bool isValid = true;
 
-		if (!CheckValidPositions(cornerCubies, edgeCubies))
-			//!CheckValidCorners(cornerCubies) ||
+		if (//!CheckValidPositions(cornerCubies, edgeCubies) ||
+			!CheckValidCorners(cornerCubies))// ||
 			//!CheckValidEdges(edgeCubies))
 		{
 			isValid = false;
@@ -177,18 +177,57 @@ namespace Rubiks
 		int z = cornerValues[2];
 		int total = 0;
 		for (int i = 0; i < 3; ++i)
-		{
+		{ 
 			if (cornerValues[i] == WHITE || cornerValues[i] == YELLOW)
 			{
-				if (i == 0)
+				if (corner == 0 || corner == 3)
 				{
-					total += 1;
+
+					if (i == 0)
+					{
+						total += 2;
+					}
+					else if (i == 1)
+					{
+						total += 1;
+					}
 				}
-				else if (i == 1)
+				else if (corner == 1 || corner == 2 || corner == 4 || corner == 5 || corner == 7)
 				{
-					total += 2;
+					if (i == 0)
+					{
+						total += 1;
+					}
+					else if (i == 1)
+					{
+						total += 2;
+					}
 				}
+				else if (corner == 6)
+				{
+					if (i == 1)
+					{
+						total += 1;
+					}
+					else if (i == 2)
+					{
+						total += 2;
+					}
+				}
+
 			}
+
+// 			if (cornerValues[i] == WHITE || cornerValues[i] == YELLOW)
+// 			{
+// 				if (i == 0)
+// 				{
+// 					total += 1;
+// 				}
+// 				else if (i == 1)
+// 				{
+// 					total += 2;
+// 				}
+// 			}
 		}
 
 		return total;
