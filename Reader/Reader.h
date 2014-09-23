@@ -18,5 +18,4 @@ private :
 	unsigned int m_ColorCount[6]; // # of times a color is created
 	unsigned int m_CornerColorCount[6];
 	unsigned int m_EdgeColorCount[6];
-	//bool m_CenterColorsMade[6]; // has center color been created yet?
 };

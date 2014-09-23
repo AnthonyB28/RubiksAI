@@ -1,4 +1,5 @@
 #include "Cube.h"
+#include <stdexcept>
 
 namespace Rubiks
 {
@@ -11,8 +12,7 @@ namespace Rubiks
 
 		if (!CheckValidPositions(cornerCubies, edgeCubies) ||
 			!CheckValidCorners(cornerCubies) ||
-			!CheckValidEdges(edgeCubies)
-			)
+			!CheckValidEdges(edgeCubies))
 		{
 			isValid = false;
 		}
@@ -22,6 +22,66 @@ namespace Rubiks
 
 		return isValid;
 	}
+
+	// Checks for permutation parity
+	bool Cube::CheckValidPositions(int ** cornerCubies, int ** edgeCubies)
+	{
+		int edgePositions[12];
+		// Check number of edge swaps
+		// RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW
+		for (int i = 0; i < 12; ++i)
+		{
+			edgePositions[i] = GetEdgePermutationValue(edgeCubies[i]);
+		}
+
+		int edgeInversions = 0;
+		for (int begin = 0; begin < 12; ++begin)
+		{
+			for (int end = begin + 1; end < 12; ++end)
+			{
+				if (edgePositions[begin] > edgePositions[end])
+				{
+					++edgeInversions;
+				}
+			}
+		}
+
+		int cornerPositions[8];
+		// Check number of corner inversions
+		// RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
+		for (int i = 0; i < 8; ++i)
+		{
+			cornerPositions[i] = GetCornerPermutationValue(cornerCubies[i]);
+		}
+
+		int cornerInversions = 0;
+		for (int begin = 0; begin < 8; ++begin)
+		{
+			for (int end = begin + 1; end < 8; ++end)
+			{
+				if (cornerPositions[begin] > cornerPositions[end])
+				{
+					++cornerInversions;
+				}
+			}
+		}
+
+		// Total swaps must be even
+		if (((cornerInversions + edgeInversions) & 1) == 0)
+		{
+			return true;
+		}
+		else
+		{
+			return false; // Odd! invalid
+		}
+	}
+
+	/********************
+
+		CORNER CUBIES
+
+	*******************/
 
 	// Gets a 8x3 array of all corner cubies
 	// RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
@@ -143,10 +203,51 @@ namespace Rubiks
 		else
 		{
 			// Completely invalid cube?
-			return 0;
+			throw std::invalid_argument("Corner combination does not exist");
 		}
 	}
-	
+
+	// correct orientation = 0
+	// clockwise = 1
+	// anti-clockwise = 2
+	int Cube::CheckCornerValue(int cornerValues[3], int corner)
+	{
+		int x = cornerValues[0];
+		int y = cornerValues[1];
+		int z = cornerValues[2];
+		for (int i = 0; i < 3; ++i)
+		{ 
+			if (cornerValues[i] == WHITE || cornerValues[i] == YELLOW)
+			{
+				if (corner == 0 || corner == 3 || corner == 4 || corner == 6)
+				{
+
+					if (i == 0)
+					{
+						return 2;
+					}
+					else if (i == 1)
+					{
+						return 1;
+					}
+				}
+				else if (corner == 1 || corner == 2 || corner == 5 || corner == 7)
+				{
+					if (i == 0)
+					{
+						return 1;
+					}
+					else if (i == 1)
+					{
+						return 2;
+					}
+				}
+			}
+		}
+
+		return 0; // Valid position
+	}
+
 	// Corner cubie parity test
 	bool Cube::CheckValidCorners(int ** cornerCubies)
 	{
@@ -168,86 +269,11 @@ namespace Rubiks
 		return isValid;
 	}
 
-	// correct orientation = 0
-	// clockwise = 1
-	// anti-clockwise = 2
-	int Cube::CheckCornerValue(int cornerValues[3], int corner)
-	{
-		int x = cornerValues[0];
-		int y = cornerValues[1];
-		int z = cornerValues[2];
-		int total = 0;
-		for (int i = 0; i < 3; ++i)
-		{ 
-			if (cornerValues[i] == WHITE || cornerValues[i] == YELLOW)
-			{
-				if (corner == 0 || corner == 3 || corner == 4 || corner == 6)
-				{
+	/*********************
 
-					if (i == 0)
-					{
-						total += 2;
-					}
-					else if (i == 1)
-					{
-						total += 1;
-					}
-				}
-				else if (corner == 1 || corner == 2 || corner == 5 || corner == 7)
-				{
-					if (i == 0)
-					{
-						total += 1;
-					}
-					else if (i == 1)
-					{
-						total += 2;
-					}
-				}
+	    EDGE CUBIES
 
-			}
-
-// 			if (cornerValues[i] == WHITE || cornerValues[i] == YELLOW)
-// 			{
-// 				if (i == 0)
-// 				{
-// 					total += 1;
-// 				}
-// 				else if (i == 1)
-// 				{
-// 					total += 2;
-// 				}
-// 			}
-		}
-
-		return total;
-	}
-
-	// Edges are either one of two color combinations
-	bool Cube::CheckValidEdgeColors(int edge[2])
-	{
-		if (
-			(edge[0] == RED && edge[1] == WHITE) || (edge[0] == WHITE && edge[1] == RED) ||
-			(edge[0] == RED && edge[1] == BLUE) || (edge[0] == BLUE && edge[1] == RED) ||
-			(edge[0] == RED && edge[1] == GREEN) || (edge[0] == GREEN && edge[1] == RED) ||
-			(edge[0] == RED && edge[1] == YELLOW) || (edge[0] == YELLOW && edge[1] == RED) ||
-			(edge[0] == GREEN && edge[1] == WHITE) || (edge[0] == WHITE && edge[1] == GREEN) ||
-			(edge[0] == GREEN && edge[1] == YELLOW) || (edge[0] == YELLOW && edge[1] == GREEN) ||
-			(edge[0] == GREEN && edge[1] == ORANGE) || (edge[0] == ORANGE && edge[1] == GREEN) ||
-			(edge[0] == YELLOW && edge[1] == BLUE) || (edge[0] == BLUE && edge[1] == YELLOW) ||
-			(edge[0] == YELLOW && edge[1] == ORANGE) || (edge[0] == ORANGE && edge[1] == YELLOW) ||
-			(edge[0] == BLUE && edge[1] == WHITE) || (edge[0] == WHITE && edge[1] == BLUE) ||
-			(edge[0] == BLUE && edge[1] == ORANGE) || (edge[0] == ORANGE && edge[1] == BLUE) ||
-			(edge[0] == ORANGE && edge[1] == WHITE) || (edge[0] == WHITE && edge[1] == ORANGE)
-			)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
+	*********************/
 
 	// Gets a 12x2 array of all edge cubies
 	// RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW
@@ -359,62 +385,7 @@ namespace Rubiks
 		else
 		{
 			// Completely invalid cube?
-			return 0;
-		}
-	}
-
-	// Checks for permutation parity
-	bool Cube::CheckValidPositions(int ** cornerCubies, int ** edgeCubies)
-	{
-		int edgePositions[12];
-		// Check number of edge swaps
-		// RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW
-		for (int i = 0; i < 12; ++i)
-		{
-			edgePositions[i] = GetEdgePermutationValue(edgeCubies[i]);
-		}
-
-		int edgeInversions = 0;
-		for (int begin = 0; begin < 12; ++begin)
-		{
-			for (int end = begin + 1; end < 12; ++end)
-			{
-				if (edgePositions[begin] > edgePositions[end])
-				{
-					++edgeInversions;
-				}
-			}
-		}
-
-		int cornerPositions[8];
-		// Check number of corner inversions
-		// RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
-		for (int i = 0; i < 8; ++i)
-		{
-			cornerPositions[i] = GetCornerPermutationValue(cornerCubies[i]);
-		}
-
-		int cornerInversions = 0;
-		for (int begin = 0; begin < 8; ++begin)
-		{
-			for (int end = begin + 1; end < 8; ++end)
-			{
-				if (cornerPositions[begin] > cornerPositions[end])
-				{
-					++cornerInversions;
-				}
-			}
-		}
-
-		// Total swaps must be even
-		if (((cornerInversions + edgeInversions) & 1) == 0)
-		{
-			return true;
-		}
-		else
-		{
-			// Odd! invalid
-			return false;
+			throw std::invalid_argument("Edge combination does not exist");
 		}
 	}
 
@@ -1064,6 +1035,32 @@ namespace Rubiks
 
 		// Valid parity is even
 		if ((n & 1) == 0)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	// Edges are either one of two color combinations
+	bool Cube::CheckValidEdgeColors(int edge[2])
+	{
+		if (
+			(edge[0] == RED && edge[1] == WHITE) || (edge[0] == WHITE && edge[1] == RED) ||
+			(edge[0] == RED && edge[1] == BLUE) || (edge[0] == BLUE && edge[1] == RED) ||
+			(edge[0] == RED && edge[1] == GREEN) || (edge[0] == GREEN && edge[1] == RED) ||
+			(edge[0] == RED && edge[1] == YELLOW) || (edge[0] == YELLOW && edge[1] == RED) ||
+			(edge[0] == GREEN && edge[1] == WHITE) || (edge[0] == WHITE && edge[1] == GREEN) ||
+			(edge[0] == GREEN && edge[1] == YELLOW) || (edge[0] == YELLOW && edge[1] == GREEN) ||
+			(edge[0] == GREEN && edge[1] == ORANGE) || (edge[0] == ORANGE && edge[1] == GREEN) ||
+			(edge[0] == YELLOW && edge[1] == BLUE) || (edge[0] == BLUE && edge[1] == YELLOW) ||
+			(edge[0] == YELLOW && edge[1] == ORANGE) || (edge[0] == ORANGE && edge[1] == YELLOW) ||
+			(edge[0] == BLUE && edge[1] == WHITE) || (edge[0] == WHITE && edge[1] == BLUE) ||
+			(edge[0] == BLUE && edge[1] == ORANGE) || (edge[0] == ORANGE && edge[1] == BLUE) ||
+			(edge[0] == ORANGE && edge[1] == WHITE) || (edge[0] == WHITE && edge[1] == ORANGE)
+			)
 		{
 			return true;
 		}

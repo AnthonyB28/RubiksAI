@@ -1,5 +1,4 @@
 #include "Face.h"
-#include <string>
 
 namespace Rubiks
 {

@@ -9,7 +9,6 @@ Reader::Reader()
 		m_ColorCount[i] = 0;
 		m_CornerColorCount[i] = 0;
 		m_EdgeColorCount[i] = 0;
-		//m_CenterColorsMade[i] = false;
 	}
 }
 
@@ -17,8 +16,6 @@ bool Reader::LoadValidFile(std::string filePath)
 {	
 	std::ifstream input(filePath);
 	std::string inputLine;
-
-	bool isValid = true;
 	int facesDone = 0;
 	int row = 0;
 	try
@@ -58,53 +55,49 @@ bool Reader::LoadValidFile(std::string filePath)
 			}
 		}
 
-
-		if (isValid)
+		// Are there too many rows in the input file?
+		if (processedLines != 12)
 		{
-			// Are there too many rows in the input file?
-			if (processedLines != 12)
-			{
-				input.close();
-				return false;
-			}
+			input.close();
+			return false;
+		}
 
-			// Check valid color count
-			// Check is done earlier too, but just to be sure!
-			for (int i = 0; i < 6; ++i)
-			{
-				if (m_ColorCount[i] != 9)
-				{
-					input.close();
-					return false;
-				}
-			}
-
-			// Check corner and edges color count
-			for (int i = 0; i < 6; ++i)
-			{
-				if (m_CornerColorCount[i] != 4 || m_EdgeColorCount[i] != 4)
-				{
-					input.close();
-					return false;
-				}
-			}
-
-			// Do our parity tests
-			if (!m_Cube.CheckValidParity())
+		// Check valid color count
+		// Check is done earlier too, but just to be sure!
+		for (int i = 0; i < 6; ++i)
+		{
+			if (m_ColorCount[i] != 9)
 			{
 				input.close();
 				return false;
 			}
 		}
+
+		// Check corner and edges color count
+		for (int i = 0; i < 6; ++i)
+		{
+			if (m_CornerColorCount[i] != 4 || m_EdgeColorCount[i] != 4)
+			{
+				input.close();
+				return false;
+			}
+		}
+
+		// Do our parity tests
+		if (!m_Cube.CheckValidParity())
+		{
+			input.close();
+			return false;
+		}
 	}
 	catch (int e)
 	{
 		e = 0;
-		isValid = false; // If we somehow encounter a parse issue, input is invalid!
+		return false;
 	}
 
 	input.close();
-	return isValid;
+	return true;
 }
 
 // Builds upon a face of a cube given a row number and the string line of input color 
@@ -154,18 +147,6 @@ bool Reader::BuildFace(int face, int row, const std::string * const values)
 			{
 				return false;
 			}
-
-			/*  THE ABOVE CHECK ELIMINATES THIS, BUT STILL NICE TO HAVE!
-				// Check that we don't have multiple center cubes of same color!
-				if (m_CenterColorsMade[colorToAdd])
-				{
-					return false;
-				}
-				else
-				{
-					m_CenterColorsMade[colorToAdd] = true;
-				}
-			*/
 		}
 		
 		// Check if our color exceed 9
