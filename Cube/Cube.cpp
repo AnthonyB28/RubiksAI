@@ -10,8 +10,8 @@ namespace Rubiks
 		bool isValid = true;
 
 		if (!CheckValidPositions(cornerCubies, edgeCubies) ||
-			!CheckValidCorners(cornerCubies) // ||
-			//!CheckValidEdges(edgeCubies)
+			!CheckValidCorners(cornerCubies) ||
+			!CheckValidEdges(edgeCubies)
 			)
 		{
 			isValid = false;
@@ -479,7 +479,7 @@ namespace Rubiks
 					{
 						++n;
 					}
-					else if (edgeToValidate[0] == BLUE && edgeToValidate[1] == GREEN)
+					else if (edgeToValidate[0] == WHITE && edgeToValidate[1] == ORANGE)
 					{
 						++n;
 					}
@@ -498,7 +498,7 @@ namespace Rubiks
 					{
 						++n;
 					}
-					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == RED)
+					else if (edgeToValidate[0] == RED && edgeToValidate[1] == YELLOW)
 					{
 						++n;
 					}
@@ -549,7 +549,7 @@ namespace Rubiks
 					{
 						++n;
 					}
-					else if (edgeToValidate[0] == RED && edgeToValidate[1] == GREEN)
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == RED)
 					{
 						++n;
 					}
@@ -660,7 +660,7 @@ namespace Rubiks
 					{
 						++n;
 					}
-					else if (edgeToValidate[0] == RED && edgeToValidate[1] == YELLOW)
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == RED)
 					{
 						++n;
 					}
@@ -782,7 +782,7 @@ namespace Rubiks
 					{
 						++n;
 					}
-					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == YELLOW)
+					else if (edgeToValidate[0] == YELLOW && edgeToValidate[1] == ORANGE)
 					{
 						++n;
 					}
@@ -825,7 +825,7 @@ namespace Rubiks
 					{
 						++n;
 					}
-					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == GREEN)
+					else if (edgeToValidate[0] == GREEN && edgeToValidate[1] == ORANGE)
 					{
 						++n;
 					}
@@ -927,7 +927,7 @@ namespace Rubiks
 					{
 						++n;
 					}
-					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == YELLOW)
+					else if (edgeToValidate[0] == ORANGE && edgeToValidate[1] == GREEN)
 					{
 						++n;
 					}
