@@ -6,14 +6,16 @@
 #define ORANGE 4
 #define WHITE 5
 
+#include "Cubies.h"
+
 namespace Rubiks
 {
 	class Face
 	{
 	public:
 		Face();
-		int * GetCorners(); // Gets the array of corner values
-		int * GetEdges(); // Gets the array of edge values
+		CornerCubies GetCorners(); // Gets the array of corner values
+		EdgeCubies GetEdges(); // Gets the array of edge values
 		
 		void SetColor(int row, int column, int val);
 		unsigned int GetColor(int row, int column);

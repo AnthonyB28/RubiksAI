@@ -6,8 +6,8 @@ namespace Rubiks
 	// Do our 3 tests to find the 1/12 combinations that can be incorrect
 	bool Cube::CheckValidParity()
 	{
-		int ** cornerCubies = GetCornerCubies();
-		int ** edgeCubies = GetEdgeCubies();
+		UInt32 ** cornerCubies = GetCornerCubies();
+		UInt32 ** edgeCubies = GetEdgeCubies();
 		bool isValid = true;
 
 		if (!CheckValidPositions(cornerCubies, edgeCubies) ||
@@ -24,7 +24,7 @@ namespace Rubiks
 	}
 
 	// Checks for permutation parity
-	bool Cube::CheckValidPositions(int ** cornerCubies, int ** edgeCubies)
+	bool Cube::CheckValidPositions(UInt32 ** cornerCubies, UInt32 ** edgeCubies)
 	{
 		int edgePositions[12];
 		// Check number of edge swaps
@@ -87,39 +87,32 @@ namespace Rubiks
 	// RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
 	// DON'T FORGET TO CALL DELETECORNERCUBIES FROM THIS!!
 	// TODO make this a class or something
-	int ** Cube::GetCornerCubies()
+	Cube::UInt32 ** Cube::GetCornerCubies()
 	{
-		int * redCorners = m_Faces[0].GetCorners();
-		int * greenCorners = m_Faces[1].GetCorners();
-		int * yellowCorners = m_Faces[2].GetCorners();
-		int * blueCorners = m_Faces[3].GetCorners();
-		int * orangeCorners = m_Faces[4].GetCorners();
-		int * whiteCorners = m_Faces[5].GetCorners();
+		CornerCubies redCorners = m_Faces[0].GetCorners();
+		CornerCubies greenCorners = m_Faces[1].GetCorners();
+		CornerCubies yellowCorners = m_Faces[2].GetCorners();
+		CornerCubies blueCorners = m_Faces[3].GetCorners();
+		CornerCubies orangeCorners = m_Faces[4].GetCorners();
+		CornerCubies whiteCorners = m_Faces[5].GetCorners();
 
-		int ** cornerCubies = new int*[8];
+		UInt32 ** cornerCubies = new UInt32*[8];
 
 		// 8 corners should exist
-		cornerCubies[0] = new int[3]{ redCorners[0], greenCorners[0], whiteCorners[2] };
-		cornerCubies[1] = new int[3]{ redCorners[1], blueCorners[1], whiteCorners[3] };
-		cornerCubies[2] = new int[3]{ redCorners[2], greenCorners[1], yellowCorners[0] };
-		cornerCubies[3] = new int[3]{ redCorners[3], blueCorners[0], yellowCorners[1] };
-		cornerCubies[4] = new int[3]{ greenCorners[2], orangeCorners[2], whiteCorners[0] };
-		cornerCubies[5] = new int[3]{ greenCorners[3], orangeCorners[0], yellowCorners[2] };
-		cornerCubies[6] = new int[3]{ blueCorners[2], orangeCorners[1], yellowCorners[3] };
-		cornerCubies[7] = new int[3]{ blueCorners[3], orangeCorners[3], whiteCorners[1] };
-
-		delete[] redCorners;
-		delete[] greenCorners;
-		delete[] yellowCorners;
-		delete[] blueCorners;
-		delete[] orangeCorners;
-		delete[] whiteCorners;
+		cornerCubies[0] = new UInt32[3]{ redCorners.x, greenCorners.x, whiteCorners.z };
+		cornerCubies[1] = new UInt32[3]{ redCorners.y, blueCorners.y, whiteCorners.w };
+		cornerCubies[2] = new UInt32[3]{ redCorners.z, greenCorners.y, yellowCorners.x };
+		cornerCubies[3] = new UInt32[3]{ redCorners.w, blueCorners.x, yellowCorners.y };
+		cornerCubies[4] = new UInt32[3]{ greenCorners.z, orangeCorners.z, whiteCorners.x };
+		cornerCubies[5] = new UInt32[3]{ greenCorners.w, orangeCorners.x, yellowCorners.z };
+		cornerCubies[6] = new UInt32[3]{ blueCorners.z, orangeCorners.y, yellowCorners.w };
+		cornerCubies[7] = new UInt32[3]{ blueCorners.w, orangeCorners.w, whiteCorners.y };
 
 		return cornerCubies;
 	}
 
 	// Delete the corner cubies Collection
-	void Cube::DeleteCornerCubies(int ** cornerCubies)
+	void Cube::DeleteCornerCubies(UInt32 ** cornerCubies)
 	{
 		for (int i = 0; i < 8; ++i)
 		{
@@ -128,11 +121,11 @@ namespace Rubiks
 		delete[] cornerCubies;
 	}
 
-	int Cube::GetCornerPermutationValue(int cornerCubie[3])
+	int Cube::GetCornerPermutationValue(UInt32 cornerCubie[3])
 	{
-		int x = cornerCubie[0];
-		int y = cornerCubie[1];
-		int z = cornerCubie[2];
+		UInt32 x = cornerCubie[0];
+		UInt32 y = cornerCubie[1];
+		UInt32 z = cornerCubie[2];
 
 		if ((x == RED && y == GREEN && z == WHITE) ||
 			(x == RED && y == WHITE && z == GREEN) ||
@@ -217,11 +210,8 @@ namespace Rubiks
 	// correct orientation = 0
 	// clockwise = 1
 	// anti-clockwise = 2
-	int Cube::CheckCornerValue(int cornerValues[3], int corner)
+	int Cube::CheckCornerValue(UInt32 cornerValues[3], int corner)
 	{
-		int x = cornerValues[0];
-		int y = cornerValues[1];
-		int z = cornerValues[2];
 		for (int i = 0; i < 3; ++i)
 		{ 
 			if (cornerValues[i] == WHITE || cornerValues[i] == YELLOW)
@@ -256,7 +246,7 @@ namespace Rubiks
 	}
 
 	// Corner cubie parity test
-	bool Cube::CheckValidCorners(int ** cornerCubies)
+	bool Cube::CheckValidCorners(UInt32 ** cornerCubies)
 	{
 		int totalValue = 0;
 
@@ -286,43 +276,36 @@ namespace Rubiks
 	// RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW
 	// DON'T FORGET TO CALL DELETEEDGECUBIES FROM THIS!!
 	// TODO make this a class or something
-	int ** Cube::GetEdgeCubies()
+	Cube::UInt32 ** Cube::GetEdgeCubies()
 	{
-		int * redEdges = m_Faces[0].GetEdges();
-		int * greenEdges = m_Faces[1].GetEdges();
-		int * yellowEdges = m_Faces[2].GetEdges();
-		int * blueEdges = m_Faces[3].GetEdges();
-		int * orangeEdges = m_Faces[4].GetEdges();
-		int * whiteEdges = m_Faces[5].GetEdges();
+		EdgeCubies redEdges = m_Faces[0].GetEdges();
+		EdgeCubies greenEdges = m_Faces[1].GetEdges();
+		EdgeCubies yellowEdges = m_Faces[2].GetEdges();
+		EdgeCubies blueEdges = m_Faces[3].GetEdges();
+		EdgeCubies orangeEdges = m_Faces[4].GetEdges();
+		EdgeCubies whiteEdges = m_Faces[5].GetEdges();
 
-		int ** edgeCubies = new int*[12];
+		UInt32 ** edgeCubies = new UInt32*[12];
 
 		// 8 corners should exist
-		edgeCubies[0] = new int[2]{ redEdges[0], whiteEdges[3] }; // RW
-		edgeCubies[1] = new int[2]{ redEdges[1], greenEdges[0] }; // RG
-		edgeCubies[2] = new int[2]{ redEdges[2], blueEdges[0] }; // RB
-		edgeCubies[3] = new int[2]{ redEdges[3], yellowEdges[0] }; // RY
-		edgeCubies[4] = new int[2]{ greenEdges[1], whiteEdges[1] }; // GW
-		edgeCubies[5] = new int[2]{ greenEdges[2], yellowEdges[1] }; // GY
-		edgeCubies[6] = new int[2]{ greenEdges[3], orangeEdges[1] }; // GO
-		edgeCubies[7] = new int[2]{ yellowEdges[2], blueEdges[1] }; // YB
-		edgeCubies[8] = new int[2]{ yellowEdges[3], orangeEdges[0] }; // YO
-		edgeCubies[9] = new int[2]{ blueEdges[2], whiteEdges[2] }; // BW
-		edgeCubies[10] = new int[2]{ blueEdges[3], orangeEdges[2] }; // BO
-		edgeCubies[11] = new int[2]{ orangeEdges[3], whiteEdges[0] }; // OW
-		
-		delete[] redEdges;
-		delete[] greenEdges;
-		delete[] yellowEdges;
-		delete[] blueEdges;
-		delete[] orangeEdges;
-		delete[] whiteEdges;
+		edgeCubies[0] = new UInt32[2]{ redEdges.x, whiteEdges.w }; // RW
+		edgeCubies[1] = new UInt32[2]{ redEdges.y, greenEdges.x }; // RG
+		edgeCubies[2] = new UInt32[2]{ redEdges.z, blueEdges.x }; // RB
+		edgeCubies[3] = new UInt32[2]{ redEdges.w, yellowEdges.x }; // RY
+		edgeCubies[4] = new UInt32[2]{ greenEdges.y, whiteEdges.y }; // GW
+		edgeCubies[5] = new UInt32[2]{ greenEdges.z, yellowEdges.y }; // GY
+		edgeCubies[6] = new UInt32[2]{ greenEdges.w, orangeEdges.y }; // GO
+		edgeCubies[7] = new UInt32[2]{ yellowEdges.z, blueEdges.y }; // YB
+		edgeCubies[8] = new UInt32[2]{ yellowEdges.w, orangeEdges.x }; // YO
+		edgeCubies[9] = new UInt32[2]{ blueEdges.z, whiteEdges.z }; // BW
+		edgeCubies[10] = new UInt32[2]{ blueEdges.w, orangeEdges.z }; // BO
+		edgeCubies[11] = new UInt32[2]{ orangeEdges.w, whiteEdges.x }; // OW
 
 		return edgeCubies;
 	}
 
 	// Delete the corner cubies Collection
-	void Cube::DeleteEdgeCubies(int ** edgeCubies)
+	void Cube::DeleteEdgeCubies(UInt32 ** edgeCubies)
 	{
 		for (int i = 0; i < 12; ++i)
 		{
@@ -331,10 +314,10 @@ namespace Rubiks
 		delete[] edgeCubies;
 	}
 
-	int Cube::GetEdgePermutationValue(int edgeCubie[2])
+	int Cube::GetEdgePermutationValue(UInt32 edgeCubie[2])
 	{
-		int x = edgeCubie[0];
-		int y = edgeCubie[1];
+		UInt32 x = edgeCubie[0];
+		UInt32 y = edgeCubie[1];
 		if ((x == RED && y == WHITE) ||
 			(x == WHITE && y == RED))
 		{
@@ -404,7 +387,7 @@ namespace Rubiks
 	}
 
 	// Edge cubie parity test
-	bool Cube::CheckValidEdges(int ** edgeCubies)
+	bool Cube::CheckValidEdges(UInt32 ** edgeCubies)
 	{
 		// Value of all edge orientations is even
 		// LEFT RIGHT TOP AND BOTTOM flips zero edges
@@ -423,7 +406,7 @@ namespace Rubiks
 		bool isValid = true;
 		for (int i = 0; i < 12; ++i)
 		{
-			int edgeToValidate[2] = { edgeCubies[i][0], edgeCubies[i][1] };
+			UInt32 edgeToValidate[2] = { edgeCubies[i][0], edgeCubies[i][1] };
 			if (CheckValidEdgeColors(edgeToValidate))
 			{
 				if (i == 0) // RW
@@ -1059,7 +1042,7 @@ namespace Rubiks
 	}
 
 	// Edges are either one of two color combinations
-	bool Cube::CheckValidEdgeColors(int edge[2])
+	bool Cube::CheckValidEdgeColors(UInt32 edge[2])
 	{
 		if (
 			(edge[0] == RED && edge[1] == WHITE) || (edge[0] == WHITE && edge[1] == RED) ||

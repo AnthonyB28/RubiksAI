@@ -18,6 +18,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cube\Cube.h" />
+    <ClInclude Include="Cube\Cubies.h" />
     <ClInclude Include="Cube\Face.h" />
     <ClInclude Include="Reader\Reader.h" />
   </ItemGroup>
