@@ -56,23 +56,23 @@ namespace Rubiks
 		}
 	}
 
-	int * Face::GetCorners()
+	CornerCubies Face::GetCorners()
 	{
-		int * corners = new int[4];
-		corners[0] = m_TopLeft;
-		corners[1] = m_TopRight;
-		corners[2] = m_BottomLeft;
-		corners[3] = m_BottomRight;
+		CornerCubies corners;
+		corners.x = m_TopLeft;
+		corners.y = m_TopRight;
+		corners.z = m_BottomLeft;
+		corners.w = m_BottomRight;
 		return corners;
 	}
 
-	int * Face::GetEdges()
+	EdgeCubies Face::GetEdges()
 	{
-		int * edges = new int[4];
-		edges[0] = m_TopMiddle;
-		edges[1] = m_CenterLeft;
-		edges[2] = m_CenterRight;
-		edges[3] = m_BottomMiddle;
+		EdgeCubies edges;
+		edges.x = m_TopMiddle;
+		edges.y = m_CenterLeft;
+		edges.z = m_CenterRight;
+		edges.w = m_BottomMiddle;
 		return edges;
 	}
 

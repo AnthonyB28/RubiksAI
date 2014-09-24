@@ -30,6 +30,9 @@
     <ClInclude Include="Cube\Cube.h">
       <Filter>Rubiks</Filter>
     </ClInclude>
+    <ClInclude Include="Cube\Cubies.h">
+      <Filter>Rubiks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="input.txt" />
