@@ -1,5 +1,4 @@
 #include "Cube.h"
-#include <stdexcept>
 
 namespace Rubiks
 {
@@ -207,7 +206,7 @@ namespace Rubiks
 		else
 		{
 			// Completely invalid cube?
-			throw std::invalid_argument("Corner combination does not exist");
+			return 0;
 		}
 	}
 
@@ -277,7 +276,7 @@ namespace Rubiks
 		int x = cornerCubie[0];
 		int y = cornerCubie[1];
 		int z = cornerCubie[2];
-		if (corner == 0)
+		if (corner == 0 || corner == 3 || corner == 4 || corner == 6)
 		{
 			if ((cornerCubie[0] == RED && cornerCubie[1] == GREEN && cornerCubie[2] == WHITE) || //RWG
 				(cornerCubie[0] == WHITE && cornerCubie[1] == RED && cornerCubie[2] == GREEN) ||
@@ -332,7 +331,7 @@ namespace Rubiks
 				return false;
 			}
 		}
-		else if (corner == 1)
+		else if (corner == 1 || corner == 2 || corner == 5)
 		{
 			if ((cornerCubie[0] == GREEN && cornerCubie[1] == RED && cornerCubie[2] == WHITE) || //RWG
 				(cornerCubie[0] == WHITE && cornerCubie[1] == GREEN && cornerCubie[2] == RED) ||
@@ -506,7 +505,7 @@ namespace Rubiks
 		else
 		{
 			// Completely invalid cube?
-			throw std::invalid_argument("Edge combination does not exist");
+			return 0;
 		}
 	}
 
