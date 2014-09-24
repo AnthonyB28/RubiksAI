@@ -10,9 +10,9 @@ namespace Rubiks
 		UInt32 ** edgeCubies = GetEdgeCubies();
 		bool isValid = true;
 
-		if (!CheckValidPositions(cornerCubies, edgeCubies) ||
-			!CheckValidCorners(cornerCubies) ||
-			!CheckValidEdges(edgeCubies))
+		if (!CheckPermutations(cornerCubies, edgeCubies) ||
+			!CheckCornerParity(cornerCubies) ||
+			!CheckEdgeParity(edgeCubies))
 		{
 			isValid = false;
 		}
@@ -24,7 +24,7 @@ namespace Rubiks
 	}
 
 	// Checks for permutation parity
-	bool Cube::CheckValidPositions(UInt32 ** cornerCubies, UInt32 ** edgeCubies)
+	bool Cube::CheckPermutations(UInt32 ** cornerCubies, UInt32 ** edgeCubies)
 	{
 		int edgePositions[12];
 		// Check number of edge swaps
@@ -51,6 +51,10 @@ namespace Rubiks
 		// RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
 		for (int i = 0; i < 8; ++i)
 		{
+			if (!CheckValidCornerColors(cornerCubies[i], i))
+			{
+				return false;
+			}
 			cornerPositions[i] = GetCornerPermutationValue(cornerCubies[i]);
 		}
 
@@ -184,12 +188,12 @@ namespace Rubiks
 		else if((x == ORANGE && y == BLUE && z == YELLOW) ||
 				(x == ORANGE && y == YELLOW && z == BLUE) ||
 				(x == YELLOW && y == ORANGE && z == BLUE) ||
-				(x == YELLOW && y == BLUE && z == ORANGE) ||
-				(x == BLUE && y == ORANGE && z == YELLOW) ||
-				(x == BLUE && y == YELLOW && z == ORANGE))
-		{
-			return 6;
-		}
+(x == YELLOW && y == BLUE && z == ORANGE) ||
+(x == BLUE && y == ORANGE && z == YELLOW) ||
+(x == BLUE && y == YELLOW && z == ORANGE))
+{
+	return 6;
+}
 
 		else if ((x == ORANGE && y == BLUE && z == WHITE) ||
 			(x == ORANGE && y == WHITE && z == BLUE) ||
@@ -213,7 +217,7 @@ namespace Rubiks
 	int Cube::CheckCornerValue(UInt32 cornerValues[3], int corner)
 	{
 		for (int i = 0; i < 3; ++i)
-		{ 
+		{
 			if (cornerValues[i] == WHITE || cornerValues[i] == YELLOW)
 			{
 				if (corner == 0 || corner == 3 || corner == 4 || corner == 6)
@@ -246,7 +250,7 @@ namespace Rubiks
 	}
 
 	// Corner cubie parity test
-	bool Cube::CheckValidCorners(UInt32 ** cornerCubies)
+	bool Cube::CheckCornerParity(UInt32 ** cornerCubies)
 	{
 		int totalValue = 0;
 
@@ -264,6 +268,126 @@ namespace Rubiks
 		}
 
 		return isValid;
+	}
+
+	// Check to make sure corner colors are valid
+	// RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
+	bool Cube::CheckValidCornerColors(UInt32 cornerCubie[3], int corner)
+	{
+		int x = cornerCubie[0];
+		int y = cornerCubie[1];
+		int z = cornerCubie[2];
+		if (corner == 0)
+		{
+			if ((cornerCubie[0] == RED && cornerCubie[1] == GREEN && cornerCubie[2] == WHITE) || //RWG
+				(cornerCubie[0] == WHITE && cornerCubie[1] == RED && cornerCubie[2] == GREEN) ||
+				(cornerCubie[0] == GREEN && cornerCubie[1] == WHITE && cornerCubie[2] == RED))
+			{
+				return true;
+			}
+			else if ((cornerCubie[0] == GREEN && cornerCubie[1] == ORANGE && cornerCubie[2] == WHITE) || // GOW
+					(cornerCubie[0] == WHITE && cornerCubie[1] == GREEN && cornerCubie[2] == ORANGE) ||
+					(cornerCubie[0] == ORANGE && cornerCubie[1] == WHITE && cornerCubie[2] == GREEN))
+			{
+				return true;
+			}
+			else if ((cornerCubie[0] == ORANGE && cornerCubie[1] == BLUE && cornerCubie[2] == WHITE) || //OBW
+					(cornerCubie[0] == WHITE && cornerCubie[1] == ORANGE && cornerCubie[2] == BLUE) ||
+					(cornerCubie[0] == BLUE && cornerCubie[1] == WHITE && cornerCubie[2] == ORANGE))
+			{
+				return true;
+			}
+			else if ((cornerCubie[0] == BLUE && cornerCubie[1] == RED && cornerCubie[2] == WHITE) || //BRW
+					(cornerCubie[0] == WHITE && cornerCubie[1] == BLUE && cornerCubie[2] == RED) ||
+					(cornerCubie[0] == RED && cornerCubie[1] == WHITE && cornerCubie[2] == BLUE))
+			{
+				return true;
+			}
+			else if ((cornerCubie[0] == YELLOW && cornerCubie[1] == GREEN && cornerCubie[2] == RED) || //YGR
+					(cornerCubie[0] == RED && cornerCubie[1] == YELLOW && cornerCubie[2] == GREEN) ||
+					(cornerCubie[0] == GREEN && cornerCubie[1] == RED && cornerCubie[2] == YELLOW))
+			{
+				return true;
+			}
+			else if ((cornerCubie[0] == ORANGE && cornerCubie[1] == GREEN && cornerCubie[2] == YELLOW) || //OGY
+				(cornerCubie[0] == YELLOW && cornerCubie[1] == ORANGE && cornerCubie[2] == GREEN) ||
+				(cornerCubie[0] == GREEN && cornerCubie[1] == YELLOW && cornerCubie[2] == ORANGE))
+			{
+				return true;
+			}
+			else if ((cornerCubie[0] == BLUE && cornerCubie[1] == ORANGE && cornerCubie[2] == YELLOW) || // YOB
+				(cornerCubie[0] == YELLOW && cornerCubie[1] == BLUE && cornerCubie[2] == ORANGE) ||
+				(cornerCubie[0] == ORANGE && cornerCubie[1] == YELLOW && cornerCubie[2] == BLUE))
+			{
+				return true;
+			}
+			else if ((cornerCubie[0] == BLUE && cornerCubie[1] == YELLOW && cornerCubie[2] == RED) || //RYB
+				(cornerCubie[0] == RED && cornerCubie[1] == BLUE && cornerCubie[2] == YELLOW) ||
+				(cornerCubie[0] == YELLOW && cornerCubie[1] == RED && cornerCubie[2] == BLUE))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else if (corner == 1)
+		{
+			if ((cornerCubie[0] == GREEN && cornerCubie[1] == RED && cornerCubie[2] == WHITE) || //RWG
+				(cornerCubie[0] == WHITE && cornerCubie[1] == GREEN && cornerCubie[2] == RED) ||
+				(cornerCubie[0] == RED && cornerCubie[1] == WHITE && cornerCubie[2] == GREEN))
+			{
+				return true;
+			}
+			else if ((cornerCubie[0] == ORANGE && cornerCubie[1] == GREEN && cornerCubie[2] == WHITE) || // GOW
+				(cornerCubie[0] == WHITE && cornerCubie[1] == ORANGE && cornerCubie[2] == GREEN) ||
+				(cornerCubie[0] == GREEN && cornerCubie[1] == WHITE && cornerCubie[2] == ORANGE))
+			{
+				return true;
+			}
+			else if ((cornerCubie[0] == BLUE && cornerCubie[1] == ORANGE && cornerCubie[2] == WHITE) || //OBW
+				(cornerCubie[0] == WHITE && cornerCubie[1] == BLUE && cornerCubie[2] == ORANGE) ||
+				(cornerCubie[0] == ORANGE && cornerCubie[1] == WHITE && cornerCubie[2] == BLUE))
+			{
+				return true;
+			}
+			else if ((cornerCubie[0] == RED && cornerCubie[1] == BLUE && cornerCubie[2] == WHITE) || //BRW
+				(cornerCubie[0] == WHITE && cornerCubie[1] == RED && cornerCubie[2] == BLUE) ||
+				(cornerCubie[0] == BLUE && cornerCubie[1] == WHITE && cornerCubie[2] == RED))
+			{
+				return true;
+			}
+			else if ((cornerCubie[0] == YELLOW && cornerCubie[1] == RED && cornerCubie[2] == GREEN) || //YGR
+				(cornerCubie[0] == GREEN && cornerCubie[1] == YELLOW && cornerCubie[2] == RED) ||
+				(cornerCubie[0] == RED && cornerCubie[1] == GREEN && cornerCubie[2] == YELLOW))
+			{
+				return true;
+			}
+			else if ((cornerCubie[0] == GREEN && cornerCubie[1] == ORANGE && cornerCubie[2] == YELLOW) || //OGY
+				(cornerCubie[0] == YELLOW && cornerCubie[1] == GREEN && cornerCubie[2] == ORANGE) ||
+				(cornerCubie[0] == ORANGE && cornerCubie[1] == YELLOW && cornerCubie[2] == GREEN))
+			{
+				return true;
+			}
+			else if ((cornerCubie[0] == ORANGE && cornerCubie[1] == BLUE && cornerCubie[2] == YELLOW) || // YOB
+				(cornerCubie[0] == YELLOW && cornerCubie[1] == ORANGE && cornerCubie[2] == BLUE) ||
+				(cornerCubie[0] == BLUE && cornerCubie[1] == YELLOW && cornerCubie[2] == ORANGE))
+			{
+				return true;
+			}
+			else if ((cornerCubie[0] == RED && cornerCubie[1] == YELLOW && cornerCubie[2] == BLUE) || //RYB
+				(cornerCubie[0] == BLUE && cornerCubie[1] == RED && cornerCubie[2] == YELLOW) ||
+				(cornerCubie[0] == YELLOW && cornerCubie[1] == BLUE && cornerCubie[2] == RED))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/*********************
@@ -387,7 +511,7 @@ namespace Rubiks
 	}
 
 	// Edge cubie parity test
-	bool Cube::CheckValidEdges(UInt32 ** edgeCubies)
+	bool Cube::CheckEdgeParity(UInt32 ** edgeCubies)
 	{
 		// Value of all edge orientations is even
 		// LEFT RIGHT TOP AND BOTTOM flips zero edges

@@ -12,18 +12,19 @@ namespace Rubiks
 	
 	private :
 		
-		bool CheckValidPositions(UInt32 ** cornerCubies, UInt32 ** edgeCubies);
+		bool CheckPermutations(UInt32 ** cornerCubies, UInt32 ** edgeCubies);
 		
 		UInt32 ** GetCornerCubies(); // RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
 		void DeleteCornerCubies(UInt32 ** cornerCubies);
 		int CheckCornerValue(UInt32 cornerValues[3], int corner);
 		int GetCornerPermutationValue(UInt32 cornerCubie[3]);
-		bool CheckValidCorners(UInt32 ** cornerCubies);
+		bool CheckCornerParity(UInt32 ** cornerCubies);
+		bool CheckValidCornerColors(UInt32 cornerCubie[3], int corner);
 		
 		UInt32 ** GetEdgeCubies(); // RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW
 		void DeleteEdgeCubies(UInt32 ** edgeCubies);
 		int GetEdgePermutationValue(UInt32 edgeCubie[2]);
-		bool CheckValidEdges(UInt32 ** edgeCubies);
+		bool CheckEdgeParity(UInt32 ** edgeCubies);
 		bool CheckValidEdgeColors(UInt32 edge[2]);
 	};
 }
