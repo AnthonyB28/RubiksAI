@@ -1,7 +1,6 @@
 #include "Reader/Reader.h"
 #include <stdio.h>
 #include <sstream>
-#include <boost/timer.hpp>
 
 // DEBUG_MODE is my preprocessor macro in the sln file
 // Define only when testing code for additional output.
@@ -10,7 +9,6 @@
 int main(int argc, const char* argv[])
 {
 	bool test = false;
-	boost::timer t;
 	Reader *input = new Reader();
 
 	if (argv[1] && !test)
@@ -50,7 +48,6 @@ int main(int argc, const char* argv[])
 			}
 			delete input;
 		}
-		std::cout << t.elapsed();
 		std::cout << "Finished all tests " << " Passed:" << passed << "\n";
 		system("pause");
 	}

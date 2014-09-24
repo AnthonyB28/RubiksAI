@@ -108,6 +108,13 @@ namespace Rubiks
 		cornerCubies[6] = new int[3]{ blueCorners[2], orangeCorners[1], yellowCorners[3] };
 		cornerCubies[7] = new int[3]{ blueCorners[3], orangeCorners[3], whiteCorners[1] };
 
+		delete[] redCorners;
+		delete[] greenCorners;
+		delete[] yellowCorners;
+		delete[] blueCorners;
+		delete[] orangeCorners;
+		delete[] whiteCorners;
+
 		return cornerCubies;
 	}
 
@@ -303,6 +310,13 @@ namespace Rubiks
 		edgeCubies[9] = new int[2]{ blueEdges[2], whiteEdges[2] }; // BW
 		edgeCubies[10] = new int[2]{ blueEdges[3], orangeEdges[2] }; // BO
 		edgeCubies[11] = new int[2]{ orangeEdges[3], whiteEdges[0] }; // OW
+		
+		delete[] redEdges;
+		delete[] greenEdges;
+		delete[] yellowEdges;
+		delete[] blueEdges;
+		delete[] orangeEdges;
+		delete[] whiteEdges;
 
 		return edgeCubies;
 	}

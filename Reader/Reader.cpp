@@ -175,7 +175,7 @@ bool Reader::BuildFace(int face, int row, const std::string * const values)
 		}
 
 		
-		m_Cube.m_Faces[face].m_ValuesArrays[row][i] = colorToAdd;
+		m_Cube.m_Faces[face].SetColor(row, i, colorToAdd);
 
 		++i;
 
@@ -211,7 +211,7 @@ void Reader::LogInputCube()
 	{
 		for (int y = 0; y < 3; ++y)
 		{
-			std::cout << m_Cube.m_Faces[0].m_ValuesArrays[x][y];
+			std::cout << m_Cube.m_Faces[0].GetColor(x, y);
 		}
 
 		std::cout << '\n';
@@ -223,7 +223,7 @@ void Reader::LogInputCube()
 		{
 			for (int y = 0; y < 3; ++y)
 			{
-				std::cout << m_Cube.m_Faces[z].m_ValuesArrays[x][y];
+				std::cout << m_Cube.m_Faces[z].GetColor(x, y);
 			}
 			
 		}
@@ -236,7 +236,7 @@ void Reader::LogInputCube()
 		{
 			for (int y = 0; y < 3; ++y)
 			{
-				std::cout << m_Cube.m_Faces[z].m_ValuesArrays[x][y];
+				std::cout << m_Cube.m_Faces[z].GetColor(x, y);
 			}
 
 			std::cout << '\n';
