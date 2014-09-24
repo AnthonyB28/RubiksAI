@@ -8,7 +8,7 @@
 
 int main(int argc, const char* argv[])
 {
-	bool test = false;
+	bool test = true;
 	Reader *input = new Reader();
 
 	if (argv[1] && !test)
@@ -23,7 +23,6 @@ int main(int argc, const char* argv[])
 		{
 			std::cout << "INVALID_INPUT\n";
 		}
-		std::cout << t.elapsed();
 		system("pause");
 #else
 		std::cout << std::boolalpha << input->LoadValidFile(argv[1]);
@@ -33,11 +32,11 @@ int main(int argc, const char* argv[])
 	else if (test)
 	{
 		int passed = 0;
-		for (int i = 1; i < 10; ++i)
+		for (int i = 0; i < 2000; ++i)
 		{
 			input = new Reader();
 			std::stringstream file;
-			file << "invalid\\test" << i << ".txt";
+			file << "valid\\test" << i << ".txt";
 			if (!input->LoadValidFile(file.str()))
 			{
 				std::cout << "Test " << i << " failed\n";

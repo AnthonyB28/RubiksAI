@@ -56,15 +56,6 @@ namespace Rubiks
 		}
 	}
 
-	Face::~Face()
-	{
-		for (int init = 0; init < 3; ++init)
-		{
-			delete[] m_ValuesArrays[init];
-		}
-		delete[] m_ValuesArrays;
-	}
-
 	int * Face::GetCorners()
 	{
 		int * corners = new int[4];
