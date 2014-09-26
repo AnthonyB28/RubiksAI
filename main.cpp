@@ -8,12 +8,12 @@
 
 int main(int argc, const char* argv[])
 {
-	bool test = true;
 	Reader *input = new Reader();
 
-	if (argv[1] && !test)
+	if (argv[1])
 	{
 #ifdef DEBUG_MODE
+		
 		if (input->LoadValidFile(argv[1]))
 		{
 			std::cout << "VALID_INPUT\n";
@@ -23,36 +23,15 @@ int main(int argc, const char* argv[])
 		{
 			std::cout << "INVALID_INPUT\n";
 		}
-		system("pause");
+		//system("pause");
 #else
 		std::cout << std::boolalpha << input->LoadValidFile(argv[1]);
-		system("pause");
+		//system("pause");
 #endif
-	}
-	else if (test)
-	{
-		int passed = 0;
-		for (int i = 0; i < 2000; ++i)
-		{
-			input = new Reader();
-			std::stringstream file;
-			file << "valid\\test" << i << ".txt";
-			if (!input->LoadValidFile(file.str()))
-			{
-				std::cout << "Test " << i << " failed\n";
-			}
-			else
-			{
-				++passed;
-			}
-			delete input;
-		}
-		std::cout << "Finished all tests " << " Passed:" << passed << "\n";
-		system("pause");
 	}
 	else
 	{
 		std::cout << "Please provide input file path as argument before execution\n";
-		system("pause");
+		//system("pause");
 	}
 }
