@@ -273,9 +273,6 @@ namespace Rubiks
 	// RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
 	bool Cube::CheckValidCornerColors(UInt32 cornerCubie[3], int corner)
 	{
-		int x = cornerCubie[0];
-		int y = cornerCubie[1];
-		int z = cornerCubie[2];
 		if (corner == 0 || corner == 3 || corner == 4 || corner == 6)
 		{
 			if ((cornerCubie[0] == RED && cornerCubie[1] == GREEN && cornerCubie[2] == WHITE) || //RWG
@@ -526,7 +523,6 @@ namespace Rubiks
 		// n = total number of flips / 2
 		// RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW
 		int n = 0;
-		bool isValid = true;
 		for (int i = 0; i < 12; ++i)
 		{
 			UInt32 edgeToValidate[2] = { edgeCubies[i][0], edgeCubies[i][1] };
@@ -1148,8 +1144,7 @@ namespace Rubiks
 			}
 			else
 			{
-				isValid = false;
-				break;
+				return false;
 			}
 		}
 

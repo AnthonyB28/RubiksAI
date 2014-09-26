@@ -14,7 +14,7 @@ Reader::Reader()
 
 bool Reader::LoadValidFile(std::string filePath)
 {	
-	std::ifstream input(filePath);
+	std::ifstream input(filePath.c_str());
 	std::string inputLine;
 	int facesDone = 0;
 	int row = 0;
@@ -28,7 +28,10 @@ bool Reader::LoadValidFile(std::string filePath)
 #ifdef DEBUG_MODE
 			std::cout << inputLine << '\n';
 #endif
-			if (!BuildFace(facesDone, row, &inputLine))
+			std::size_t end = inputLine.find_last_not_of('\r');
+			std::size_t beginning = inputLine.find_first_not_of('\r');
+			std::string inputTrim = inputLine.substr(beginning, end - beginning + 1);
+			if (!BuildFace(facesDone, row, &inputTrim))
 			{
 				input.close();
 				return false;
