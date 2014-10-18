@@ -28,5 +28,23 @@ namespace Rubiks
 		m_Faces[0].m_BottomLeft = saveTopRight;
 		m_Faces[0].m_BottomMiddle = saveTopMiddle;
 		m_Faces[0].m_BottomRight = saveTopLeft;
+
+		// Rotate yellow around
+		saveTopLeft = m_Faces[2].m_TopLeft;
+		saveTopMiddle = m_Faces[2].m_TopMiddle;
+		saveTopRight = m_Faces[2].m_TopRight;
+		m_Faces[2].m_TopLeft = m_Faces[2].m_BottomLeft;
+		m_Faces[2].m_TopMiddle = m_Faces[2].m_CenterLeft;
+		m_Faces[2].m_TopRight = saveTopLeft;
+		m_Faces[2].m_CenterLeft = m_Faces[2].m_BottomMiddle;
+		m_Faces[2].m_BottomLeft = m_Faces[2].m_BottomRight;
+		m_Faces[2].m_BottomMiddle = m_Faces[2].m_CenterRight;
+		m_Faces[2].m_BottomRight = saveTopRight;
+		m_Faces[2].m_CenterRight = saveTopMiddle;
+	}
+
+	void Cube::TurnBottomCW()
+	{
+
 	}
 }
