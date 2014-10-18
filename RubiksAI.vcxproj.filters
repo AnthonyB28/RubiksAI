@@ -8,7 +8,10 @@
     <ClCompile Include="Reader\Reader.cpp">
       <Filter>Reader</Filter>
     </ClCompile>
-    <ClCompile Include="Cube\Cube.cpp">
+    <ClCompile Include="Cube\CubeParity.cpp">
+      <Filter>Rubiks</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube\CubeTurns.cpp">
       <Filter>Rubiks</Filter>
     </ClCompile>
   </ItemGroup>

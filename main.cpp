@@ -8,16 +8,18 @@
 
 int main(int argc, const char* argv[])
 {
-	bool test = true;
+	bool test = false;
 	Reader *input = new Reader();
 
 	if (argv[1] && !test)
 	{
 #ifdef DEBUG_MODE
-		if (input->LoadValidFile(argv[1]))
+		if (input->LoadCubeFile(argv[1], false))
 		{
 			std::cout << "VALID_INPUT\n";
-			input->LogInputCube();
+			input->LogCube();
+			input->m_Cube.TurnTopCW();
+			input->LogCube();
 		}
 		else
 		{
@@ -25,7 +27,7 @@ int main(int argc, const char* argv[])
 		}
 		system("pause");
 #else
-		std::cout << std::boolalpha << input->LoadValidFile(argv[1]);
+		std::cout << std::boolalpha << input->LoadCubeFile(argv[1]);
 		system("pause");
 #endif
 	}
@@ -37,7 +39,7 @@ int main(int argc, const char* argv[])
 			input = new Reader();
 			std::stringstream file;
 			file << "valid\\test" << i << ".txt";
-			if (!input->LoadValidFile(file.str()))
+			if (!input->LoadCubeFile(file.str(), true))
 			{
 				std::cout << "Test " << i << " failed\n";
 			}

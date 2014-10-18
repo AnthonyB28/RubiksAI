@@ -11,7 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Cube\Cube.cpp" />
+    <ClCompile Include="Cube\CubeParity.cpp" />
+    <ClCompile Include="Cube\CubeTurns.cpp" />
     <ClCompile Include="Cube\Face.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Reader\Reader.cpp" />

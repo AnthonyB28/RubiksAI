@@ -187,12 +187,12 @@ namespace Rubiks
 		else if((x == ORANGE && y == BLUE && z == YELLOW) ||
 				(x == ORANGE && y == YELLOW && z == BLUE) ||
 				(x == YELLOW && y == ORANGE && z == BLUE) ||
-(x == YELLOW && y == BLUE && z == ORANGE) ||
-(x == BLUE && y == ORANGE && z == YELLOW) ||
-(x == BLUE && y == YELLOW && z == ORANGE))
-{
-	return 6;
-}
+				(x == YELLOW && y == BLUE && z == ORANGE) ||
+				(x == BLUE && y == ORANGE && z == YELLOW) ||
+				(x == BLUE && y == YELLOW && z == ORANGE))
+		{
+			return 6;
+		}
 
 		else if ((x == ORANGE && y == BLUE && z == WHITE) ||
 			(x == ORANGE && y == WHITE && z == BLUE) ||

@@ -8,8 +8,17 @@ namespace Rubiks
 		typedef unsigned int UInt32;
 		bool CheckValidParity();
 
+		// "RED 0 GREEN 1 YELLOW 2 BLUE 3 ORANGE 4 WHITE 5 "
 		Rubiks::Face m_Faces[6]; // Rubik's Cube representation - note for assignment each index happens to represent face color!
-	
+		void TurnTopCW();
+		void TurnTopACW();
+		void TurnBottomCW();
+		void TurnBottomACW();
+		void TurnRightCW();
+		void TurnRightACW();
+		void TurnLeftCW();
+		void TurnLeftACW();
+
 	private :
 		
 		bool CheckPermutations(UInt32 ** cornerCubies, UInt32 ** edgeCubies);

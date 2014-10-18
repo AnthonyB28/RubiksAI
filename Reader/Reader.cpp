@@ -2,6 +2,7 @@
 
 Reader::Reader()
 	: m_Cube()
+	, m_CheckValid(true)
 {
 	// Init color trackers
 	for (int i = 0; i < 6; ++i)
@@ -12,8 +13,9 @@ Reader::Reader()
 	}
 }
 
-bool Reader::LoadValidFile(std::string filePath)
-{	
+bool Reader::LoadCubeFile(std::string filePath, bool checkValid)
+{
+	m_CheckValid = checkValid;
 	std::ifstream input(filePath.c_str());
 	std::string inputLine;
 	int facesDone = 0;
@@ -58,39 +60,42 @@ bool Reader::LoadValidFile(std::string filePath)
 			}
 		}
 
-		// Are there too many rows in the input file?
-		if (processedLines != 12)
+		if (m_CheckValid)
 		{
-			input.close();
-			return false;
-		}
-
-		// Check valid color count
-		// Check is done earlier too, but just to be sure!
-		for (int i = 0; i < 6; ++i)
-		{
-			if (m_ColorCount[i] != 9)
+			// Are there too many rows in the input file?
+			if (processedLines != 12)
 			{
 				input.close();
 				return false;
 			}
-		}
 
-		// Check corner and edges color count
-		for (int i = 0; i < 6; ++i)
-		{
-			if (m_CornerColorCount[i] != 4 || m_EdgeColorCount[i] != 4)
+			// Check valid color count
+			// Check is done earlier too, but just to be sure!
+			for (int i = 0; i < 6; ++i)
+			{
+				if (m_ColorCount[i] != 9)
+				{
+					input.close();
+					return false;
+				}
+			}
+
+			// Check corner and edges color count
+			for (int i = 0; i < 6; ++i)
+			{
+				if (m_CornerColorCount[i] != 4 || m_EdgeColorCount[i] != 4)
+				{
+					input.close();
+					return false;
+				}
+			}
+
+			// Do our parity tests
+			if (!m_Cube.CheckValidParity())
 			{
 				input.close();
 				return false;
 			}
-		}
-
-		// Do our parity tests
-		if (!m_Cube.CheckValidParity())
-		{
-			input.close();
-			return false;
 		}
 	}
 	catch (int e)
@@ -154,7 +159,7 @@ bool Reader::BuildFace(int face, int row, const std::string * const values)
 		
 		// Check if our color exceed 9
 		++m_ColorCount[colorToAdd];
-		if (m_ColorCount[colorToAdd] > 9)
+		if (m_ColorCount[colorToAdd] > 9 && m_CheckValid)
 		{
 			return false;
 		}
@@ -206,7 +211,7 @@ bool Reader::BuildFace(int face, int row, const std::string * const values)
 	}
 }
 
-void Reader::LogInputCube()
+void Reader::LogCube()
 {
 	std::cout << "----------\n";
 	std::cout << RUBIKS_KEY << '\n';
