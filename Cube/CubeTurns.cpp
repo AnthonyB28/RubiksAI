@@ -50,6 +50,47 @@ namespace Rubiks
 		int saveBottomMiddle = m_Faces[1].m_CenterLeft;
 		int saveBottomLeft = m_Faces[1].m_BottomLeft;
 
+		// Red to Green
+		m_Faces[1].m_TopLeft = m_Faces[0].m_TopRight;
+		m_Faces[1].m_CenterLeft = m_Faces[0].m_TopMiddle;
+		m_Faces[1].m_BottomLeft = m_Faces[0].m_TopLeft;
+
+		// Blue to Red
+		m_Faces[0].m_TopLeft = m_Faces[3].m_TopRight;
+		m_Faces[0].m_TopMiddle = m_Faces[3].m_CenterRight;
+		m_Faces[0].m_TopRight = m_Faces[3].m_BottomRight;
+
+		// Orange(Looking @) to Blue
+		m_Faces[3].m_TopRight = m_Faces[4].m_BottomRight;
+		m_Faces[3].m_CenterRight = m_Faces[4].m_BottomMiddle;
+		m_Faces[3].m_BottomRight= m_Faces[4].m_BottomLeft;
+
+		// Green to Orange
+		m_Faces[4].m_BottomRight = saveBottomLeft;
+		m_Faces[4].m_BottomMiddle = saveBottomMiddle;
+		m_Faces[4].m_BottomLeft = saveBottomRight;
+
+		// Rotate white around
+		saveBottomLeft = m_Faces[5].m_TopLeft;
+		saveBottomMiddle = m_Faces[5].m_TopMiddle;
+		saveBottomRight = m_Faces[5].m_TopRight;
+		m_Faces[5].m_TopLeft = m_Faces[5].m_BottomLeft;
+		m_Faces[5].m_TopMiddle = m_Faces[5].m_CenterLeft;
+		m_Faces[5].m_TopRight = saveBottomLeft;
+		m_Faces[5].m_CenterLeft = m_Faces[5].m_BottomMiddle;
+		m_Faces[5].m_BottomLeft = m_Faces[5].m_BottomRight;
+		m_Faces[5].m_BottomMiddle = m_Faces[5].m_CenterRight;
+		m_Faces[5].m_BottomRight = saveBottomRight;
+		m_Faces[5].m_CenterRight = saveBottomMiddle;
+	}
+
+	void Cube::TurnBottomACW()
+	{
+		// Save Green
+		int saveBottomRight = m_Faces[1].m_TopLeft;
+		int saveBottomMiddle = m_Faces[1].m_CenterLeft;
+		int saveBottomLeft = m_Faces[1].m_BottomLeft;
+
 		// Orange(Looking @) to Green
 		m_Faces[1].m_BottomLeft = m_Faces[4].m_BottomRight;
 		m_Faces[1].m_CenterLeft = m_Faces[4].m_BottomMiddle;
@@ -72,16 +113,18 @@ namespace Rubiks
 
 		// Rotate white around
 		saveBottomLeft = m_Faces[5].m_TopLeft;
-		saveBottomMiddle = m_Faces[5].m_TopMiddle;
-		saveBottomRight = m_Faces[5].m_TopRight;
-		m_Faces[5].m_TopLeft = m_Faces[5].m_BottomLeft;
-		m_Faces[5].m_TopMiddle = m_Faces[5].m_CenterLeft;
-		m_Faces[5].m_TopRight = saveBottomLeft;
-		m_Faces[5].m_CenterLeft = m_Faces[5].m_BottomMiddle;
-		m_Faces[5].m_BottomLeft = m_Faces[5].m_BottomRight;
-		m_Faces[5].m_BottomMiddle = m_Faces[5].m_CenterRight;
+		saveBottomMiddle = m_Faces[5].m_CenterLeft;
+		saveBottomRight = m_Faces[5].m_BottomLeft;
+
+		m_Faces[5].m_TopLeft = m_Faces[5].m_TopRight;
+		m_Faces[5].m_CenterLeft = m_Faces[5].m_TopMiddle;
+		m_Faces[5].m_TopRight = m_Faces[5].m_BottomRight;
+		m_Faces[5].m_TopMiddle = m_Faces[5].m_CenterRight;
+		m_Faces[5].m_CenterRight = m_Faces[5].m_BottomMiddle;
+
+		m_Faces[5].m_BottomLeft = saveBottomLeft;
+		m_Faces[5].m_BottomMiddle = saveBottomMiddle;
 		m_Faces[5].m_BottomRight = saveBottomRight;
-		m_Faces[5].m_CenterRight = saveBottomMiddle;
 	}
 
 	void Cube::TurnRightCW() // Note this is an up turn
