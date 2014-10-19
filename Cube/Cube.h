@@ -18,6 +18,10 @@ namespace Rubiks
 		void TurnRightACW();
 		void TurnLeftCW();
 		void TurnLeftACW();
+		void TurnFrontAC();
+		void TurnFrontACW();
+		void TurnBackAC();
+		void TurnBackACW();
 
 	private :
 		

@@ -2,7 +2,7 @@
 
 namespace Rubiks
 {
-	void Cube::TurnTopCW()
+	void Cube::TurnTopCW() // Note this is turning left
 	{
 		// Save Green
 		int saveTopRight = m_Faces[1].m_BottomRight;
@@ -43,7 +43,7 @@ namespace Rubiks
 		m_Faces[2].m_CenterRight = saveTopMiddle;
 	}
 
-	void Cube::TurnBottomCW()
+	void Cube::TurnBottomCW() // Note this is turning right
 	{
 		// Save Green
 		int saveBottomRight = m_Faces[1].m_TopLeft;
@@ -207,5 +207,47 @@ namespace Rubiks
 		m_Faces[1].m_BottomMiddle = m_Faces[1].m_CenterRight;
 		m_Faces[1].m_BottomRight = saveBottom;
 		m_Faces[1].m_CenterRight = saveMiddle;
+	}
+
+	void Cube::TurnFrontAC() // Note this is turning right
+	{
+		// Save Blue
+		int saveLeft = m_Faces[3].m_BottomLeft;
+		int saveMiddle = m_Faces[3].m_BottomMiddle;
+		int saveRight = m_Faces[3].m_BottomRight;
+
+		// Yellow to Blue
+		m_Faces[3].m_BottomLeft = m_Faces[2].m_BottomLeft;
+		m_Faces[3].m_BottomMiddle = m_Faces[2].m_BottomMiddle;
+		m_Faces[3].m_BottomRight = m_Faces[2].m_BottomRight;
+
+		// Green to Yellow
+		m_Faces[2].m_BottomLeft = m_Faces[1].m_BottomLeft;
+		m_Faces[2].m_BottomMiddle = m_Faces[1].m_BottomMiddle;
+		m_Faces[2].m_BottomRight = m_Faces[1].m_BottomRight;
+
+		// White to Green
+		m_Faces[1].m_BottomLeft = m_Faces[5].m_TopLeft;
+		m_Faces[1].m_BottomMiddle = m_Faces[5].m_TopMiddle;
+		m_Faces[1].m_BottomRight = m_Faces[5].m_TopRight;
+
+		// Blue to White
+		m_Faces[5].m_TopLeft = saveLeft;
+		m_Faces[5].m_TopMiddle = saveMiddle;
+		m_Faces[5].m_TopRight = saveRight;
+		
+		// Rotate Orange
+		saveLeft = m_Faces[4].m_TopLeft;
+		saveMiddle = m_Faces[4].m_TopMiddle;
+		saveRight = m_Faces[4].m_TopRight;
+
+		m_Faces[4].m_TopLeft = m_Faces[4].m_BottomLeft;
+		m_Faces[4].m_TopMiddle = m_Faces[4].m_CenterLeft;
+		m_Faces[4].m_BottomLeft = m_Faces[4].m_BottomRight;
+		m_Faces[4].m_CenterLeft = m_Faces[4].m_BottomMiddle;
+		m_Faces[4].m_BottomMiddle = m_Faces[4].m_CenterRight;
+		m_Faces[4].m_BottomRight = saveRight;
+		m_Faces[4].m_TopRight = saveLeft;
+		m_Faces[4].m_CenterRight = saveMiddle;
 	}
 }
