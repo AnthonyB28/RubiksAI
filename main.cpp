@@ -18,7 +18,7 @@ int main(int argc, const char* argv[])
 		{
 			std::cout << "VALID_INPUT\n";
 			input->LogCube();
-			input->m_Cube.TurnLeftCW();
+			input->m_Cube.TurnRightCW();
 			input->LogCube();
 		}
 		else
