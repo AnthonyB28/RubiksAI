@@ -209,7 +209,7 @@ namespace Rubiks
 		m_Faces[1].m_CenterRight = saveMiddle;
 	}
 
-	void Cube::TurnFrontAC() // Note this is turning right
+	void Cube::TurnFrontCW() // Note this is turning right
 	{
 		// Save Blue
 		int saveLeft = m_Faces[3].m_BottomLeft;
@@ -227,14 +227,14 @@ namespace Rubiks
 		m_Faces[2].m_BottomRight = m_Faces[1].m_BottomRight;
 
 		// White to Green
-		m_Faces[1].m_BottomLeft = m_Faces[5].m_TopLeft;
+		m_Faces[1].m_BottomRight = m_Faces[5].m_TopLeft;
 		m_Faces[1].m_BottomMiddle = m_Faces[5].m_TopMiddle;
-		m_Faces[1].m_BottomRight = m_Faces[5].m_TopRight;
+		m_Faces[1].m_BottomLeft = m_Faces[5].m_TopRight;
 
 		// Blue to White
-		m_Faces[5].m_TopLeft = saveLeft;
+		m_Faces[5].m_TopRight = saveLeft;
 		m_Faces[5].m_TopMiddle = saveMiddle;
-		m_Faces[5].m_TopRight = saveRight;
+		m_Faces[5].m_TopLeft = saveRight;
 		
 		// Rotate Orange
 		saveLeft = m_Faces[4].m_TopLeft;
@@ -250,4 +250,50 @@ namespace Rubiks
 		m_Faces[4].m_TopRight = saveLeft;
 		m_Faces[4].m_CenterRight = saveMiddle;
 	}
+
+	void Cube::TurnBackCW() // Note this is turning left
+	{
+		// Save Yellow
+		int saveLeft = m_Faces[2].m_TopLeft;
+		int saveMiddle = m_Faces[2].m_TopMiddle;
+		int saveRight = m_Faces[2].m_TopRight;
+
+		// Blue to Yellow
+		m_Faces[2].m_TopLeft = m_Faces[3].m_TopLeft;
+		m_Faces[2].m_TopMiddle = m_Faces[3].m_TopMiddle;
+		m_Faces[2].m_TopRight = m_Faces[3].m_TopRight;
+
+		// White to Blue
+		m_Faces[3].m_TopRight = m_Faces[5].m_BottomLeft;
+		m_Faces[3].m_TopMiddle = m_Faces[5].m_BottomMiddle;
+		m_Faces[3].m_TopLeft = m_Faces[5].m_BottomRight;
+
+		// Green to White
+		m_Faces[5].m_BottomRight = m_Faces[1].m_TopLeft;
+		m_Faces[5].m_BottomMiddle = m_Faces[1].m_TopMiddle;
+		m_Faces[5].m_BottomLeft = m_Faces[1].m_TopRight;
+
+		// Yellow to Green
+		m_Faces[1].m_TopLeft = saveLeft;
+		m_Faces[1].m_TopMiddle = saveMiddle;
+		m_Faces[1].m_TopRight = saveRight;
+
+
+
+		// Rotate Orange
+		saveLeft = m_Faces[4].m_TopLeft;
+		saveMiddle = m_Faces[4].m_TopMiddle;
+		saveRight = m_Faces[4].m_TopRight;
+
+		m_Faces[4].m_TopLeft = m_Faces[4].m_BottomLeft;
+		m_Faces[4].m_TopMiddle = m_Faces[4].m_CenterLeft;
+		m_Faces[4].m_BottomLeft = m_Faces[4].m_BottomRight;
+		m_Faces[4].m_CenterLeft = m_Faces[4].m_BottomMiddle;
+		m_Faces[4].m_BottomMiddle = m_Faces[4].m_CenterRight;
+		m_Faces[4].m_BottomRight = saveRight;
+		m_Faces[4].m_TopRight = saveLeft;
+		m_Faces[4].m_CenterRight = saveMiddle;
+	}
+
+
 }
