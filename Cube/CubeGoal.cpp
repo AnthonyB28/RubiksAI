@@ -21,22 +21,30 @@ namespace Rubiks
 	int GetFactorial(int i)
 	{
 		int factorial = 1;
-		for (int fact = 0; fact < i; ++fact)
+		for (int fact = 1; fact <= i; ++fact)
 		{
 			factorial *= fact;
 		}
 		return factorial;
 	}
 
-	int Cube::GetCornerHeuristicValue()
+	long Cube::GetCornerHeuristicValue()
 	{
-		int value = 0;
-		//c1 * 3 + o1) * 0! * 3 * (c2 * 3 + o2) * 1! * 3 * (c3 * 3 + o3) * 2! * 3
+		long value = 1;
+		//c1 * 3 + o1) * 0! * 3 + (c2 * 3 + o2) * 1! * 3 + (c3 * 3 + o3) * 2! * 3
 		// o = CheckCornerValue c = GetCornerPermutationValue
 		UInt32** cornerCubies = this->GetCornerCubies();
-		for (int i = 0; i < 8; ++i)
+		std::vector<int> cubesPos;
+		for (int x = 0; x < 8; ++x)
 		{
-			value *= ((GetCornerPermutationValue(cornerCubies[i])+1) * 3 + CheckCornerValue(cornerCubies[i], i)) * GetFactorial(i) * 3;
+			cubesPos.push_back(GetCornerPermutationValue(cornerCubies[x]));
+		}
+		for (int i = 0; i < 7; ++i)
+		{
+			std::vector<int>::iterator it = find(cubesPos.begin(), cubesPos.end(), i);
+			int position = it - cubesPos.begin();
+			value += (position * 3 + (CheckCornerValue(cornerCubies[i], i)+1)) * (i+1) * 3;
+			cubesPos.erase(it);
 		}
 		DeleteCornerCubies(cornerCubies);
 		return value;
@@ -68,12 +76,12 @@ namespace Rubiks
 		//goalState->m_Explored = false;
 		q.push(goalState);
 
-		std::set<int> uniqueStates;
+		std::set<long> uniqueStates;
+		int skipped = 0;
 		while (!q.empty())
 		{
 			State* s = q.front();
 			q.pop();
-
 			int moveCount = s->m_MoveCount + 1;
 			if (moveCount <= heuristic)
 			{
@@ -95,17 +103,24 @@ namespace Rubiks
 					case 10: newState->m_Cube.TurnBackCW(); break;
 					case 11: newState->m_Cube.TurnBackACW(); break;
 					}
-					
+
 					s->m_Children.push_back(newState);
-					std::set<int>::iterator setIt = uniqueStates.find(newState->m_Cube.GetCornerHeuristicValue());
-					if (setIt != uniqueStates.end())
+					long hash = newState->m_Cube.GetCornerHeuristicValue();
+					std::set<long>::iterator setIt = uniqueStates.find(hash);
+					if (setIt == uniqueStates.end())
 					{
 						q.push(newState);
-					}	
+						uniqueStates.insert(hash);
+					}
+					else
+					{
+						skipped++;
+					}
 				}
 			}
 			delete s;
 		}
+		printf("%d", skipped);
 	}
 
 	Cube* Cube::GetGoalCube()

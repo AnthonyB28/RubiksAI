@@ -311,18 +311,18 @@ namespace Rubiks
 		m_Faces[1].m_TopRight = saveRight;
 
 		// Rotate Orange
-		saveLeft = m_Faces[4].m_TopLeft;
-		saveMiddle = m_Faces[4].m_TopMiddle;
-		saveRight = m_Faces[4].m_TopRight;
+		saveLeft = m_Faces[0].m_TopLeft;
+		saveMiddle = m_Faces[0].m_TopMiddle;
+		saveRight = m_Faces[0].m_TopRight;
 
-		m_Faces[4].m_TopLeft = m_Faces[4].m_BottomLeft;
-		m_Faces[4].m_TopMiddle = m_Faces[4].m_CenterLeft;
-		m_Faces[4].m_BottomLeft = m_Faces[4].m_BottomRight;
-		m_Faces[4].m_CenterLeft = m_Faces[4].m_BottomMiddle;
-		m_Faces[4].m_BottomMiddle = m_Faces[4].m_CenterRight;
-		m_Faces[4].m_BottomRight = saveRight;
-		m_Faces[4].m_TopRight = saveLeft;
-		m_Faces[4].m_CenterRight = saveMiddle;
+		m_Faces[0].m_TopLeft = m_Faces[0].m_BottomLeft;
+		m_Faces[0].m_TopMiddle = m_Faces[0].m_CenterLeft;
+		m_Faces[0].m_BottomLeft = m_Faces[0].m_BottomRight;
+		m_Faces[0].m_CenterLeft = m_Faces[0].m_BottomMiddle;
+		m_Faces[0].m_BottomMiddle = m_Faces[0].m_CenterRight;
+		m_Faces[0].m_BottomRight = saveRight;
+		m_Faces[0].m_TopRight = saveLeft;
+		m_Faces[0].m_CenterRight = saveMiddle;
 	}
 
 	void Cube::TurnBackACW()
