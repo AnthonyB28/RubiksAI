@@ -43,6 +43,14 @@ namespace Rubiks
 		m_Faces[2].m_CenterRight = saveTopMiddle;
 	}
 
+	void Cube::TurnTopACW()
+	{
+		for (int i = 0; i < 3; ++i)
+		{
+			TurnTopCW();
+		}
+	}
+
 	void Cube::TurnBottomCW() // Note this is turning right
 	{
 		// Save Green
@@ -168,6 +176,14 @@ namespace Rubiks
 		m_Faces[3].m_CenterRight = saveMiddle;
 	}
 
+	void Cube::TurnRightACW()
+	{
+		for (int i = 0; i < 3; ++i)
+		{
+			TurnRightCW();
+		}
+	}
+
 	void Cube::TurnLeftCW() // Note this is a down turn
 	{
 		// Save White
@@ -207,6 +223,14 @@ namespace Rubiks
 		m_Faces[1].m_BottomMiddle = m_Faces[1].m_CenterRight;
 		m_Faces[1].m_BottomRight = saveBottom;
 		m_Faces[1].m_CenterRight = saveMiddle;
+	}
+
+	void Cube::TurnLeftACW()
+	{
+		for (int i = 0; i < 3; ++i)
+		{
+			TurnLeftCW();
+		}
 	}
 
 	void Cube::TurnFrontCW() // Note this is turning right
@@ -251,6 +275,14 @@ namespace Rubiks
 		m_Faces[4].m_CenterRight = saveMiddle;
 	}
 
+	void Cube::TurnFrontACW()
+	{
+		for (int i = 0; i < 3; ++i)
+		{
+			TurnFrontCW();
+		}
+	}
+
 	void Cube::TurnBackCW() // Note this is turning left
 	{
 		// Save Yellow
@@ -278,8 +310,6 @@ namespace Rubiks
 		m_Faces[1].m_TopMiddle = saveMiddle;
 		m_Faces[1].m_TopRight = saveRight;
 
-
-
 		// Rotate Orange
 		saveLeft = m_Faces[4].m_TopLeft;
 		saveMiddle = m_Faces[4].m_TopMiddle;
@@ -293,6 +323,14 @@ namespace Rubiks
 		m_Faces[4].m_BottomRight = saveRight;
 		m_Faces[4].m_TopRight = saveLeft;
 		m_Faces[4].m_CenterRight = saveMiddle;
+	}
+
+	void Cube::TurnBackACW()
+	{
+		for (int i = 0; i < 3; ++i)
+		{
+			TurnBackCW();
+		}
 	}
 
 
