@@ -2,7 +2,6 @@
 
 namespace Rubiks
 {
-
 	void Cube::TurnTopCW() // Note this is turning left
 	{
 		// Save Green

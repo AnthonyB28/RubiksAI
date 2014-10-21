@@ -11,6 +11,7 @@ int main(int argc, const char* argv[])
 	bool test = false;
 	Reader *input = new Reader();
 
+	Rubiks::Cube::IASearch(8);
 	if (argv[1] && !test)
 	{
 #ifdef DEBUG_MODE
@@ -27,7 +28,7 @@ int main(int argc, const char* argv[])
 		}
 		system("pause");
 #else
-		std::cout << std::boolalpha << input->LoadCubeFile(argv[1]);
+		std::cout << std::boolalpha << input->LoadCubeFile(argv[1], false);
 		system("pause");
 #endif
 	}

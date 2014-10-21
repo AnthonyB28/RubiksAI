@@ -1,4 +1,5 @@
 #include "Face.h"
+#include <vector>
 
 namespace Rubiks
 {
@@ -23,8 +24,10 @@ namespace Rubiks
 		void TurnBackCW();
 		void TurnBackACW();
 
+		struct State;
 		static Cube* GetGoalCube();
 		static void IASearch(int heuristic);
+		static void GenerateBFS(State* state, int heuristic, std::vector<int>& previousMoves);
 
 	private :
 		
