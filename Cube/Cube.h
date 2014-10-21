@@ -27,7 +27,8 @@ namespace Rubiks
 		struct State;
 		static Cube* GetGoalCube();
 		static void IASearch(int heuristic);
-		static void GenerateBFS(State* state, int heuristic, std::vector<int>& previousMoves);
+		static void GenerateDFS(State* state, int heuristic, std::vector<int>& previousMoves);
+		int GetCornerHeuristicValue();
 
 	private :
 		
