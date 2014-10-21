@@ -23,6 +23,9 @@ namespace Rubiks
 		void TurnBackCW();
 		void TurnBackACW();
 
+		static Cube* GetGoalCube();
+		static void IASearch(int heuristic);
+
 	private :
 		
 		bool CheckPermutations(UInt32 ** cornerCubies, UInt32 ** edgeCubies);

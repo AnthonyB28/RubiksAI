@@ -14,6 +14,9 @@
     <ClCompile Include="Cube\CubeTurns.cpp">
       <Filter>Rubiks</Filter>
     </ClCompile>
+    <ClCompile Include="Cube\CubeGoal.cpp">
+      <Filter>Rubiks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Reader">
