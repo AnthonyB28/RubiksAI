@@ -43,41 +43,22 @@ namespace Rubiks
 		{
 			std::vector<int>::iterator it = find(cubesPos.begin(), cubesPos.end(), i);
 			int position = it - cubesPos.begin();
-			value += (position * 3 + (CheckCornerValue(cornerCubies[i], i)+1)) * (i+1) * 3;
+			value += (position * 3 + CheckCornerValue(cornerCubies[i], i)) * GetFactorial(i) * 3;
 			cubesPos.erase(it);
 		}
 		DeleteCornerCubies(cornerCubies);
 		return value;
 	}
 
-// 	void Cube::GenerateDFS(State* state, int heuristic, std::vector<int>& previousMoves)
-// 	{
-// 		int moveCount = previousMoves.size();
-// 		if (moveCount <= heuristic)
-// 		{
-// 			for (int moves = 0; moves < 12; ++moves)
-// 			{
-// 				State* newState = new State( previousMoves);
-// 				newState->m_MoveSet.push_back(moves);
-// 				state->m_Children.push_back(newState);
-// 				GenerateDFS(newState, heuristic, newState->m_MoveSet);
-// 			}
-// 		}
-// 	}
-
-
-
-
 	void Cube::IASearch(int heuristic)
 	{
 		std::queue<State*> q;
 		State* goalState = new State(0, *Cube::GetGoalCube());
-		//GenerateBFS(goalState, heuristic, std::vector<int>());
-		//goalState->m_Explored = false;
 		q.push(goalState);
 
 		std::set<long> uniqueStates;
 		int skipped = 0;
+		unsigned long long count = 0;
 		while (!q.empty())
 		{
 			State* s = q.front();
@@ -102,6 +83,12 @@ namespace Rubiks
 					case 9: newState->m_Cube.TurnFrontACW(); break;
 					case 10: newState->m_Cube.TurnBackCW(); break;
 					case 11: newState->m_Cube.TurnBackACW(); break;
+					case 12: newState->m_Cube.TurnTopCW(); newState->m_Cube.TurnTopCW(); break;
+					case 13: newState->m_Cube.TurnBottomCW(); newState->m_Cube.TurnBottomCW(); break;
+					case 14: newState->m_Cube.TurnLeftCW(); newState->m_Cube.TurnLeftCW(); break;
+					case 15: newState->m_Cube.TurnRightCW(); newState->m_Cube.TurnRightCW(); break;
+					case 16: newState->m_Cube.TurnFrontCW(); newState->m_Cube.TurnFrontCW(); break;
+					case 17: newState->m_Cube.TurnBackCW(); newState->m_Cube.TurnBackCW(); break;
 					}
 
 					s->m_Children.push_back(newState);
@@ -116,6 +103,7 @@ namespace Rubiks
 					{
 						skipped++;
 					}
+					++count;
 				}
 			}
 			delete s;

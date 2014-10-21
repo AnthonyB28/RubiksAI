@@ -11,7 +11,7 @@ int main(int argc, const char* argv[])
 	bool test = false;
 	Reader *input = new Reader();
 
-	//Rubiks::Cube::IASearch(12);
+	Rubiks::Cube::IASearch(12);
 	if (argv[1] && !test)
 	{
 #ifdef DEBUG_MODE
