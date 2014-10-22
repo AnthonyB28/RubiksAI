@@ -48,8 +48,8 @@ namespace Rubiks
 			int position = it - cubesPos.begin();
 			int threePow = (int) pow(3, i);
 			//value += (position * 3 + CheckCornerValue(cornerCubies[i], i)) * GetFactorial(i - 1) * 3;
-			//value += (threePow * eightFact * CheckCornerValue(cornerCubies[i], i)) + (position * GetFactorial(i) * threePow);
-			value += (position * threePow + CheckCornerValue(cornerCubies[i], i)) * (eightFact / GetFactorial(i)) * threePow;
+			value += (threePow * eightFact * CheckCornerValue(cornerCubies[i], i)) + (position * GetFactorial(i) * threePow);
+			//value += (position * threePow + CheckCornerValue(cornerCubies[i], i)) * (eightFact / GetFactorial(i)) * threePow;
 			cubesPos.erase(it);
 		}
 		DeleteCornerCubies(cornerCubies);
