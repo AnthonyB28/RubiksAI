@@ -8,7 +8,6 @@ class Reader
 public:
 	Reader();
 	bool LoadCubeFile(std::string filePath, bool checkValid);
-	void LogCube();
 
 	Rubiks::Cube m_Cube;
 

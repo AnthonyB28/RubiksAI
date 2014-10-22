@@ -27,7 +27,8 @@ namespace Rubiks
 		struct State;
 		static Cube* GetGoalCube();
 		static void IASearch(int heuristic);
-		long GetCornerHeuristicValue();
+		unsigned long long GetCornerHeuristicValue();
+		void LogCube();
 
 	private :
 		

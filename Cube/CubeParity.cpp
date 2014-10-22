@@ -195,11 +195,11 @@ namespace Rubiks
 		}
 
 		else if ((x == ORANGE && y == BLUE && z == WHITE) ||
-			(x == ORANGE && y == WHITE && z == BLUE) ||
-			(x == WHITE && y == ORANGE && z == BLUE) ||
-			(x == WHITE && y == BLUE && z == ORANGE) ||
-			(x == BLUE && y == ORANGE && z == WHITE) ||
-			(x == BLUE && y == WHITE && z == ORANGE))
+				(x == ORANGE && y == WHITE && z == BLUE) ||
+				(x == WHITE && y == ORANGE && z == BLUE) ||
+				(x == WHITE && y == BLUE && z == ORANGE) ||
+				(x == BLUE && y == ORANGE && z == WHITE) ||
+				(x == BLUE && y == WHITE && z == ORANGE))
 		{
 			return 7;
 		}
@@ -207,6 +207,7 @@ namespace Rubiks
 		{
 			// Completely invalid cube?
 			return 0;
+			printf("invalid cube");
 		}
 	}
 

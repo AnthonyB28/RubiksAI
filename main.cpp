@@ -18,9 +18,9 @@ int main(int argc, const char* argv[])
 		if (input->LoadCubeFile(argv[1], false))
 		{
 			std::cout << "VALID_INPUT\n";
-			input->LogCube();
-			input->m_Cube.TurnBackCW();
-			input->LogCube();
+			input->m_Cube.LogCube();
+			input->m_Cube.TurnTopCW();
+			input->m_Cube.LogCube();
 		}
 		else
 		{

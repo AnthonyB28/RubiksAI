@@ -1,7 +1,9 @@
 #include "Cube.h"
 #include <queue>
 #include <set>
-
+#include <math.h>
+#include <iostream>
+#include <fstream>
 namespace Rubiks
 {
 	struct Cube::State
@@ -28,10 +30,11 @@ namespace Rubiks
 		return factorial;
 	}
 
-	long Cube::GetCornerHeuristicValue()
+	unsigned long long Cube::GetCornerHeuristicValue()
 	{
-		long value = 1;
-		//c1 * 3 + o1) * 0! * 3 + (c2 * 3 + o2) * 1! * 3 + (c3 * 3 + o3) * 2! * 3
+		unsigned long long value = 1;
+		static long sevenFact = 5040;
+		static long eightFact = 40320;
 		// o = CheckCornerValue c = GetCornerPermutationValue
 		UInt32** cornerCubies = this->GetCornerCubies();
 		std::vector<int> cubesPos;
@@ -43,22 +46,29 @@ namespace Rubiks
 		{
 			std::vector<int>::iterator it = find(cubesPos.begin(), cubesPos.end(), i);
 			int position = it - cubesPos.begin();
-			value += (position * 3 + CheckCornerValue(cornerCubies[i], i)) * GetFactorial(i) * 3;
+			int threePow = (int) pow(3, i);
+			//value += (position * 3 + CheckCornerValue(cornerCubies[i], i)) * GetFactorial(i - 1) * 3;
+			//value += (threePow * eightFact * CheckCornerValue(cornerCubies[i], i)) + (position * GetFactorial(i) * threePow);
+			value += (position * threePow + CheckCornerValue(cornerCubies[i], i)) * (eightFact / GetFactorial(i)) * threePow;
 			cubesPos.erase(it);
 		}
 		DeleteCornerCubies(cornerCubies);
+		
 		return value;
 	}
 
 	void Cube::IASearch(int heuristic)
 	{
+		std::ofstream file;
+		file.open("test.bin", std::ios::binary|std::ios::out|std::ios::trunc);
 		std::queue<State*> q;
 		State* goalState = new State(0, *Cube::GetGoalCube());
 		q.push(goalState);
 
-		std::set<long> uniqueStates;
+		std::set<unsigned long long> uniqueStates;
 		int skipped = 0;
 		unsigned long long count = 0;
+		// BFS
 		while (!q.empty())
 		{
 			State* s = q.front();
@@ -66,9 +76,10 @@ namespace Rubiks
 			int moveCount = s->m_MoveCount + 1;
 			if (moveCount <= heuristic)
 			{
-				for (int moves = 0; moves < 12; ++moves)
+				for (int moves = 0; moves < 18; ++moves)
 				{
 					State* newState = new State(moveCount, s->m_Cube);
+					// All the possible moves generate their own state.
 					switch (moves)
 					{
 					case 0: newState->m_Cube.TurnTopCW(); break;
@@ -82,7 +93,7 @@ namespace Rubiks
 					case 8: newState->m_Cube.TurnFrontCW(); break;
 					case 9: newState->m_Cube.TurnFrontACW(); break;
 					case 10: newState->m_Cube.TurnBackCW(); break;
-					case 11: newState->m_Cube.TurnBackACW(); break;
+					case 11: newState->m_Cube.TurnBackACW(); break;           
 					case 12: newState->m_Cube.TurnTopCW(); newState->m_Cube.TurnTopCW(); break;
 					case 13: newState->m_Cube.TurnBottomCW(); newState->m_Cube.TurnBottomCW(); break;
 					case 14: newState->m_Cube.TurnLeftCW(); newState->m_Cube.TurnLeftCW(); break;
@@ -92,23 +103,32 @@ namespace Rubiks
 					}
 
 					s->m_Children.push_back(newState);
-					long hash = newState->m_Cube.GetCornerHeuristicValue();
-					std::set<long>::iterator setIt = uniqueStates.find(hash);
+					unsigned long long hash = newState->m_Cube.GetCornerHeuristicValue();
+					std::set<unsigned long long>::iterator setIt = uniqueStates.find(hash); 
+					// If the hash doesnt exist, we need to add it to the queue else we delete and skip it.
 					if (setIt == uniqueStates.end())
 					{
 						q.push(newState);
+						file.seekp(hash);
+						char moveNumToWrite = (char)moveCount; // Move counts shouldnt be more than 20, we can make these chars
+						file.write(&moveNumToWrite,sizeof(char));
 						uniqueStates.insert(hash);
+						//newState->m_Cube.LogCube();
 					}
 					else
 					{
 						skipped++;
+						delete newState;
 					}
+					
+					
 					++count;
 				}
 			}
 			delete s;
 		}
-		printf("%d", skipped);
+		printf("%d - total: %d", skipped, count);
+		file.close();
 	}
 
 	Cube* Cube::GetGoalCube()
