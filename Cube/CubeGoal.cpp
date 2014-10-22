@@ -9,16 +9,17 @@ namespace Rubiks
 {
 	struct Cube::State
 	{
+		// Each Cube state is only ~22 bytes!
 		State(int moveCount, Cube& cube)
-			: m_MoveCount(moveCount)
+			: m_PreviousMove(0)
+			, m_MoveCount(moveCount)
 			, m_Cube(cube)
-			, m_Children()
 		{}
 
-		//bool m_Explored;
-		int m_MoveCount;
+		unsigned int m_PreviousMove : 5; // 0 - 32
+		unsigned int m_MoveCount : 5; // Total # of moves to this position
 		Cube m_Cube;
-		std::vector<State*> m_Children;
+		//std::vector<State*> m_Children; // We dont need children for this assignment technically.
 	};
 
 	int GetFactorial(int i)
@@ -67,75 +68,78 @@ namespace Rubiks
 		file.open("test.bin", std::ios::binary|std::ios::out|std::ios::trunc);
 		std::queue<State*> q;
 		q.push(new State(0, Cube::GetGoalCube())); // start with goal state
-
 		std::map<unsigned long long, int> uniqueStates;
 		unsigned long long skipped = 0;
 		unsigned long long count = 0;
 		// BFS
 		while (!q.empty())
 		{
-			State* s = q.front();
+			State* curState = q.front();
 			q.pop();
-			int moveCount = s->m_MoveCount + 1;
+			int moveCount = curState->m_MoveCount + 1;
 			if (moveCount <= heuristic)
 			{
-				for (int moves = 0; moves < 18; ++moves)
+				// Generate a state for every possible move (18 of them)
+				for (int currentMove = 0; currentMove < 18; ++currentMove)
 				{
-					State* newState = new State(moveCount, s->m_Cube);
-					// All the possible moves generate their own state.
-					switch (moves)
+					// Only make a new state if the previous move is not repeated in anyway.
+					if (currentMove != curState->m_PreviousMove && currentMove != (curState->m_PreviousMove + 1) && currentMove != (curState->m_PreviousMove + 2))
 					{
-					case 0: newState->m_Cube.TurnTopCW(); break;
-					case 1: newState->m_Cube.TurnTopACW(); break;
-					case 2: newState->m_Cube.TurnBottomCW(); break;
-					case 3: newState->m_Cube.TurnBottomACW(); break;
-					case 4: newState->m_Cube.TurnLeftCW(); break;
-					case 5: newState->m_Cube.TurnLeftACW(); break;
-					case 6: newState->m_Cube.TurnRightCW(); break;
-					case 7: newState->m_Cube.TurnRightACW(); break;
-					case 8: newState->m_Cube.TurnFrontCW(); break;
-					case 9: newState->m_Cube.TurnFrontACW(); break;
-					case 10: newState->m_Cube.TurnBackCW(); break;
-					case 11: newState->m_Cube.TurnBackACW(); break;           
-					case 12: newState->m_Cube.TurnTopCW(); newState->m_Cube.TurnTopCW(); break;
-					case 13: newState->m_Cube.TurnBottomCW(); newState->m_Cube.TurnBottomCW(); break;
-					case 14: newState->m_Cube.TurnLeftCW(); newState->m_Cube.TurnLeftCW(); break;
-					case 15: newState->m_Cube.TurnRightCW(); newState->m_Cube.TurnRightCW(); break;
-					case 16: newState->m_Cube.TurnFrontCW(); newState->m_Cube.TurnFrontCW(); break;
-					case 17: newState->m_Cube.TurnBackCW(); newState->m_Cube.TurnBackCW(); break;
-					}
-
-					//s->m_Children.push_back(newState); Dont need this for now...
-					unsigned long long hash = newState->m_Cube.GetCornerHeuristicValue();
-					std::map<unsigned long long, int>::iterator setIt = uniqueStates.find(hash); 
-					// If the hash doesnt exist, we need to add it to the queue else we delete and skip it.
-					if (setIt == uniqueStates.end())
-					{
-						q.push(newState);
-						file.seekp(hash);
-						char moveNumToWrite = (char)moveCount; // Move counts shouldnt be more than 20, we can make these chars
-						file.write(&moveNumToWrite,sizeof(char));
-						uniqueStates[hash] = moveCount;
-						//newState->m_Cube.LogCube();
-					}
-					else
-					{
-						if (uniqueStates[hash] > moveCount)
+						State* newState = new State(moveCount, curState->m_Cube);
+						newState->m_PreviousMove = currentMove;
+						switch (currentMove) // Manipulate the state with a move action
 						{
-							std::cout << "\nHash: " << hash << " RecordedMC: " << uniqueStates[hash] << " CurrentMC: "<< moveCount;
+						case 0: newState->m_Cube.TurnTopCW(); break;
+						case 1: newState->m_Cube.TurnTopACW(); break;
+						case 2: newState->m_Cube.TurnTopCW(); newState->m_Cube.TurnTopCW(); break;
+						case 3: newState->m_Cube.TurnBottomCW(); break;
+						case 4: newState->m_Cube.TurnBottomACW(); break;
+						case 5: newState->m_Cube.TurnBottomCW(); newState->m_Cube.TurnBottomCW(); break;
+						case 6: newState->m_Cube.TurnLeftCW(); break;
+						case 7: newState->m_Cube.TurnLeftACW(); break;
+						case 8: newState->m_Cube.TurnLeftCW(); newState->m_Cube.TurnLeftCW(); break;
+						case 9: newState->m_Cube.TurnRightCW(); break;
+						case 10: newState->m_Cube.TurnRightACW(); break;
+						case 11: newState->m_Cube.TurnRightCW(); newState->m_Cube.TurnRightCW(); break;
+						case 12: newState->m_Cube.TurnFrontCW(); break;
+						case 13: newState->m_Cube.TurnFrontACW(); break;
+						case 14: newState->m_Cube.TurnFrontCW(); newState->m_Cube.TurnFrontCW(); break;
+						case 15: newState->m_Cube.TurnBackCW(); break;
+						case 16: newState->m_Cube.TurnBackACW(); break;
+						case 17: newState->m_Cube.TurnBackCW(); newState->m_Cube.TurnBackCW(); break;
 						}
-						skipped++;
-						delete newState;
-					}
-					
-					++count;
-					if (count % 1000 == 0)
-					{
-						std::cout << "\nSkipped: " << skipped << " - total: " << count;
+
+						//s->m_Children.push_back(newState); Dont need this?....
+						unsigned long long hash = newState->m_Cube.GetCornerHeuristicValue();
+						std::map<unsigned long long, int>::iterator setIt = uniqueStates.find(hash);
+						// If the hash doesnt exist, we need to add it to the queue else we delete and skip it.
+						if (setIt == uniqueStates.end())
+						{
+							q.push(newState);
+							file.seekp(hash);
+							char moveNumToWrite = (char)moveCount; // Move counts shouldnt be more than 20, we can make these chars
+							file.write(&moveNumToWrite, sizeof(char));
+							uniqueStates[hash] = moveCount;
+						}
+						else // Hash existed, we can safely skip. Unless stored hash is bigger? Should be impossible. Log it
+						{
+							if (uniqueStates[hash] > moveCount)
+							{
+								std::cout << "\nHash: " << hash << " RecordedMC: " << uniqueStates[hash] << " CurrentMC: " << moveCount;
+							}
+							skipped++;
+							delete newState;
+						}
+
+						++count;
+						if (count % 1000 == 0)
+						{
+							std::cout << "\nSkipped: " << skipped << " - total: " << count;
+						}
 					}
 				}
 			}
-			delete s;
+			delete curState;
 		}
 		printf("%d - total: %d", skipped, count);
 		file.close();
