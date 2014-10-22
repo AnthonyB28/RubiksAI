@@ -1,6 +1,7 @@
 #include "Cube.h"
 #include <queue>
 #include <set>
+#include <map>
 #include <math.h>
 #include <iostream>
 #include <fstream>
@@ -35,7 +36,7 @@ namespace Rubiks
 		unsigned long long value = 1;
 		static long sevenFact = 5040;
 		static long eightFact = 40320;
-		// o = CheckCornerValue c = GetCornerPermutationValue
+		static unsigned long long biggestVal = 0;
 		UInt32** cornerCubies = this->GetCornerCubies();
 		std::vector<int> cubesPos;
 		for (int x = 0; x < 8; ++x)
@@ -48,12 +49,15 @@ namespace Rubiks
 			int position = it - cubesPos.begin();
 			int threePow = (int) pow(3, i);
 			//value += (position * 3 + CheckCornerValue(cornerCubies[i], i)) * GetFactorial(i - 1) * 3;
-			value += (threePow * eightFact * CheckCornerValue(cornerCubies[i], i)) + (position * GetFactorial(i) * threePow);
+			value += (threePow * eightFact * CheckCornerValue(cornerCubies[i], i)) + (position * GetFactorial(i) * threePow); // (3^i * 8! * co_i) + (3^i * cp_i * i!)
 			//value += (position * threePow + CheckCornerValue(cornerCubies[i], i)) * (eightFact / GetFactorial(i)) * threePow;
 			cubesPos.erase(it);
 		}
 		DeleteCornerCubies(cornerCubies);
-		
+		if (value > biggestVal)
+		{
+			biggestVal = value;
+		}
 		return value;
 	}
 
@@ -62,11 +66,10 @@ namespace Rubiks
 		std::ofstream file;
 		file.open("test.bin", std::ios::binary|std::ios::out|std::ios::trunc);
 		std::queue<State*> q;
-		State* goalState = new State(0, *Cube::GetGoalCube());
-		q.push(goalState);
+		q.push(new State(0, Cube::GetGoalCube())); // start with goal state
 
-		std::set<unsigned long long> uniqueStates;
-		int skipped = 0;
+		std::map<unsigned long long, int> uniqueStates;
+		unsigned long long skipped = 0;
 		unsigned long long count = 0;
 		// BFS
 		while (!q.empty())
@@ -102,9 +105,9 @@ namespace Rubiks
 					case 17: newState->m_Cube.TurnBackCW(); newState->m_Cube.TurnBackCW(); break;
 					}
 
-					s->m_Children.push_back(newState);
+					//s->m_Children.push_back(newState); Dont need this for now...
 					unsigned long long hash = newState->m_Cube.GetCornerHeuristicValue();
-					std::set<unsigned long long>::iterator setIt = uniqueStates.find(hash); 
+					std::map<unsigned long long, int>::iterator setIt = uniqueStates.find(hash); 
 					// If the hash doesnt exist, we need to add it to the queue else we delete and skip it.
 					if (setIt == uniqueStates.end())
 					{
@@ -112,17 +115,24 @@ namespace Rubiks
 						file.seekp(hash);
 						char moveNumToWrite = (char)moveCount; // Move counts shouldnt be more than 20, we can make these chars
 						file.write(&moveNumToWrite,sizeof(char));
-						uniqueStates.insert(hash);
+						uniqueStates[hash] = moveCount;
 						//newState->m_Cube.LogCube();
 					}
 					else
 					{
+						if (uniqueStates[hash] != moveCount)
+						{
+							printf("\n Hash: %d RecordedMC: %d CurrentMC: %d", hash, uniqueStates[hash], moveCount);
+						}
 						skipped++;
 						delete newState;
 					}
 					
-					
 					++count;
+					if (count % 5000000 == 0)
+					{
+						printf("\nSkipped: %d - total: %d", skipped, count);
+					}
 				}
 			}
 			delete s;
@@ -131,16 +141,16 @@ namespace Rubiks
 		file.close();
 	}
 
-	Cube* Cube::GetGoalCube()
+	Cube Cube::GetGoalCube()
 	{
-		Cube* goal = new Cube();
+		Cube goal;
 		for (int i = 0; i < 6; ++i)
 		{
 			for (int x = 0; x < 3; ++x)
 			{
 				for (int y = 0; y < 3; ++y)
 				{
-					goal->m_Faces[i].SetColor(x, y, i);
+					goal.m_Faces[i].SetColor(x, y, i);
 				}
 			}
 		}

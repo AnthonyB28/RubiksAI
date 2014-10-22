@@ -25,7 +25,7 @@ namespace Rubiks
 		void TurnBackACW();
 
 		struct State;
-		static Cube* GetGoalCube();
+		static Cube GetGoalCube();
 		static void IASearch(int heuristic);
 		unsigned long long GetCornerHeuristicValue();
 		void LogCube();
