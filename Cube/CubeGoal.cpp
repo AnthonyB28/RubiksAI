@@ -120,18 +120,18 @@ namespace Rubiks
 					}
 					else
 					{
-						if (uniqueStates[hash] != moveCount)
+						if (uniqueStates[hash] > moveCount)
 						{
-							printf("\n Hash: %d RecordedMC: %d CurrentMC: %d", hash, uniqueStates[hash], moveCount);
+							std::cout << "\nHash: " << hash << " RecordedMC: " << uniqueStates[hash] << " CurrentMC: "<< moveCount;
 						}
 						skipped++;
 						delete newState;
 					}
 					
 					++count;
-					if (count % 5000000 == 0)
+					if (count % 1000 == 0)
 					{
-						printf("\nSkipped: %d - total: %d", skipped, count);
+						std::cout << "\nSkipped: " << skipped << " - total: " << count;
 					}
 				}
 			}
