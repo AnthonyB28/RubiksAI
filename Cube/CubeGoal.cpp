@@ -64,8 +64,8 @@ namespace Rubiks
 
 	void Cube::IASearch(int heuristic)
 	{
-		std::ofstream file;
-		file.open("test.bin", std::ios::binary|std::ios::out|std::ios::trunc);
+		std::fstream file;
+		file.open("test.bin", std::ios::binary|std::ios::out|std::ios::trunc|std::ios::in);
 		std::queue<State*> q;
 		q.push(new State(0, Cube::GetGoalCube())); // start with goal state
 		std::map<unsigned long long, int> uniqueStates;
@@ -116,10 +116,30 @@ namespace Rubiks
 						if (setIt == uniqueStates.end())
 						{
 							q.push(newState);
-							file.seekp(hash);
-							char moveNumToWrite = (char)moveCount; // Move counts shouldnt be more than 20, we can make these chars
-							file.write(&moveNumToWrite, sizeof(char));
 							uniqueStates[hash] = moveCount;
+
+							hash -= 1;
+							bool secondNum = false;
+							if (hash % 2 != 0)
+							{
+								// Odd, must be combined
+								hash -= 1;
+								secondNum = true;
+							}
+
+							file.seekp(hash);
+							file.seekg(hash);
+							char moveByte;
+							file.read(&moveByte, sizeof(char));
+							if (secondNum)
+							{
+								moveByte |= (char)(moveCount & 0x0F);
+							}
+							else
+							{
+								moveByte = (char)(moveCount << 4);
+							}
+							file.write(&moveByte, sizeof(char));
 						}
 						else // Hash existed, we can safely skip. Unless stored hash is bigger? Should be impossible. Log it
 						{
@@ -132,7 +152,7 @@ namespace Rubiks
 						}
 
 						++count;
-						if (count % 1000 == 0)
+						if (count % 1000000 == 0)
 						{
 							std::cout << "\nSkipped: " << skipped << " - total: " << count;
 						}
@@ -142,6 +162,31 @@ namespace Rubiks
 			delete curState;
 		}
 		printf("%d - total: %d", skipped, count);
+		for (std::map<unsigned long long, int>::iterator it = uniqueStates.begin(); it != uniqueStates.end(); ++it)
+		{
+			unsigned long long hash = (*it).first - 1; // 0 & 1 - 2 & 3 - 4 & 5
+			bool secondNum = false;
+			if (hash % 2 != 0)
+			{
+				// Odd, must be combined
+				hash -= 1;
+				secondNum = true;
+			}
+
+			file.seekp(hash);
+			file.seekg(hash);
+			char moveByte;
+			file.read(&moveByte, sizeof(char));
+			if (secondNum)
+			{
+				moveByte |= (char)((*it).second & 0x0F);
+			}
+			else
+			{
+				moveByte = (char)((*it).second << 4);
+			}
+			file.write(&moveByte, sizeof(char));
+		}
 		file.close();
 	}
 
