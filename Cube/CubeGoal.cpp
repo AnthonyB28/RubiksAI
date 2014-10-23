@@ -46,9 +46,12 @@ namespace Rubiks
 			std::vector<int>::iterator it = find(cubesPos.begin(), cubesPos.end(), i);
 			int position = it - cubesPos.begin();
 			int threePow = (int)pow(3, i);
+			int orientation = CheckCornerValue(cornerCubies[i], i);
 			//value += (position * 3 + CheckCornerValue(cornerCubies[i], i)) * GetFactorial(i - 1) * 3;
-			value += (threePow * eightFact * CheckCornerValue(cornerCubies[i], i)) + (position * GetFactorial(i) * threePow); // (3^i * 8! * co_i) + (3^i * cp_i * i!)
-			//value += (position * threePow + CheckCornerValue(cornerCubies[i], i)) * (eightFact / GetFactorial(8-i)) * threePow; //(cp_i * 3^i + co_i) * (8! / 8-i!) * 3^i
+			//value += (threePow * eightFact * orientation) + (position * GetFactorial(i) * threePow); // (3^i * 8! * co_i) + (3^i * cp_i * i!)
+			
+			value += (position * 3 + CheckCornerValue(cornerCubies[i], i)) * (eightFact / GetFactorial(8-i)) * threePow; //(cp_i * 3^i + co_i) * (8! / 8-i!) * 3^i
+			//((c1 * 3 + o1) * 8!/8! * 3^0) + ((c2 * 3 + o2) * 8!/7! * 3^1) + ((c3 * 3 + o3) * 8!/6! * 3^2)
 			cubesPos.erase(it);
 		}
 		DeleteCornerCubies(cornerCubies);
@@ -58,8 +61,7 @@ namespace Rubiks
 	void Cube::IASearch(int heuristic)
 	{
 		std::vector<int> *uniqueStates = new std::vector < int > ;
-		uniqueStates->resize(88888888, -1);
-		
+		uniqueStates->resize(88179841, -1);
 		std::fstream file;
 		file.open("test.bin", std::ios::binary|std::ios::out|std::ios::trunc|std::ios::in);
 		std::queue<State*> q;
@@ -127,7 +129,7 @@ namespace Rubiks
 						}
 
 						++count;
-						if (count % 20000000 == 0)
+						if (count % 1000000 == 0)
 						{
 							std::cout.imbue(std::locale(""));
 							std::cout << "\nSkipped: " << skipped << " - total: " << count;
@@ -139,11 +141,11 @@ namespace Rubiks
 		}
 		printf("%d - total: %d", skipped, count);
 		unsigned long long missed = 0;
-		for (int i = 0; i < 88888888; ++i)
+		for (int i = 0; i < 88179841; ++i)
 		{
 			if (uniqueStates->at(i) != -1)
 			{
-				unsigned long long hash = i - 1; // 0 & 1 - 2 & 3 - 4 & 5
+				unsigned long long hash = i;
 				bool secondNum = false;
 				if (hash % 2 != 0)
 				{
@@ -151,6 +153,7 @@ namespace Rubiks
 					hash -= 1;
 					secondNum = true;
 				}
+				hash /= 2; // If we have hash 5, 5-1 = 4, then 4/2 = 2. Write at byte 2.
 
 				file.seekp(hash);
 				file.seekg(hash);
