@@ -1,7 +1,5 @@
 #include "Cube.h"
 #include <queue>
-#include <set>
-#include <map>
 #include <math.h>
 #include <iostream>
 #include <fstream>
@@ -37,7 +35,6 @@ namespace Rubiks
 		unsigned long long value = 1;
 		static long sevenFact = 5040;
 		static long eightFact = 40320;
-		static unsigned long long biggestVal = 0;
 		UInt32** cornerCubies = this->GetCornerCubies();
 		std::vector<int> cubesPos;
 		for (int x = 0; x < 8; ++x)
@@ -48,27 +45,27 @@ namespace Rubiks
 		{
 			std::vector<int>::iterator it = find(cubesPos.begin(), cubesPos.end(), i);
 			int position = it - cubesPos.begin();
-			int threePow = (int) pow(3, i);
+			int threePow = (int)pow(3, i);
 			//value += (position * 3 + CheckCornerValue(cornerCubies[i], i)) * GetFactorial(i - 1) * 3;
 			value += (threePow * eightFact * CheckCornerValue(cornerCubies[i], i)) + (position * GetFactorial(i) * threePow); // (3^i * 8! * co_i) + (3^i * cp_i * i!)
-			//value += (position * threePow + CheckCornerValue(cornerCubies[i], i)) * (eightFact / GetFactorial(i)) * threePow;
+			//value += (position * threePow + CheckCornerValue(cornerCubies[i], i)) * (eightFact / GetFactorial(8-i)) * threePow; //(cp_i * 3^i + co_i) * (8! / 8-i!) * 3^i
 			cubesPos.erase(it);
 		}
 		DeleteCornerCubies(cornerCubies);
-		if (value > biggestVal)
-		{
-			biggestVal = value;
-		}
 		return value;
 	}
 
 	void Cube::IASearch(int heuristic)
 	{
+		std::vector<int> *uniqueStates = new std::vector < int > ;
+		uniqueStates->resize(88888888, -1);
+		
 		std::fstream file;
 		file.open("test.bin", std::ios::binary|std::ios::out|std::ios::trunc|std::ios::in);
 		std::queue<State*> q;
 		q.push(new State(0, Cube::GetGoalCube())); // start with goal state
-		std::map<unsigned long long, int> uniqueStates;
+		
+		//std::map<unsigned long long, int> uniqueStates;
 		unsigned long long skipped = 0;
 		unsigned long long count = 0;
 		// BFS
@@ -109,51 +106,30 @@ namespace Rubiks
 						case 17: newState->m_Cube.TurnBackCW(); newState->m_Cube.TurnBackCW(); break;
 						}
 
+						
 						//s->m_Children.push_back(newState); Dont need this?....
 						unsigned long long hash = newState->m_Cube.GetCornerHeuristicValue();
-						std::map<unsigned long long, int>::iterator setIt = uniqueStates.find(hash);
 						// If the hash doesnt exist, we need to add it to the queue else we delete and skip it.
-						if (setIt == uniqueStates.end())
+						if (uniqueStates->at(hash) == -1)
 						{
 							q.push(newState);
-							uniqueStates[hash] = moveCount;
-
-							hash -= 1;
-							bool secondNum = false;
-							if (hash % 2 != 0)
-							{
-								// Odd, must be combined
-								hash -= 1;
-								secondNum = true;
-							}
-
-							file.seekp(hash);
-							file.seekg(hash);
-							char moveByte;
-							file.read(&moveByte, sizeof(char));
-							if (secondNum)
-							{
-								moveByte |= (char)(moveCount & 0x0F);
-							}
-							else
-							{
-								moveByte = (char)(moveCount << 4);
-							}
-							file.write(&moveByte, sizeof(char));
+							uniqueStates->at(hash) = moveCount;
 						}
 						else // Hash existed, we can safely skip. Unless stored hash is bigger? Should be impossible. Log it
 						{
-							if (uniqueStates[hash] > moveCount)
+							if (uniqueStates->at(hash) > moveCount)
 							{
-								std::cout << "\nHash: " << hash << " RecordedMC: " << uniqueStates[hash] << " CurrentMC: " << moveCount;
+								std::cout.imbue(std::locale(""));
+								std::cout << "\nHash: " << hash << " RecordedMC: " << uniqueStates->at(hash) << " CurrentMC: " << moveCount;
 							}
 							skipped++;
 							delete newState;
 						}
 
 						++count;
-						if (count % 1000000 == 0)
+						if (count % 20000000 == 0)
 						{
+							std::cout.imbue(std::locale(""));
 							std::cout << "\nSkipped: " << skipped << " - total: " << count;
 						}
 					}
@@ -162,31 +138,40 @@ namespace Rubiks
 			delete curState;
 		}
 		printf("%d - total: %d", skipped, count);
-		for (std::map<unsigned long long, int>::iterator it = uniqueStates.begin(); it != uniqueStates.end(); ++it)
+		unsigned long long missed = 0;
+		for (int i = 0; i < 88888888; ++i)
 		{
-			unsigned long long hash = (*it).first - 1; // 0 & 1 - 2 & 3 - 4 & 5
-			bool secondNum = false;
-			if (hash % 2 != 0)
+			if (uniqueStates->at(i) != -1)
 			{
-				// Odd, must be combined
-				hash -= 1;
-				secondNum = true;
-			}
+				unsigned long long hash = i - 1; // 0 & 1 - 2 & 3 - 4 & 5
+				bool secondNum = false;
+				if (hash % 2 != 0)
+				{
+					// Odd, must be combined
+					hash -= 1;
+					secondNum = true;
+				}
 
-			file.seekp(hash);
-			file.seekg(hash);
-			char moveByte;
-			file.read(&moveByte, sizeof(char));
-			if (secondNum)
-			{
-				moveByte |= (char)((*it).second & 0x0F);
+				file.seekp(hash);
+				file.seekg(hash);
+				char moveByte;
+				file.read(&moveByte, sizeof(char));
+				if (secondNum)
+				{
+					moveByte |= (char)(uniqueStates->at(i) & 0x0F);
+				}
+				else
+				{
+					moveByte = (char)(uniqueStates->at(i) << 4);
+				}
+				file.write(&moveByte, sizeof(char));
 			}
 			else
 			{
-				moveByte = (char)((*it).second << 4);
+				++missed;
 			}
-			file.write(&moveByte, sizeof(char));
 		}
+		printf("\n Skipped array %d", missed);
 		file.close();
 	}
 
