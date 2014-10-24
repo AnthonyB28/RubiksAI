@@ -20,20 +20,26 @@ namespace Rubiks
 		//std::vector<State*> m_Children; // We dont need children for this assignment technically.
 	};
 
-	int GetFactorial(int i)
+	// No greater than 8
+	inline int GetFactorial(int num)
 	{
-		int factorial = 1;
-		for (int fact = 1; fact <= i; ++fact)
+		if (num <= 1) { return 1; }
+		else if (num == 2) { return 2; }
+		else if (num == 3) { return 6; }
+		else if (num == 4) { return 24; }
+		else if (num == 5) { return 120; }
+		else if (num == 6) { return 720; }
+		else if (num == 7) { return 5040; }
+		else if (num == 8) { return 40320; }
+		else
 		{
-			factorial *= fact;
+			return 1;
 		}
-		return factorial;
 	}
 
 	unsigned long long Cube::GetCornerHeuristicValue()
 	{
 		unsigned long long value = 1;
-		static long sevenFact = 5040;
 		static long eightFact = 40320;
 		UInt32** cornerCubies = this->GetCornerCubies();
 		std::vector<int> cubesPos;
@@ -47,27 +53,21 @@ namespace Rubiks
 			int position = it - cubesPos.begin();
 			int threePow = (int)pow(3, i);
 			int orientation = CheckCornerValue(cornerCubies[i], i);
+			value += (position * 3 + CheckCornerValue(cornerCubies[i], i)) * (eightFact / GetFactorial(8 - i)) * threePow; //(cp_i * 3^i + co_i) * (8! / 8-i!) * 3^i
 			//value += (position * 3 + CheckCornerValue(cornerCubies[i], i)) * GetFactorial(i - 1) * 3;
 			//value += (threePow * eightFact * orientation) + (position * GetFactorial(i) * threePow); // (3^i * 8! * co_i) + (3^i * cp_i * i!)
-			
-			value += (position * 3 + CheckCornerValue(cornerCubies[i], i)) * (eightFact / GetFactorial(8-i)) * threePow; //(cp_i * 3^i + co_i) * (8! / 8-i!) * 3^i
-			//((c1 * 3 + o1) * 8!/8! * 3^0) + ((c2 * 3 + o2) * 8!/7! * 3^1) + ((c3 * 3 + o3) * 8!/6! * 3^2)
 			cubesPos.erase(it);
 		}
 		DeleteCornerCubies(cornerCubies);
 		return value;
 	}
 
-	void Cube::IASearch(int heuristic)
+	void Cube::GenerateTables(int heuristic)
 	{
 		std::vector<int> *uniqueStates = new std::vector < int > ;
 		uniqueStates->resize(88179841, -1);
-		std::fstream file;
-		file.open("test.bin", std::ios::binary|std::ios::out|std::ios::trunc|std::ios::in);
 		std::queue<State*> q;
 		q.push(new State(0, Cube::GetGoalCube())); // start with goal state
-		
-		//std::map<unsigned long long, int> uniqueStates;
 		unsigned long long skipped = 0;
 		unsigned long long count = 0;
 		// BFS
@@ -119,17 +119,17 @@ namespace Rubiks
 						}
 						else // Hash existed, we can safely skip. Unless stored hash is bigger? Should be impossible. Log it
 						{
-							if (uniqueStates->at(hash) > moveCount)
-							{
-								std::cout.imbue(std::locale(""));
-								std::cout << "\nHash: " << hash << " RecordedMC: " << uniqueStates->at(hash) << " CurrentMC: " << moveCount;
-							}
+// 							if (uniqueStates->at(hash) > moveCount)
+// 							{
+// 								std::cout.imbue(std::locale(""));
+// 								std::cout << "\nHash: " << hash << " RecordedMC: " << uniqueStates->at(hash) << " CurrentMC: " << moveCount;
+// 							}
 							skipped++;
 							delete newState;
 						}
 
 						++count;
-						if (count % 1000000 == 0)
+						if (count % 10000000 == 0)
 						{
 							std::cout.imbue(std::locale(""));
 							std::cout << "\nSkipped: " << skipped << " - total: " << count;
@@ -139,34 +139,36 @@ namespace Rubiks
 			}
 			delete curState;
 		}
-		printf("%d - total: %d", skipped, count);
+		printf("\n Skipped: %d - total: %d - Unique: %d", skipped, count, count-skipped);
+		std::fstream file;
+		file.open("test.bin", std::ios::binary | std::ios::out | std::ios::trunc | std::ios::in);
 		unsigned long long missed = 0;
-		for (int i = 0; i < 88179841; ++i)
+		for (int hash = 0; hash < 88179841; ++hash)
 		{
-			if (uniqueStates->at(i) != -1)
+			if (uniqueStates->at(hash) != -1)
 			{
-				unsigned long long hash = i;
+				unsigned long long byteLoc = hash;
 				bool secondNum = false;
-				if (hash % 2 != 0)
+				if (byteLoc % 2 != 0)
 				{
 					// Odd, must be combined
-					hash -= 1;
+					byteLoc -= 1;
 					secondNum = true;
 				}
-				hash /= 2; // If we have hash 5, 5-1 = 4, then 4/2 = 2. Write at byte 2.
-
-				file.seekp(hash);
-				file.seekg(hash);
+				byteLoc /= 2; // If we have byteLoc 5, 5-1 = 4, then 4/2 = 2. Write at byte 2.
+				file.seekg(byteLoc);
 				char moveByte;
 				file.read(&moveByte, sizeof(char));
-				if (secondNum)
+				if (secondNum) // We already have the first number stored. So insert second number.
 				{
-					moveByte |= (char)(uniqueStates->at(i) & 0x0F);
+					moveByte |= (char)(uniqueStates->at(hash) & 0x0F);
 				}
 				else
 				{
-					moveByte = (char)(uniqueStates->at(i) << 4);
+					moveByte = (char)(uniqueStates->at(hash) << 4); // Store our first number as normal.
 				}
+				file.clear(); // This is necessary to write after reading.
+				file.seekp(byteLoc);
 				file.write(&moveByte, sizeof(char));
 			}
 			else
@@ -174,7 +176,7 @@ namespace Rubiks
 				++missed;
 			}
 		}
-		printf("\n Skipped array %d", missed);
+		printf("\nSkipped array %d", missed);
 		file.close();
 	}
 
