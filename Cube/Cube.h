@@ -27,6 +27,7 @@ namespace Rubiks
 		struct State;
 		static Cube GetGoalCube();
 		static void GenerateTables(int heuristic);
+		static void ReadCornersFile();
 		void LogCube();
 
 	private :

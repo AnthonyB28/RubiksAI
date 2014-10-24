@@ -1,21 +1,23 @@
+#define _CRT_SECURE_NO_DEPRECATE
 #include "Cube.h"
 #include <queue>
 #include <math.h>
 #include <iostream>
 #include <fstream>
+
 namespace Rubiks
 {
 	struct Cube::State
 	{
 		// Each Cube state is only ~22 bytes!
 		State(int moveCount, Cube& cube)
-			: m_PreviousMove(0)
+			: m_PreviousMove(30)
 			, m_MoveCount(moveCount)
 			, m_Cube(cube)
 		{}
 
 		unsigned int m_PreviousMove : 5; // 0 - 32
-		unsigned int m_MoveCount : 5; // Total # of moves to this position
+		unsigned int m_MoveCount : 4; // Total # of moves to this position
 		Cube m_Cube;
 		//std::vector<State*> m_Children; // We dont need children for this assignment technically.
 	};
@@ -62,12 +64,34 @@ namespace Rubiks
 		return value;
 	}
 
+	void Cube::ReadCornersFile()
+	{
+		std::fstream file;
+		file.open("cornersretry.bin", std::ios::binary | std::ios::in);
+		unsigned long long maxHash = 88179841 / 2;
+		for (int hash = 0; hash < maxHash; ++hash)
+		{
+			unsigned long long hash1 = hash * 2;
+			unsigned long long hash2 = hash * 2 + 1;
+			file.seekg(hash);
+			char byteNum;
+			file.read(&byteNum, sizeof(unsigned char));
+			char testing = (unsigned char)byteNum;
+			 int moveCount1 = byteNum >> 4;
+			 int moveCount2 = byteNum & 0x0F;
+			printf("\nHash 1: %d = %d | Hash 2: %d = %d", hash1, moveCount1, hash2, moveCount2);
+			file.clear();
+		}
+		file.close();
+	}
+
 	void Cube::GenerateTables(int heuristic)
 	{
 		std::vector<int> *uniqueStates = new std::vector < int > ;
 		uniqueStates->resize(88179841, -1);
 		std::queue<State*> q;
 		q.push(new State(0, Cube::GetGoalCube())); // start with goal state
+		uniqueStates->at(q.front()->m_Cube.GetCornerHeuristicValue()) = 0; // Make sure we save the goal state's value
 		unsigned long long skipped = 0;
 		unsigned long long count = 0;
 		// BFS
@@ -119,11 +143,12 @@ namespace Rubiks
 						}
 						else // Hash existed, we can safely skip. Unless stored hash is bigger? Should be impossible. Log it
 						{
-// 							if (uniqueStates->at(hash) > moveCount)
-// 							{
-// 								std::cout.imbue(std::locale(""));
-// 								std::cout << "\nHash: " << hash << " RecordedMC: " << uniqueStates->at(hash) << " CurrentMC: " << moveCount;
-// 							}
+							if (uniqueStates->at(hash) > moveCount)
+							{
+								std::cout.imbue(std::locale(""));
+								std::cout << "\nHash: " << hash << " RecordedMC: " << uniqueStates->at(hash) << " CurrentMC: " << moveCount;
+								return;
+							}
 							skipped++;
 							delete newState;
 						}
@@ -141,31 +166,20 @@ namespace Rubiks
 		}
 		printf("\n Skipped: %d - total: %d - Unique: %d", skipped, count, count-skipped);
 		std::fstream file;
-		file.open("test.bin", std::ios::binary | std::ios::out | std::ios::trunc | std::ios::in);
+		file.open("cornersretry.bin", std::ios::binary | std::ios::out | std::ios::trunc);
 		unsigned long long missed = 0;
-		for (int hash = 0; hash < 88179841; ++hash)
+		for (int hash = 0; hash < 88179841; hash += 2)
 		{
+			// Always do even.
 			if (uniqueStates->at(hash) != -1)
 			{
 				unsigned long long byteLoc = hash;
-				bool secondNum = false;
-				if (byteLoc % 2 != 0)
-				{
-					// Odd, must be combined
-					byteLoc -= 1;
-					secondNum = true;
-				}
-				byteLoc /= 2; // If we have byteLoc 5, 5-1 = 4, then 4/2 = 2. Write at byte 2.
-				file.seekg(byteLoc);
+				byteLoc /= 2; // Always an even number.
 				char moveByte;
-				file.read(&moveByte, sizeof(char));
-				if (secondNum) // We already have the first number stored. So insert second number.
+				moveByte = uniqueStates->at(hash) << 4; // Store our first number as normal.
+				if (hash + 1 < 88179841) // prevent overflow
 				{
-					moveByte |= (char)(uniqueStates->at(hash) & 0x0F);
-				}
-				else
-				{
-					moveByte = (char)(uniqueStates->at(hash) << 4); // Store our first number as normal.
+					moveByte |= uniqueStates->at(hash + 1) & 0x0F;
 				}
 				file.clear(); // This is necessary to write after reading.
 				file.seekp(byteLoc);
@@ -173,6 +187,7 @@ namespace Rubiks
 			}
 			else
 			{
+				printf("\n%d HashSkipped", hash);
 				++missed;
 			}
 		}

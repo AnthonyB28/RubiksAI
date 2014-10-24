@@ -12,6 +12,7 @@ int main(int argc, const char* argv[])
 	Reader *input = new Reader();
 
 	Rubiks::Cube::GenerateTables(12);
+	//Rubiks::Cube::ReadCornersFile();
 	if (argv[1] && !test)
 	{
 #ifdef DEBUG_MODE
