@@ -214,7 +214,7 @@ namespace Rubiks
 	// correct orientation = 0
 	// clockwise = 1
 	// anti-clockwise = 2
-	int Cube::CheckCornerValue(UInt32 cornerValues[3], int corner)
+	int Cube::GetCornerOrientationValue(UInt32 cornerValues[3], int corner)
 	{
 		for (int i = 0; i < 3; ++i)
 		{
@@ -256,7 +256,7 @@ namespace Rubiks
 
 		for (int i = 0; i < 8; ++i)
 		{
-			totalValue += CheckCornerValue(cornerCubies[i], i);
+			totalValue += GetCornerOrientationValue(cornerCubies[i], i);
 		}
 
 		bool isValid = true;
@@ -1157,6 +1157,627 @@ namespace Rubiks
 		else
 		{
 			return false;
+		}
+	}
+
+	int Cube::GetEdgeOrientationValue(UInt32 edgeCubie[2], int i)
+	{
+		if (i == 0) // RW
+		{
+			if (edgeCubie[0] == WHITE && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == RED && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == RED && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+		}
+		else if (i == 1) // RG
+		{
+			if (edgeCubie[0] == GREEN && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == RED && edgeCubie[1] == YELLOW)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == RED && edgeCubie[1] == WHITE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == BLUE && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == GREEN && edgeCubie[1] == WHITE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == GREEN && edgeCubie[1] == YELLOW)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == GREEN && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == BLUE && edgeCubie[1] == YELLOW)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == YELLOW)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == BLUE && edgeCubie[1] == WHITE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == BLUE && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == WHITE)
+			{
+				return 1;
+			}
+		}
+		else if (i == 2) // RB
+		{
+			if (edgeCubie[0] == RED && edgeCubie[1] == WHITE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == GREEN && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == BLUE && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == RED && edgeCubie[1] == YELLOW)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == GREEN && edgeCubie[1] == WHITE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == GREEN && edgeCubie[1] == YELLOW)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == GREEN && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == BLUE && edgeCubie[1] == YELLOW)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == YELLOW)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == BLUE && edgeCubie[1] == WHITE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == BLUE && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == WHITE)
+			{
+				return 1;
+			}
+
+		}
+		else if (i == 3) // RY
+		{
+			if (edgeCubie[0] == WHITE && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == RED && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == RED && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+		}
+		else if (i == 4) // GW
+		{
+			if (edgeCubie[0] == WHITE && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == RED && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == RED && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+		}
+		else if (i == 5) // GY
+		{
+			if (edgeCubie[0] == WHITE && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == RED && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == RED && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+		}
+		else if (i == 6) // GO
+		{
+			if (edgeCubie[0] == WHITE && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == RED && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == RED && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+		}
+		else if (i == 7) // YB
+		{
+			if (edgeCubie[0] == RED && edgeCubie[1] == WHITE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == GREEN && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == BLUE && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == RED && edgeCubie[1] == YELLOW)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == GREEN && edgeCubie[1] == WHITE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == GREEN && edgeCubie[1] == YELLOW)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == GREEN && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == BLUE && edgeCubie[1] == YELLOW)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == YELLOW)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == BLUE && edgeCubie[1] == WHITE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == BLUE && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == WHITE)
+			{
+				return 1;
+			}
+		}
+		else if (i == 8) // YO
+		{
+			if (edgeCubie[0] == RED && edgeCubie[1] == WHITE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == GREEN && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == BLUE && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == RED && edgeCubie[1] == YELLOW)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == GREEN && edgeCubie[1] == WHITE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == GREEN && edgeCubie[1] == YELLOW)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == GREEN && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == BLUE && edgeCubie[1] == YELLOW)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == YELLOW)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == BLUE && edgeCubie[1] == WHITE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == BLUE && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == WHITE)
+			{
+				return 1;
+			}
+		}
+		else if (i == 9) // BW
+		{
+			if (edgeCubie[0] == WHITE && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == RED && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == RED && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+		}
+		else if (i == 10) // BO
+		{
+			if (edgeCubie[0] == WHITE && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == RED && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == RED && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+		}
+		else if (i == 11) // OW
+		{
+			if (edgeCubie[0] == WHITE && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == RED && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == RED && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == RED)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == GREEN)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == YELLOW && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == ORANGE && edgeCubie[1] == BLUE)
+			{
+				return 1;
+			}
+			else if (edgeCubie[0] == WHITE && edgeCubie[1] == ORANGE)
+			{
+				return 1;
+			}
+		}
+		else
+		{
+			return 0;
 		}
 	}
 
