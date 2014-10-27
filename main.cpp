@@ -8,15 +8,15 @@
 
 int main(int argc, const char* argv[])
 {
-	bool test = false;
+	bool testValidityFolder = false;
 	Reader *input = new Reader();
 
 	//Rubiks::Cube::GenerateCornerTables(12);
 	Rubiks::Cube::GenerateEdgeTables(10);
-	//Rubiks::Cube::ReadCornersFile();
-	if (argv[1] && !test)
+	Rubiks::Cube::ReadTableFile("corners1.bin", true);
+	if (argv[1] && !testValidityFolder) // Single file to test if valid Rubiks Cube
 	{
-#ifdef DEBUG_MODE
+#ifdef DEBUG_MODE // Only for putting debug information out. Else just print if its a valid cube.
 		if (input->LoadCubeFile(argv[1], false))
 		{
 			std::cout << "VALID_INPUT\n";
@@ -34,7 +34,7 @@ int main(int argc, const char* argv[])
 		system("pause");
 #endif
 	}
-	else if (test)
+	else if (testValidityFolder) // Test an entire folder for validity
 	{
 		int passed = 0;
 		for (int i = 0; i < 2000; ++i)

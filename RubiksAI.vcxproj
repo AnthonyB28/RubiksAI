@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Cube\CubeGoal.cpp" />
+    <ClCompile Include="Cube\CubeStates.cpp" />
     <ClCompile Include="Cube\CubeParity.cpp" />
     <ClCompile Include="Cube\CubeTurns.cpp" />
     <ClCompile Include="Cube\Face.cpp" />

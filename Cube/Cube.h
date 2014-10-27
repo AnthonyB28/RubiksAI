@@ -28,7 +28,7 @@ namespace Rubiks
 		static Cube GetGoalCube();
 		static void GenerateCornerTables(int heuristic);
 		static void GenerateEdgeTables(int heuristic);
-		static void ReadCornersFile();
+		static void ReadTableFile(char* fileName, bool corners);
 		void LogCube();
 
 	private :
@@ -37,7 +37,7 @@ namespace Rubiks
 		
 		UInt32 ** GetCornerCubies(); // RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
 		inline void DeleteCornerCubies(UInt32 ** cornerCubies);
-		inline unsigned long long GetCornerHeuristicValue();
+		inline unsigned long long GetCornerHash();
 		int GetCornerOrientationValue(UInt32 cornerValues[3], int corner);
 		int GetCornerPermutationValue(UInt32 cornerCubie[3]);
 		bool CheckCornerParity(UInt32 ** cornerCubies);
@@ -45,7 +45,7 @@ namespace Rubiks
 		
 		UInt32 ** GetEdgeCubies(); // RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW
 		inline void DeleteEdgeCubies(UInt32 ** edgeCubies);
-		inline unsigned long long GetEdgeHueristicValue(bool setA);
+		inline unsigned long long GetEdgeHash(bool setA);
 		int GetEdgePermutationValue(UInt32 edgeCubie[2]);
 		int GetEdgeOrientationValue(UInt32 edgeCubie[2], int i);
 		bool CheckEdgeParity(UInt32 ** edgeCubies);

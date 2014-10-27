@@ -11,7 +11,7 @@ namespace Rubiks
 	{
 		// Each Cube state is only ~22 bytes!
 		State(int moveCount, Cube& cube)
-			: m_PreviousMove(30)
+			: m_PreviousMove(30) // 30 is a placeholder so we don't skip the goal state at 0
 			, m_MoveCount(moveCount)
 			, m_Cube(cube)
 		{}
@@ -22,7 +22,25 @@ namespace Rubiks
 		//std::vector<State*> m_Children; // We dont need children for this assignment technically.
 	};
 
-	// 12 static
+	// Returns a representation of a goal state Rubiks Cube.
+	Cube Cube::GetGoalCube()
+	{
+		Cube goal;
+		for (int i = 0; i < 6; ++i)
+		{
+			for (int x = 0; x < 3; ++x)
+			{
+				for (int y = 0; y < 3; ++y)
+				{
+					goal.m_Faces[i].SetColor(x, y, i);
+				}
+			}
+		}
+
+		return goal;
+	}
+
+	// Up to 12 is precomputed
 	inline int GetFactorial(int num)
 	{
 		if (num <= 1) { return 1; }
@@ -43,86 +61,19 @@ namespace Rubiks
 		}
 	}
 
-	unsigned long long Cube::GetCornerHeuristicValue()
-	{
-		unsigned long long value = 1;
-		UInt32** cornerCubies = this->GetCornerCubies();
-		std::vector<int> cubesPos;
-		for (int x = 0; x < 8; ++x)
-		{
-			cubesPos.push_back(GetCornerPermutationValue(cornerCubies[x]));
-		}
-		for (int i = 0; i < 7; ++i)
-		{
-			std::vector<int>::iterator it = find(cubesPos.begin(), cubesPos.end(), i);
-			int position = it - cubesPos.begin();
-			int threePow = (int)pow(3, i);
-			int orientation = GetCornerOrientationValue(cornerCubies[i], i);
-			value += (position * 3 + orientation) * (GetFactorial(8) / GetFactorial(8 - i)) * threePow; //(cp_i * 3 + co_i) * (8! / 8-i!) * 3^i
-			cubesPos.erase(it);
-		}
-		static unsigned long long largestValue = 0;
-		if (value > largestValue)
-		{
-			largestValue = value;
-			printf("\n%d", largestValue);
-		}
-		DeleteCornerCubies(cornerCubies);
-		return value;
-	}
-
-	// True if from 1 to 6, else from 7 to 12
-	unsigned long long Cube::GetEdgeHueristicValue(bool setA)
-	{
-		unsigned long long value = 1;
-		UInt32** edgeCubies = this->GetEdgeCubies();
-		std::vector<int> cubesPos;
-		for (int x = 0; x < 12; ++x) //Just for one set of cubes, we need to do 6 to 12 next
-		{
-			int value = GetEdgePermutationValue(edgeCubies[x]);
-			if (setA && value >= 0 && value < 6)
-			{
-				cubesPos.push_back(value);
-			}
-			else if(!setA && value >= 6 && value < 12)
-			{
-				cubesPos.push_back(value);
-			}
-		}
-		int i = 5;
-		int maxI = 0;
-		if (!setA)
-		{
-			i = 6;
-			maxI = 12;
-		}
-		for (; i >= maxI; --i)
-		{
-			std::vector<int>::iterator it = find(cubesPos.begin(), cubesPos.end(), i);
-			int position = it - cubesPos.begin();
-			int twoPow = (int)pow(2, i);
-			int orientation = GetEdgeOrientationValue(edgeCubies[i], i);
-			value += (position * 2 + orientation) * (GetFactorial(12) / GetFactorial(12 - i)) * twoPow; //(cp_i * 2 + co_i) * (11-i! / 6!) * 2^i
-			//value += ((GetFactorial(i) * position) + (2 * orientation * GetFactorial(11))) / GetFactorial(6);
-			//value += (position * 3 + CheckCornerValue(cornerCubies[i], i)) * GetFactorial(i - 1) * 3;
-			//value += (threePow * eightFact * orientation) + (position * GetFactorial(i) * threePow); // (3^i * 8! * co_i) + (3^i * cp_i * i!)
-			cubesPos.erase(it);
-		}
-		DeleteEdgeCubies(edgeCubies);
-		static unsigned long long largestValue = 0;
-		if (value > largestValue)
-		{
-			largestValue = value;
-			printf("\n%d", largestValue);
-		}
-		return value;
-	}
-
-	void Cube::ReadCornersFile()
+	void Cube::ReadTableFile(char* fileName, bool corners)
 	{
 		std::fstream file;
-		file.open("corners1.bin", std::ios::binary | std::ios::in);
-		unsigned long long maxHash = 88179841 / 2;
+		file.open(fileName, std::ios::binary | std::ios::in);
+		unsigned long long maxHash = 0;
+		if (corners)
+		{
+			maxHash = 88179841 / 2;
+		}
+		else
+		{
+			maxHash = 42577921 / 2;
+		}
 			int zeroCount = 0;
 			int twoCount = 0;
 			int threeCount = 0;
@@ -161,13 +112,21 @@ namespace Rubiks
 		printf("\n%d - %d - %d - %d", zeroCount, twoCount, threeCount, fourCount);
 	}
 
+	// Generates a hash table for all the unique states of corners for a given hueristic, and writes it to a file. 
+	// Heuristic shouldnt be larger than 12
 	void Cube::GenerateCornerTables(int heuristic)
 	{
+		if (heuristic > 12)
+		{
+			printf("\n Too large of heuristic to generate Corner Tables.");
+			return;
+		}
+
 		std::vector<int> *uniqueStates = new std::vector < int > ;
 		uniqueStates->resize(88179841, -1);
 		std::queue<State*> q;
 		q.push(new State(0, Cube::GetGoalCube())); // start with goal state
-		uniqueStates->at(q.front()->m_Cube.GetCornerHeuristicValue()) = 0; // Make sure we save the goal state's value
+		uniqueStates->at(q.front()->m_Cube.GetCornerHash()) = 0; // Make sure we save the goal state's value
 		unsigned long long skipped = 0;
 		unsigned long long count = 0;
 		// BFS
@@ -182,7 +141,9 @@ namespace Rubiks
 				for (int currentMove = 0; currentMove < 18; ++currentMove)
 				{
 					// Only make a new state if the previous move is not repeated in anyway.
-					if (currentMove != curState->m_PreviousMove && currentMove != (curState->m_PreviousMove + 1) && currentMove != (curState->m_PreviousMove + 2))
+					if (currentMove != curState->m_PreviousMove && 
+						currentMove != (curState->m_PreviousMove + 1) && 
+						currentMove != (curState->m_PreviousMove + 2))
 					{
 						State* newState = new State(moveCount, curState->m_Cube);
 						newState->m_PreviousMove = currentMove;
@@ -210,7 +171,7 @@ namespace Rubiks
 
 
 						//s->m_Children.push_back(newState); Dont need this?....
-						unsigned long long hash = newState->m_Cube.GetCornerHeuristicValue();
+						unsigned long long hash = newState->m_Cube.GetCornerHash();
 						// If the hash doesnt exist, we need to add it to the queue else we delete and skip it.
 						if (uniqueStates->at(hash) == -1 || uniqueStates->at(hash) > moveCount)
 						{
@@ -271,13 +232,51 @@ namespace Rubiks
 		file.close();
 	}
 
+	// Returns the hash for corners for a Cube's state
+	unsigned long long Cube::GetCornerHash()
+	{
+		unsigned long long value = 1;
+		UInt32** cornerCubies = this->GetCornerCubies();
+		std::vector<int> cubesPos;
+		for (int x = 0; x < 8; ++x)
+		{
+			cubesPos.push_back(GetCornerPermutationValue(cornerCubies[x]));
+		}
+		for (int i = 0; i < 7; ++i)
+		{
+			std::vector<int>::iterator it = find(cubesPos.begin(), cubesPos.end(), i);
+			int position = it - cubesPos.begin();
+			int threePow = (int)pow(3, i);
+			int orientation = GetCornerOrientationValue(cornerCubies[i], i);
+			value += (position * 3 + orientation) * (GetFactorial(8) / GetFactorial(8 - i)) * threePow; //(cp_i * 3 + co_i) * (8! / 8-i!) * 3^i
+			cubesPos.erase(it);
+		}
+		static unsigned long long largestValue = 0;
+		if (value > largestValue)
+		{
+			largestValue = value;
+			printf("\n%d", largestValue);
+		}
+		DeleteCornerCubies(cornerCubies);
+		return value;
+	}
+
+
+	// Generates a hash table for all the unique states of one set of edges for a given hueristic, and writes it to a file.
+	// Heuristic shouldnt be larger than 11
 	void Cube::GenerateEdgeTables(int heuristic)
 	{
+		if (heuristic > 11)
+		{
+			printf("\nHeuristic too large for edge tables");
+			return;
+		}
+
 		std::vector<int> *uniqueStates = new std::vector < int > ;
 		uniqueStates->resize(42577921, -1);
 		std::queue<State*> q;
 		q.push(new State(0, Cube::GetGoalCube())); // start with goal state
-		uniqueStates->at(q.front()->m_Cube.GetEdgeHueristicValue(true)) = 0; // Make sure we save the goal state's value
+		uniqueStates->at(q.front()->m_Cube.GetEdgeHash(true)) = 0; // Make sure we save the goal state's value
 		unsigned long long skipped = 0;
 		unsigned long long count = 0;
 		// BFS
@@ -292,7 +291,9 @@ namespace Rubiks
 				for (int currentMove = 0; currentMove < 18; ++currentMove)
 				{
 					// Only make a new state if the previous move is not repeated in anyway.
-					if (currentMove != curState->m_PreviousMove && currentMove != (curState->m_PreviousMove + 1) && currentMove != (curState->m_PreviousMove + 2))
+					if (currentMove != curState->m_PreviousMove && 
+						currentMove != (curState->m_PreviousMove + 1) && 
+						currentMove != (curState->m_PreviousMove + 2))
 					{
 						State* newState = new State(moveCount, curState->m_Cube);
 						newState->m_PreviousMove = currentMove;
@@ -318,10 +319,7 @@ namespace Rubiks
 						case 17: newState->m_Cube.TurnBackCW(); newState->m_Cube.TurnBackCW(); break;
 						}
 
-						
-						//s->m_Children.push_back(newState); Dont need this?....
-						//unsigned long long hash = newState->m_Cube.GetCornerHeuristicValue();
-						unsigned long long hash = newState->m_Cube.GetEdgeHueristicValue(true);
+						unsigned long long hash = newState->m_Cube.GetEdgeHash(true);
 						// If the hash doesnt exist, we need to add it to the queue else we delete and skip it.
 						if (uniqueStates->at(hash) == -1)
 						{
@@ -357,7 +355,6 @@ namespace Rubiks
 		unsigned long long missed = 0;
 		for (int hash = 0; hash < 42577921; hash += 2)
 		{
-			// Always do even.
 			if (uniqueStates->at(hash) != -1)
 			{
 				unsigned long long byteLoc = hash;
@@ -384,20 +381,50 @@ namespace Rubiks
 		file.close();
 	}
 
-	Cube Cube::GetGoalCube()
+	// True if from 1 to 6, else from 7 to 12
+	unsigned long long Cube::GetEdgeHash(bool setA)
 	{
-		Cube goal;
-		for (int i = 0; i < 6; ++i)
+		unsigned long long value = 1;
+		UInt32** edgeCubies = this->GetEdgeCubies();
+		std::vector<int> cubesPos;
+		for (int x = 0; x < 12; ++x) //Just for one set of cubes, we need to do 6 to 12 next
 		{
-			for (int x = 0; x < 3; ++x)
-			{
-				for (int y = 0; y < 3; ++y)
-				{
-					goal.m_Faces[i].SetColor(x, y, i);
-				}
-			}
+			int value = GetEdgePermutationValue(edgeCubies[x]);
+			cubesPos.push_back(value);
 		}
+		int i = 0;
+		int maxI = 6;
+		if (!setA)
+		{
+			i = 6;
+			maxI = 12;
+		}
+		for (; i < maxI; ++i)
+		{
+			std::vector<int>::iterator it = find(cubesPos.begin(), cubesPos.end(), i);
+			int position = it - cubesPos.begin();
+			cubesPos.erase(it);
+			//int twoPow = (int)pow(2, i);
+			int orientation = GetEdgeOrientationValue(edgeCubies[i], i);
+			value += (position * 2 + orientation) * ((GetFactorial(11 - i) / GetFactorial(6)) * 2);
 
-		return goal;
+			// (p * 2^i + o * 12) * (12! / 12-i!) * 2^i
+			// With * 12 it gets to 42.1 mil~ and without its 39 mil~
+			//value += (position * twoPow + orientation * 12) * (GetFactorial(12) / GetFactorial(12 - i)) * twoPow;
+
+
+
+			//value += ((GetFactorial(i) * position) + (2 * orientation * GetFactorial(11))) / GetFactorial(6);
+			//value += (position * 3 + CheckCornerValue(cornerCubies[i], i)) * GetFactorial(i - 1) * 3;
+			//value += (threePow * eightFact * orientation) + (position * GetFactorial(i) * threePow); // (3^i * 8! * co_i) + (3^i * cp_i * i!)
+		}
+		DeleteEdgeCubies(edgeCubies);
+		static unsigned long long largestValue = 0;
+		if (value > largestValue)
+		{
+			largestValue = value;
+			printf("\n%d", largestValue);
+		}
+		return value;
 	}
 }

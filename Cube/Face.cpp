@@ -16,6 +16,7 @@ namespace Rubiks
 		
 	}
 
+	// Given row & column, set color to this face.
 	void Face::SetColor(int row, int column, int val)
 	{
 		if (row == 0 && column == 0)
