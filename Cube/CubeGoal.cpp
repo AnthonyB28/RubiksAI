@@ -22,7 +22,7 @@ namespace Rubiks
 		//std::vector<State*> m_Children; // We dont need children for this assignment technically.
 	};
 
-	// No greater than 8
+	// 12 static
 	inline int GetFactorial(int num)
 	{
 		if (num <= 1) { return 1; }
@@ -39,14 +39,13 @@ namespace Rubiks
 		else if (num == 12) { return 479001600; }
 		else
 		{
-			return 1;
+			return num* GetFactorial(num - 1);
 		}
 	}
 
 	unsigned long long Cube::GetCornerHeuristicValue()
 	{
 		unsigned long long value = 1;
-		static long eightFact = 40320;
 		UInt32** cornerCubies = this->GetCornerCubies();
 		std::vector<int> cubesPos;
 		for (int x = 0; x < 8; ++x)
@@ -59,13 +58,20 @@ namespace Rubiks
 			int position = it - cubesPos.begin();
 			int threePow = (int)pow(3, i);
 			int orientation = GetCornerOrientationValue(cornerCubies[i], i);
-			value += (position * 3 + orientation) * (eightFact / GetFactorial(8 - i)) * threePow; //(cp_i * 3 + co_i) * (8! / 8-i!) * 3^i
+			value += (position * 3 + orientation) * (GetFactorial(8) / GetFactorial(8 - i)) * threePow; //(cp_i * 3 + co_i) * (8! / 8-i!) * 3^i
 			cubesPos.erase(it);
+		}
+		static unsigned long long largestValue = 0;
+		if (value > largestValue)
+		{
+			largestValue = value;
+			printf("\n%d", largestValue);
 		}
 		DeleteCornerCubies(cornerCubies);
 		return value;
 	}
 
+	// True if from 1 to 6, else from 7 to 12
 	unsigned long long Cube::GetEdgeHueristicValue(bool setA)
 	{
 		unsigned long long value = 1;
@@ -80,23 +86,24 @@ namespace Rubiks
 			}
 			else if(!setA && value >= 6 && value < 12)
 			{
-
+				cubesPos.push_back(value);
 			}
 		}
-		int i = 0;
-		int maxI = 6;
+		int i = 5;
+		int maxI = 0;
 		if (!setA)
 		{
 			i = 6;
 			maxI = 12;
 		}
-		for (; i < maxI; ++i)
+		for (; i >= maxI; --i)
 		{
 			std::vector<int>::iterator it = find(cubesPos.begin(), cubesPos.end(), i);
 			int position = it - cubesPos.begin();
-			int twoPow = (int)pow(2, i+1);
+			int twoPow = (int)pow(2, i);
 			int orientation = GetEdgeOrientationValue(edgeCubies[i], i);
-			value += (position * 2 + orientation) * (GetFactorial(11-i) / GetFactorial(6)) * twoPow; //(cp_i * 2 + co_i) * (11-i! / 6!) * 2^i
+			value += (position * 2 + orientation) * (GetFactorial(12) / GetFactorial(12 - i)) * twoPow; //(cp_i * 2 + co_i) * (11-i! / 6!) * 2^i
+			//value += ((GetFactorial(i) * position) + (2 * orientation * GetFactorial(11))) / GetFactorial(6);
 			//value += (position * 3 + CheckCornerValue(cornerCubies[i], i)) * GetFactorial(i - 1) * 3;
 			//value += (threePow * eightFact * orientation) + (position * GetFactorial(i) * threePow); // (3^i * 8! * co_i) + (3^i * cp_i * i!)
 			cubesPos.erase(it);
@@ -114,8 +121,13 @@ namespace Rubiks
 	void Cube::ReadCornersFile()
 	{
 		std::fstream file;
-		file.open("cornersretry.bin", std::ios::binary | std::ios::in);
+		file.open("corners1.bin", std::ios::binary | std::ios::in);
 		unsigned long long maxHash = 88179841 / 2;
+			int zeroCount = 0;
+			int twoCount = 0;
+			int threeCount = 0;
+			int fourCount = 0;
+			int fiveCount = 0;
 		for (int hash = 0; hash < maxHash; ++hash)
 		{
 			unsigned long long hash1 = hash * 2;
@@ -128,8 +140,25 @@ namespace Rubiks
 			 int moveCount2 = byteNum & 0x0F;
 			printf("\nHash 1: %d = %d | Hash 2: %d = %d", hash1, moveCount1, hash2, moveCount2);
 			file.clear();
+			if (moveCount1 == 0 || moveCount2 == 0)
+			{
+				++zeroCount;
+			}
+			if (moveCount1 == 2 || moveCount2 == 2)
+			{
+				++twoCount;
+			}
+			if (moveCount1 == 3 || moveCount2 == 3)
+			{
+				++threeCount;
+			}
+			if (moveCount1 == 4 || moveCount2 == 4)
+			{
+				++fourCount;
+			}
 		}
 		file.close();
+		printf("\n%d - %d - %d - %d", zeroCount, twoCount, threeCount, fourCount);
 	}
 
 	void Cube::GenerateCornerTables(int heuristic)

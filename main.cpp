@@ -11,7 +11,8 @@ int main(int argc, const char* argv[])
 	bool test = false;
 	Reader *input = new Reader();
 
-	Rubiks::Cube::GenerateCornerTables(12);
+	//Rubiks::Cube::GenerateCornerTables(12);
+	Rubiks::Cube::GenerateEdgeTables(10);
 	//Rubiks::Cube::ReadCornersFile();
 	if (argv[1] && !test)
 	{
