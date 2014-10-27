@@ -389,7 +389,7 @@ namespace Rubiks
 		std::vector<int> cubesPos;
 		for (int x = 0; x < 12; ++x) //Just for one set of cubes, we need to do 6 to 12 next
 		{
-			int value = GetEdgePermutationValue(edgeCubies[x]);
+			int value = GetEdgePermutationValue(edgeCubies[x]); // What cubie is in position x
 			cubesPos.push_back(value);
 		}
 		int i = 0;
@@ -406,7 +406,7 @@ namespace Rubiks
 			cubesPos.erase(it);
 			int twoPow = (int)pow(2, i);
 			int orientation = GetEdgeOrientationValue(edgeCubies[i], i);
-			value += (position * 2 * orientation) * ((GetFactorial(11-i) / GetFactorial(6)) * 2);
+			value += (position * 2 + orientation) * ((GetFactorial(12-i) / GetFactorial(6)) * 2);
 
 			// (p * 2^i + o * 12) * (12! / 12-i!) * 2^i
 			// With * 12 it gets to 42.1 mil~ and without its 39 mil~
