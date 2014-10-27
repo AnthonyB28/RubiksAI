@@ -404,9 +404,9 @@ namespace Rubiks
 			std::vector<int>::iterator it = find(cubesPos.begin(), cubesPos.end(), i);
 			int position = it - cubesPos.begin();
 			cubesPos.erase(it);
-			//int twoPow = (int)pow(2, i);
+			int twoPow = (int)pow(2, i);
 			int orientation = GetEdgeOrientationValue(edgeCubies[i], i);
-			value += (position * 2 + orientation) * ((GetFactorial(11 - i) / GetFactorial(6)) * 2);
+			value += (position * 2 * orientation) * ((GetFactorial(11-i) / GetFactorial(6)) * 2);
 
 			// (p * 2^i + o * 12) * (12! / 12-i!) * 2^i
 			// With * 12 it gets to 42.1 mil~ and without its 39 mil~
