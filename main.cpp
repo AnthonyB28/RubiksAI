@@ -11,15 +11,9 @@ int main(int argc, const char* argv[])
 	bool testValidityFolder = false;
 	Reader *input = new Reader();
 
-	std::vector<char> cornersMap(88179841 / 2);
-	std::vector<char> edgesAMap(42577921 / 2);
-	std::vector<char> edgesBMap(42577921 / 2);
-	Rubiks::Cube::TableFileLoad("corners.bin", cornersMap);
-	Rubiks::Cube::TableFileLoad("edges.bin", edgesAMap);
-	Rubiks::Cube::TableFileLoad("edges2.bin", edgesBMap);
-	Rubiks::Cube goal = Rubiks::Cube::GetGoalCube();
-	goal.TurnFrontCW();
-	goal.Solve(cornersMap, edgesAMap, edgesBMap);
+	//Rubiks::Cube::GenerateCornerTables(12);
+	Rubiks::Cube::GenerateEdgeTables(10, false);
+	//Rubiks::Cube::ReadTableFile("corners1.bin", true);
 	if (argv[1] && !testValidityFolder) // Single file to test if valid Rubiks Cube
 	{
 #ifdef DEBUG_MODE // Only for putting debug information out. Else just print if its a valid cube.

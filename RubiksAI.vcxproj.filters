@@ -17,9 +17,6 @@
     <ClCompile Include="Cube\CubeStates.cpp">
       <Filter>Rubiks</Filter>
     </ClCompile>
-    <ClCompile Include="Cube\CubeSolve.cpp">
-      <Filter>Rubiks</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Reader">
