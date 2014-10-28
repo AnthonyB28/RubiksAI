@@ -406,11 +406,9 @@ namespace Rubiks
 			int absPosition = absPosIt - absCubesPos.begin(); // Where is this cubie in our cornerCubies collection!
 			cubesPos.erase(posIt);
 			int orientation = GetEdgeOrientationValue(edgeCubies[absPosition], absPosition); // We want the orientation of cubie i at its position
-			int twoPow = (int)pow(2, count);
+			int twoPow = (int)pow(2, 5-count);
 			// (p * 2 + o) * (12-count!/ 6!) * 2
-			value += (position * 2 + orientation) * ((GetFactorial(11-count) / GetFactorial(6)) * 2);
-			
-			
+			value += (position * 2 + orientation) * ((GetFactorial(11 - count) / GetFactorial(6)) * twoPow);
 
 			// (p * 2^i + o * 12) * (12! / 12-i!) * 2^i
 			// With * 12 it gets to 42.1 mil~ and without its 39 mil~
