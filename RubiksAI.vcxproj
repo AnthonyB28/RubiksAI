@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Cube\CubeSolve.cpp" />
     <ClCompile Include="Cube\CubeStates.cpp" />
     <ClCompile Include="Cube\CubeParity.cpp" />
     <ClCompile Include="Cube\CubeTurns.cpp" />
