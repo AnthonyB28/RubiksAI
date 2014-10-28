@@ -74,11 +74,7 @@ namespace Rubiks
 		{
 			maxHash = 42577921 / 2;
 		}
-			int zeroCount = 0;
-			int twoCount = 0;
-			int threeCount = 0;
-			int fourCount = 0;
-			int fiveCount = 0;
+		std::vector<unsigned int> numCounts{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		for (int hash = 0; hash < maxHash; ++hash)
 		{
 			unsigned long long hash1 = hash * 2;
@@ -89,27 +85,22 @@ namespace Rubiks
 			unsigned char testing = (unsigned char) byteNum;
 			 int moveCount1 = testing >> 4;
 			 int moveCount2 = byteNum & 0x0F;
-			printf("\nHash 1: %d = %d | Hash 2: %d = %d", hash1, moveCount1, hash2, moveCount2);
+			//printf("\nHash 1: %d = %d | Hash 2: %d = %d", hash1, moveCount1, hash2, moveCount2);
 			file.clear();
-			if (moveCount1 == 0 || moveCount2 == 0)
+			if (moveCount1 >= 0)
 			{
-				++zeroCount;
+				++numCounts.at(moveCount1);
 			}
-			if (moveCount1 == 2 || moveCount2 == 2)
+			if (moveCount2 >= 0)
 			{
-				++twoCount;
-			}
-			if (moveCount1 == 3 || moveCount2 == 3)
-			{
-				++threeCount;
-			}
-			if (moveCount1 == 4 || moveCount2 == 4)
-			{
-				++fourCount;
+				++numCounts.at(moveCount2);
 			}
 		}
 		file.close();
-		printf("\n%d - %d - %d - %d", zeroCount, twoCount, threeCount, fourCount);
+		for (int i = 0; i < 12; ++i)
+		{
+			std::cout << numCounts.at(i) << " - ";
+		}
 	}
 
 	// Generates a hash table for all the unique states of corners for a given hueristic, and writes it to a file. 
