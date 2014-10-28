@@ -237,19 +237,24 @@ namespace Rubiks
 	{
 		unsigned long long value = 1;
 		UInt32** cornerCubies = this->GetCornerCubies();
-		std::vector<int> cubesPos;
+		std::vector<int> cubesPos; // From corners 0 to 7, stores the value of cubies
+		std::vector<int> absCubesPos; // ABSOLUTE corner positions, immutable don't change
 		for (int x = 0; x < 8; ++x)
 		{
-			cubesPos.push_back(GetCornerPermutationValue(cornerCubies[x]));
+			int cornerValue = GetCornerPermutationValue(cornerCubies[x]);
+			cubesPos.push_back(cornerValue);
+			absCubesPos.push_back(cornerValue);
 		}
-		for (int i = 0; i < 7; ++i)
+		for (int i = 0; i < 7; ++i) // For each corner cubie VALUE (eg RYG = 0)
 		{
-			std::vector<int>::iterator it = find(cubesPos.begin(), cubesPos.end(), i);
-			int position = it - cubesPos.begin();
+			std::vector<int>::iterator posIt = find(cubesPos.begin(), cubesPos.end(), i); // Find where the corner cubie is dynamically
+			std::vector<int>::iterator absPosIt = find(absCubesPos.begin(), absCubesPos.end(), i); // Find where the corner cubie is absolutely
+			int positionVal = posIt - cubesPos.begin(); // Where is this cubie in the modified collection!
+			int absPosition = absPosIt - absCubesPos.begin(); // Where is this cubie in our cornerCubies collection!
 			int threePow = (int)pow(3, i);
-			int orientation = GetCornerOrientationValue(cornerCubies[i], i);
-			value += (position * 3 + orientation) * (GetFactorial(8) / GetFactorial(8 - i)) * threePow; //(cp_i * 3 + co_i) * (8! / 8-i!) * 3^i
-			cubesPos.erase(it);
+			int orientation = GetCornerOrientationValue(cornerCubies[absPosition], absPosition); // Check the cubie orientation in its actual position.
+			value += (positionVal * 3 + orientation) * (GetFactorial(8) / GetFactorial(8 - i)) * threePow; //(cp_i * 3 + co_i) * (8! / 8-i!) * 3^i
+			cubesPos.erase(posIt);
 		}
 		static unsigned long long largestValue = 0;
 		if (value > largestValue)
@@ -339,7 +344,7 @@ namespace Rubiks
 						}
 
 						++count;
-						if (count % 10000000 == 0)
+						if (count % 10000 == 0)
 						{
 							std::cout.imbue(std::locale(""));
 							std::cout << "\nSkipped: " << skipped << " - total: " << count;
@@ -387,32 +392,41 @@ namespace Rubiks
 		unsigned long long value = 1;
 		UInt32** edgeCubies = this->GetEdgeCubies();
 		std::vector<int> cubesPos;
+		std::vector<int> absCubesPos;
 		for (int x = 0; x < 12; ++x) //Just for one set of cubes, we need to do 6 to 12 next
 		{
 			int value = GetEdgePermutationValue(edgeCubies[x]); // What cubie is in position x
 			cubesPos.push_back(value);
+			absCubesPos.push_back(value);
 		}
 		int i = 0;
 		int maxI = 6;
+		int count = 0; // Independent from i because of dual edge sets.
 		if (!setA)
 		{
 			i = 6;
 			maxI = 12;
 		}
-		for (; i < maxI; ++i)
+		for (; i < maxI; ++i) // i is the Cubie edge value (e.g i = RW cubie)
 		{
-			std::vector<int>::iterator it = find(cubesPos.begin(), cubesPos.end(), i);
-			int position = it - cubesPos.begin();
-			cubesPos.erase(it);
-			int twoPow = (int)pow(2, i);
-			int orientation = GetEdgeOrientationValue(edgeCubies[i], i);
-			value += (position * 2 + orientation) * ((GetFactorial(12-i) / GetFactorial(6)) * 2);
+			std::vector<int>::iterator posIt = find(cubesPos.begin(), cubesPos.end(), i); // Find where the corner cubie is dynamically
+			std::vector<int>::iterator absPosIt = find(absCubesPos.begin(), absCubesPos.end(), i); // Find where the corner cubie is absolutely
+			int position = posIt - cubesPos.begin(); // Where is this cubie in the modified collection!
+			int absPosition = absPosIt - absCubesPos.begin(); // Where is this cubie in our cornerCubies collection!
+			cubesPos.erase(posIt);
+			int orientation = GetEdgeOrientationValue(edgeCubies[absPosition], absPosition); // We want the orientation of cubie i at its position
+			int twoPow = (int)pow(2, count);
+			// (p * 2 + o) * (12-count!/ 6!) * 2
+			value += (position * 2 + orientation) * ((GetFactorial(11-count) / GetFactorial(6)) * 2);
+			
+			
 
 			// (p * 2^i + o * 12) * (12! / 12-i!) * 2^i
 			// With * 12 it gets to 42.1 mil~ and without its 39 mil~
-			//value += (position * twoPow + orientation * 12) * (GetFactorial(12) / GetFactorial(12 - i)) * twoPow;
-
-
+			//value += (position * 2 * orientation) * (GetFactorial(11) / GetFactorial(11 - count)) * 2;
+			
+			//value += (position * 2 + orientation) * (GetFactorial(12) / GetFactorial(6)) + ((GetFactorial(11 - count) / GetFactorial(6)) * count);
+			++count;
 
 			//value += ((GetFactorial(i) * position) + (2 * orientation * GetFactorial(11))) / GetFactorial(6);
 			//value += (position * 3 + CheckCornerValue(cornerCubies[i], i)) * GetFactorial(i - 1) * 3;

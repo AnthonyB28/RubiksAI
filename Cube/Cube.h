@@ -30,7 +30,7 @@ namespace Rubiks
 		static void GenerateEdgeTables(int heuristic);
 		static void ReadTableFile(char* fileName, bool corners);
 		void LogCube();
-
+		inline unsigned long long GetEdgeHash(bool setA);
 	private :
 		
 		bool CheckPermutations(UInt32 ** cornerCubies, UInt32 ** edgeCubies);
@@ -45,7 +45,7 @@ namespace Rubiks
 		
 		UInt32 ** GetEdgeCubies(); // RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW
 		inline void DeleteEdgeCubies(UInt32 ** edgeCubies);
-		inline unsigned long long GetEdgeHash(bool setA);
+
 		int GetEdgePermutationValue(UInt32 edgeCubie[2]);
 		int GetEdgeOrientationValue(UInt32 edgeCubie[2], int i);
 		bool CheckEdgeParity(UInt32 ** edgeCubies);

@@ -1775,10 +1775,7 @@ namespace Rubiks
 				return 1;
 			}
 		}
-		else
-		{
-			return 0;
-		}
+		return 0;
 	}
 
 	// Edges are either one of two color combinations
