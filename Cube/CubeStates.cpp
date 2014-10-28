@@ -40,28 +40,7 @@ namespace Rubiks
 		return goal;
 	}
 
-	// Up to 12 is precomputed
-	inline int GetFactorial(int num)
-	{
-		if (num <= 1) { return 1; }
-		else if (num == 2) { return 2; }
-		else if (num == 3) { return 6; }
-		else if (num == 4) { return 24; }
-		else if (num == 5) { return 120; }
-		else if (num == 6) { return 720; }
-		else if (num == 7) { return 5040; }
-		else if (num == 8) { return 40320; }
-		else if (num == 9) { return 362880; }
-		else if (num == 10) { return 3628800; }
-		else if (num == 11) { return 39916800; }
-		else if (num == 12) { return 479001600; }
-		else
-		{
-			return num* GetFactorial(num - 1);
-		}
-	}
-
-	void Cube::ReadTableFile(char* fileName, bool corners)
+	void Cube::TestTableFileRead(char* fileName, bool corners)
 	{
 		std::fstream file;
 		file.open(fileName, std::ios::binary | std::ios::in);
@@ -81,10 +60,10 @@ namespace Rubiks
 			unsigned long long hash2 = hash * 2 + 1;
 			file.seekg(hash);
 			char byteNum;
-			file.read(&byteNum, sizeof(unsigned char));
-			unsigned char testing = (unsigned char) byteNum;
-			 int moveCount1 = testing >> 4;
-			 int moveCount2 = byteNum & 0x0F;
+			file.read(&byteNum, sizeof(char));
+			unsigned char testing = (unsigned char)byteNum;
+			int moveCount1 = testing >> 4;
+			int moveCount2 = byteNum & 0x0F;
 			//printf("\nHash 1: %d = %d | Hash 2: %d = %d", hash1, moveCount1, hash2, moveCount2);
 			file.clear();
 			if (moveCount1 >= 0)
@@ -100,6 +79,37 @@ namespace Rubiks
 		for (int i = 0; i < 12; ++i)
 		{
 			std::cout << numCounts.at(i) << " - ";
+		}
+	}
+
+	void Cube::TableFileLoad(char* fileName, std::vector<char>& map)
+{
+		std::fstream file;
+		file.open(fileName, std::ios::binary | std::ios::in);
+		file.seekg(0);
+		unsigned long long size;
+		file.read((char*)&map[0], map.size());
+		file.close();
+	}
+
+	// Up to 12 is precomputed
+	inline int GetFactorial(int num)
+	{
+		if (num <= 1) { return 1; }
+		else if (num == 2) { return 2; }
+		else if (num == 3) { return 6; }
+		else if (num == 4) { return 24; }
+		else if (num == 5) { return 120; }
+		else if (num == 6) { return 720; }
+		else if (num == 7) { return 5040; }
+		else if (num == 8) { return 40320; }
+		else if (num == 9) { return 362880; }
+		else if (num == 10) { return 3628800; }
+		else if (num == 11) { return 39916800; }
+		else if (num == 12) { return 479001600; }
+		else
+		{
+			return num* GetFactorial(num - 1);
 		}
 	}
 

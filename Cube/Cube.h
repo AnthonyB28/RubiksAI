@@ -28,11 +28,11 @@ namespace Rubiks
 		static Cube GetGoalCube();
 		static void GenerateCornerTables(int heuristic);
 		static void GenerateEdgeTables(int heuristic, bool setA);
-		static void ReadTableFile(char* fileName, bool corners);
+		static void TestTableFileRead(char* fileName, bool corners);
+		static void TableFileLoad(char* fileName, std::vector<char>& map);
 		void LogCube();
-		inline unsigned long long GetEdgeHash(bool setA);
+
 	private :
-		
 		bool CheckPermutations(UInt32 ** cornerCubies, UInt32 ** edgeCubies);
 		
 		UInt32 ** GetCornerCubies(); // RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
@@ -45,7 +45,7 @@ namespace Rubiks
 		
 		UInt32 ** GetEdgeCubies(); // RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW
 		inline void DeleteEdgeCubies(UInt32 ** edgeCubies);
-
+		inline unsigned long long GetEdgeHash(bool setA);
 		int GetEdgePermutationValue(UInt32 edgeCubie[2]);
 		int GetEdgeOrientationValue(UInt32 edgeCubie[2], int i);
 		bool CheckEdgeParity(UInt32 ** edgeCubies);
