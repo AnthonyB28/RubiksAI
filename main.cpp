@@ -12,7 +12,7 @@ int main(int argc, const char* argv[])
 	Reader *input = new Reader();
 
 	//Rubiks::Cube::GenerateCornerTables(12);
-	Rubiks::Cube::GenerateEdgeTables(10);
+	Rubiks::Cube::GenerateEdgeTables(10, false);
 	//Rubiks::Cube::ReadTableFile("corners1.bin", true);
 	if (argv[1] && !testValidityFolder) // Single file to test if valid Rubiks Cube
 	{

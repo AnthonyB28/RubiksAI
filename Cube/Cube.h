@@ -27,7 +27,7 @@ namespace Rubiks
 		struct State;
 		static Cube GetGoalCube();
 		static void GenerateCornerTables(int heuristic);
-		static void GenerateEdgeTables(int heuristic);
+		static void GenerateEdgeTables(int heuristic, bool setA);
 		static void ReadTableFile(char* fileName, bool corners);
 		void LogCube();
 		inline unsigned long long GetEdgeHash(bool setA);

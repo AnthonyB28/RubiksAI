@@ -260,7 +260,7 @@ namespace Rubiks
 
 	// Generates a hash table for all the unique states of one set of edges for a given hueristic, and writes it to a file.
 	// Heuristic shouldnt be larger than 11
-	void Cube::GenerateEdgeTables(int heuristic)
+	void Cube::GenerateEdgeTables(int heuristic, bool setA)
 	{
 		if (heuristic > 11)
 		{
@@ -272,7 +272,7 @@ namespace Rubiks
 		uniqueStates->resize(42577921, -1);
 		std::queue<State*> q;
 		q.push(new State(0, Cube::GetGoalCube())); // start with goal state
-		uniqueStates->at(q.front()->m_Cube.GetEdgeHash(true)) = 0; // Make sure we save the goal state's value
+		uniqueStates->at(q.front()->m_Cube.GetEdgeHash(setA)) = 0; // Make sure we save the goal state's value
 		unsigned long long skipped = 0;
 		unsigned long long count = 0;
 		// BFS
@@ -315,7 +315,7 @@ namespace Rubiks
 						case 17: newState->m_Cube.TurnBackCW(); newState->m_Cube.TurnBackCW(); break;
 						}
 
-						unsigned long long hash = newState->m_Cube.GetEdgeHash(true);
+						unsigned long long hash = newState->m_Cube.GetEdgeHash(setA);
 						// If the hash doesnt exist, we need to add it to the queue else we delete and skip it.
 						if (uniqueStates->at(hash) == -1)
 						{
@@ -335,7 +335,7 @@ namespace Rubiks
 						}
 
 						++count;
-						if (count % 10000 == 0)
+						if (count % 10000000 == 0)
 						{
 							std::cout.imbue(std::locale(""));
 							std::cout << "\nSkipped: " << skipped << " - total: " << count;
@@ -347,7 +347,7 @@ namespace Rubiks
 		}
 		printf("\n Skipped: %d - total: %d - Unique: %d", skipped, count, count-skipped);
 		std::fstream file;
-		file.open("Edges.bin", std::ios::binary | std::ios::out | std::ios::trunc);
+		file.open("Edges2.bin", std::ios::binary | std::ios::out | std::ios::trunc);
 		unsigned long long missed = 0;
 		for (int hash = 0; hash < 42577921; hash += 2)
 		{
@@ -384,6 +384,7 @@ namespace Rubiks
 		UInt32** edgeCubies = this->GetEdgeCubies();
 		std::vector<int> cubesPos;
 		std::vector<int> absCubesPos;
+
 		for (int x = 0; x < 12; ++x) //Just for one set of cubes, we need to do 6 to 12 next
 		{
 			int value = GetEdgePermutationValue(edgeCubies[x]); // What cubie is in position x
