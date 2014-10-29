@@ -7,13 +7,8 @@
 namespace Rubiks
 {
 
-	void IDA(Cube s, int g)
-	{
-		int h = 0;
-	}
-
 	int Cube::GetMaxMoveSolve(std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
-{
+	{
 		unsigned long long cornerHash = GetCornerHash();
 		unsigned long long edgeHashA = GetEdgeHash(true);
 		unsigned long long edgeHashB = GetEdgeHash(false);

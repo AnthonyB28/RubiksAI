@@ -11,9 +11,9 @@ int main(int argc, const char* argv[])
 	bool testValidityFolder = false;
 	Reader *input = new Reader();
 
-	std::vector<char> cornersMap(88179841 / 2);
-	std::vector<char> edgesAMap(42577921 / 2);
-	std::vector<char> edgesBMap(42577921 / 2);
+	std::vector<char> cornersMap(UNIQUE_CORNERS / 2);
+	std::vector<char> edgesAMap(UNIQUE_EDGES / 2);
+	std::vector<char> edgesBMap(UNIQUE_EDGES / 2);
 	Rubiks::Cube::TableFileLoad("corners.bin", cornersMap);
 	Rubiks::Cube::TableFileLoad("edges.bin", edgesAMap);
 	Rubiks::Cube::TableFileLoad("edges2.bin", edgesBMap);

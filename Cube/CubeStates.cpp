@@ -1,7 +1,6 @@
 #define _CRT_SECURE_NO_DEPRECATE
 #include "Cube.h"
 #include <queue>
-#include <math.h>
 #include <iostream>
 #include <fstream>
 
@@ -47,11 +46,11 @@ namespace Rubiks
 		unsigned long long maxHash = 0;
 		if (corners)
 		{
-			maxHash = 88179841 / 2;
+			maxHash = UNIQUE_CORNERS / 2;
 		}
 		else
 		{
-			maxHash = 42577921 / 2;
+			maxHash = UNIQUE_EDGES / 2;
 		}
 		std::vector<unsigned int> numCounts{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		for (int hash = 0; hash < maxHash; ++hash)
@@ -91,8 +90,20 @@ namespace Rubiks
 		file.close();
 	}
 
+	int GetThreePow(int num)
+	{
+		if (num == 0) { return 1; }
+		else if (num == 1) { return 3; }
+		else if (num == 2) { return 9; }
+		else if (num == 3) { return 27; }
+		else if (num == 4) { return 81; }
+		else if (num == 5) { return 243; }
+		else if (num == 6) { return 729; }
+		else return num  * GetThreePow(num);
+	}
+
 	// Up to 12 is precomputed
-	inline int GetFactorial(int num)
+	int GetFactorial(int num)
 	{
 		if (num <= 1) { return 1; }
 		else if (num == 2) { return 2; }
@@ -123,7 +134,7 @@ namespace Rubiks
 		}
 
 		std::vector<int> *uniqueStates = new std::vector < int > ;
-		uniqueStates->resize(88179841, -1);
+		uniqueStates->resize(UNIQUE_CORNERS, -1);
 		std::queue<State*> q;
 		q.push(new State(0, Cube::GetGoalCube())); // start with goal state
 		uniqueStates->at(q.front()->m_Cube.GetCornerHash()) = 0; // Make sure we save the goal state's value
@@ -169,8 +180,6 @@ namespace Rubiks
 						case 17: newState->m_Cube.TurnBackCW(); newState->m_Cube.TurnBackCW(); break;
 						}
 
-
-						//s->m_Children.push_back(newState); Dont need this?....
 						unsigned long long hash = newState->m_Cube.GetCornerHash();
 						// If the hash doesnt exist, we need to add it to the queue else we delete and skip it.
 						if (uniqueStates->at(hash) == -1 || uniqueStates->at(hash) > moveCount)
@@ -205,7 +214,7 @@ namespace Rubiks
 		std::fstream file;
 		file.open("corners1.bin", std::ios::binary | std::ios::out | std::ios::trunc);
 		unsigned long long missed = 0;
-		for (int hash = 0; hash < 88179841; hash += 2)
+		for (int hash = 0; hash < UNIQUE_CORNERS; hash += 2)
 		{
 			// Always do even.
 			if (uniqueStates->at(hash) != -1)
@@ -214,7 +223,7 @@ namespace Rubiks
 				byteLoc /= 2; // Always an even number.
 				char moveByte;
 				moveByte = uniqueStates->at(hash) << 4; // Store our first number as normal.
-				if (hash + 1 < 88179841) // prevent overflow
+				if (hash + 1 < UNIQUE_CORNERS) // prevent overflow
 				{
 					moveByte |= uniqueStates->at(hash + 1) & 0x0F;
 				}
@@ -236,22 +245,26 @@ namespace Rubiks
 	unsigned long long Cube::GetCornerHash()
 	{
 		unsigned long long value = 1;
-		CubieCollection cornerCubies = this->GetCornerCubies();
-		std::vector<int> cubesPos; // From corners 0 to 7, stores the value of cubies
-		std::vector<int> absCubesPos; // ABSOLUTE corner positions, immutable don't change
-		for (int x = 0; x < 8; ++x)
-		{
-			int cornerValue = GetCornerPermutationValue(cornerCubies[x]);
-			cubesPos.push_back(cornerValue);
-			absCubesPos.push_back(cornerValue);
-		}
+		UInt32** cornerCubies = this->GetCornerCubies();
+		// inlining this shaves off several seconds of speed!
+		int cornerValue0 = GetCornerPermutationValue(cornerCubies[0]);
+		int cornerValue1 = GetCornerPermutationValue(cornerCubies[1]);
+		int cornerValue2 = GetCornerPermutationValue(cornerCubies[2]);
+		int cornerValue3 = GetCornerPermutationValue(cornerCubies[3]);
+		int cornerValue4 = GetCornerPermutationValue(cornerCubies[4]);
+		int cornerValue5 = GetCornerPermutationValue(cornerCubies[5]);
+		int cornerValue6 = GetCornerPermutationValue(cornerCubies[6]);
+		int cornerValue7 = GetCornerPermutationValue(cornerCubies[7]);
+		// From corners 0 to 7, stores the value of cubies
+		std::vector<int> cubesPos{ cornerValue0, cornerValue1, cornerValue2, cornerValue3, cornerValue4, cornerValue5, cornerValue6, cornerValue7 };
+		std::vector<int> absCubesPos = cubesPos; // ABSOLUTE corner positions, immutable don't change
 		for (int i = 0; i < 7; ++i) // For each corner cubie VALUE (eg RYG = 0)
 		{
 			std::vector<int>::iterator posIt = find(cubesPos.begin(), cubesPos.end(), i); // Find where the corner cubie is dynamically
 			std::vector<int>::iterator absPosIt = find(absCubesPos.begin(), absCubesPos.end(), i); // Find where the corner cubie is absolutely
 			int positionVal = posIt - cubesPos.begin(); // Where is this cubie in the modified collection!
 			int absPosition = absPosIt - absCubesPos.begin(); // Where is this cubie in our cornerCubies collection!
-			int threePow = (int)pow(3, i);
+			int threePow = GetThreePow(i);
 			int orientation = GetCornerOrientationValue(cornerCubies[absPosition], absPosition); // Check the cubie orientation in its actual position.
 			value += (positionVal * 3 + orientation) * (GetFactorial(8) / GetFactorial(8 - i)) * threePow; //(cp_i * 3 + co_i) * (8! / 8-i!) * 3^i
 			cubesPos.erase(posIt);
@@ -262,6 +275,7 @@ namespace Rubiks
 // 			largestValue = value;
 // 			printf("\n%d", largestValue);
 // 		}
+		DeleteCornerCubies(cornerCubies);
 		return value;
 	}
 
@@ -277,7 +291,7 @@ namespace Rubiks
 		}
 
 		std::vector<int> *uniqueStates = new std::vector < int > ;
-		uniqueStates->resize(42577921, -1);
+		uniqueStates->resize(UNIQUE_EDGES, -1);
 		std::queue<State*> q;
 		q.push(new State(0, Cube::GetGoalCube())); // start with goal state
 		uniqueStates->at(q.front()->m_Cube.GetEdgeHash(setA)) = 0; // Make sure we save the goal state's value
@@ -357,7 +371,7 @@ namespace Rubiks
 		std::fstream file;
 		file.open("Edges2.bin", std::ios::binary | std::ios::out | std::ios::trunc);
 		unsigned long long missed = 0;
-		for (int hash = 0; hash < 42577921; hash += 2)
+		for (int hash = 0; hash < UNIQUE_EDGES; hash += 2)
 		{
 			if (uniqueStates->at(hash) != -1)
 			{
@@ -366,7 +380,7 @@ namespace Rubiks
 				char moveByte;
 				unsigned int moveCount1 = uniqueStates->at(hash);
 				moveByte = moveCount1 << 4; // Store our first number as normal.
-				if (hash + 1 < 42577921) // prevent overflow
+				if (hash + 1 < UNIQUE_EDGES) // prevent overflow
 				{
 					unsigned int moveCount2 = uniqueStates->at(hash + 1);
 					moveByte |= moveCount2 & 0x0F;
@@ -389,19 +403,25 @@ namespace Rubiks
 	unsigned long long Cube::GetEdgeHash(bool setA)
 	{
 		unsigned long long value = 1;
-		CubieCollection edgeCubies = this->GetEdgeCubies();
-		std::vector<int> cubesPos;
-		std::vector<int> absCubesPos;
-
-		for (int x = 0; x < 12; ++x) //Just for one set of cubes, we need to do 6 to 12 next
-		{
-			int value = GetEdgePermutationValue(edgeCubies[x]); // What cubie is in position x
-			cubesPos.push_back(value);
-			absCubesPos.push_back(value);
-		}
+		UInt32** edgeCubies = this->GetEdgeCubies();
+		// inlining this shaves off several seconds of speed!
+		int edgeValue0 = GetEdgePermutationValue(edgeCubies[0]);
+		int edgeValue1 = GetEdgePermutationValue(edgeCubies[1]);
+		int edgeValue2 = GetEdgePermutationValue(edgeCubies[2]);
+		int edgeValue3 = GetEdgePermutationValue(edgeCubies[3]);
+		int edgeValue4 = GetEdgePermutationValue(edgeCubies[4]);
+		int edgeValue5 = GetEdgePermutationValue(edgeCubies[5]);
+		int edgeValue6 = GetEdgePermutationValue(edgeCubies[6]);
+		int edgeValue7 = GetEdgePermutationValue(edgeCubies[7]);
+		int edgeValue8 = GetEdgePermutationValue(edgeCubies[8]);
+		int edgeValue9 = GetEdgePermutationValue(edgeCubies[9]);
+		int edgeValue10 = GetEdgePermutationValue(edgeCubies[10]);
+		int edgeValue11 = GetEdgePermutationValue(edgeCubies[11]);
+		std::vector<int> cubesPos = { edgeValue0, edgeValue1, edgeValue2, edgeValue3, edgeValue4, edgeValue5, edgeValue6, edgeValue7, edgeValue8, edgeValue9, edgeValue10, edgeValue11 };
+		std::vector<int> absCubesPos = cubesPos;
 		int i = 0;
 		int maxI = 6;
-		int count = 0; // Independent from i because of dual edge sets.
+		int offSet = 0; // Independent from i because of dual edge sets.
 		if (!setA)
 		{
 			i = 6;
@@ -415,12 +435,12 @@ namespace Rubiks
 			int absPosition = absPosIt - absCubesPos.begin(); // Where is this cubie in our cornerCubies collection!
 			cubesPos.erase(posIt);
 			int orientation = GetEdgeOrientationValue(edgeCubies[absPosition], absPosition); // We want the orientation of cubie i at its position
-			int twoPow = (int)pow(2, 5-count);
+			int twoPow =  1 <<  (5-offSet);
 			// (p * 2 + o) * (12-count!/ 6!) * 2
-			value += (position * 2 + orientation) * ((GetFactorial(11 - count) / GetFactorial(6)) * twoPow);
-			++count;
-
+			value += (position * 2 + orientation) * ((GetFactorial(11 - offSet) / GetFactorial(6)) * twoPow);
+			++offSet;
 		}
+		DeleteEdgeCubies(edgeCubies);
 // 		static unsigned long long largestValue = 0;
 // 		if (value > largestValue)
 // 		{

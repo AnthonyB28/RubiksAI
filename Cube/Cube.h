@@ -1,3 +1,5 @@
+#define UNIQUE_CORNERS 88179841
+#define UNIQUE_EDGES 42577921
 #include "Face.h"
 #include <vector>
 
@@ -7,7 +9,6 @@ namespace Rubiks
 	{
 	public:
 		typedef unsigned int UInt32;
-		typedef std::vector<std::vector<Cube::UInt32>> CubieCollection;
 		bool CheckValidParity();
 
 		// "RED 0 GREEN 1 YELLOW 2 BLUE 3 ORANGE 4 WHITE 5 "
@@ -37,20 +38,22 @@ namespace Rubiks
 		void LogCube();
 
 	private :
-		bool CheckPermutations(CubieCollection& cornerCubies, CubieCollection& edgeCubies);
+		bool CheckPermutations(UInt32 ** cornerCubies, UInt32 ** edgeCubies);
 		
-		CubieCollection GetCornerCubies(); // RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
+		UInt32 ** GetCornerCubies(); // RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
+		inline void DeleteCornerCubies(UInt32 ** cornerCubies);
 		inline unsigned long long GetCornerHash();
-		int GetCornerOrientationValue(std::vector<UInt32>& cornerValues, int corner);
-		int GetCornerPermutationValue(std::vector<UInt32>& cornerCubie);
-		bool CheckCornerParity(CubieCollection& cornerCubies);
-		bool CheckValidCornerColors(std::vector<UInt32>& cornerCubie, int corner);
+		int GetCornerOrientationValue(UInt32 cornerValues[3], int corner);
+		int GetCornerPermutationValue(UInt32 cornerCubie[3]);
+		bool CheckCornerParity(UInt32 ** cornerCubies);
+		bool CheckValidCornerColors(UInt32 cornerCubie[3], int corner);
 		
-		CubieCollection GetEdgeCubies(); // RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW
+		UInt32 ** GetEdgeCubies(); // RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW
+		inline void DeleteEdgeCubies(UInt32 ** edgeCubies);
 		inline unsigned long long GetEdgeHash(bool setA);
-		int GetEdgePermutationValue(std::vector<UInt32>& edgeCubie);
-		int GetEdgeOrientationValue(std::vector<UInt32>& edgeCubie, int i);
-		bool CheckEdgeParity(CubieCollection& edgeCubies);
-		bool CheckValidEdgeColors(std::vector<UInt32>& edge);
+		int GetEdgePermutationValue(UInt32 edgeCubie[2]);
+		int GetEdgeOrientationValue(UInt32 edgeCubie[2], int i);
+		bool CheckEdgeParity(UInt32 ** edgeCubies);
+		bool CheckValidEdgeColors(UInt32 edge[2]);
 	};
 }
