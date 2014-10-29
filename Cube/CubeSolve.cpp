@@ -54,7 +54,7 @@ namespace Rubiks
 	struct Cube::AState
 	{
 		// Each Cube state is only ~22 bytes!
-		AState(int prevCost, std::vector<int>& prevMoves, Cube& cube)
+		AState(int prevCost, std::vector<int> const & prevMoves, Cube const & cube)
 			: m_Cube(cube)
 			, m_PrevMoves(prevMoves) // 30 is a placeholder so we don't skip the goal state at 0
 			, m_CutOff(false)
@@ -67,7 +67,7 @@ namespace Rubiks
 		unsigned int m_PrevMoveCount : 4; // Total # of moves to this position
 	};
 
-	Cube::AState RecursiveDLS(Cube::AState& state, unsigned int limit, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
+	Cube::AState RecursiveDLS(Cube::AState& state, unsigned int const limit, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
 	{
 		// Don't exceed f(n) = g(n) + h(n)
 		static boost::timer t;

@@ -40,6 +40,7 @@ namespace Rubiks
 	private :
 		bool CheckPermutations(UInt32 ** cornerCubies, UInt32 ** edgeCubies);
 		
+		void GetCornerCubie(int corner, UInt32* out);
 		UInt32 ** GetCornerCubies(); // RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
 		inline void DeleteCornerCubies(UInt32 ** cornerCubies);
 		inline unsigned long long GetCornerHash();

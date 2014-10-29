@@ -86,6 +86,64 @@ namespace Rubiks
 
 	*******************/
 
+	void Cube::GetCornerCubie(int corner, UInt32* out)
+	{
+		CornerCubies redCorners = m_Faces[0].GetCorners();
+		CornerCubies greenCorners = m_Faces[1].GetCorners();
+		CornerCubies yellowCorners = m_Faces[2].GetCorners();
+		CornerCubies blueCorners = m_Faces[3].GetCorners();
+		CornerCubies orangeCorners = m_Faces[4].GetCorners();
+		CornerCubies whiteCorners = m_Faces[5].GetCorners();
+		if (corner == 0)
+		{
+			out[0] = redCorners.x;
+			out[1] = greenCorners.x;
+			out[2] = whiteCorners.z;
+		}
+		else if (corner == 1)
+		{
+			out[0] = redCorners.y;
+			out[1] = blueCorners.y;
+			out[2] = whiteCorners.w;
+		}
+		else if (corner == 2)
+		{
+			out[0] = redCorners.z; 
+			out[1] = greenCorners.y;
+			out[2] = yellowCorners.x;
+		}
+		else if (corner == 3)
+		{
+			out[0] = redCorners.w;
+			out[1] = blueCorners.x;
+			out[2] = yellowCorners.y;
+		}
+		else if (corner == 4)
+		{
+			out[0] = greenCorners.z;
+			out[1] = orangeCorners.z;
+			out[2] = whiteCorners.x;
+		}
+		else if (corner == 5)
+		{
+			out[0] = greenCorners.w;
+			out[1] = orangeCorners.x;
+			out[2] = yellowCorners.z;
+		}
+		else if (corner == 6)
+		{
+			out[0] = blueCorners.z; 
+			out[1] = orangeCorners.y;
+			out[2] = yellowCorners.w;
+		}
+		else if (corner == 7)
+		{
+			out[0] = blueCorners.w;
+			out[1] = orangeCorners.w;
+			out[2] = whiteCorners.y;
+		}
+	}
+
 	// Gets a 8x3 array of all corner cubies
 	// RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
 	// DON'T FORGET TO CALL DELETECORNERCUBIES FROM THIS!!

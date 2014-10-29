@@ -1,4 +1,5 @@
 #define _CRT_SECURE_NO_DEPRECATE
+#pragma warning(disable: 4244)
 #include "Cube.h"
 #include <queue>
 #include <iostream>
@@ -18,7 +19,6 @@ namespace Rubiks
 		unsigned int m_PreviousMove : 5; // 0 - 32
 		unsigned int m_MoveCount : 4; // Total # of moves to this position
 		Cube m_Cube;
-		//std::vector<State*> m_Children; // We dont need children for this assignment technically.
 	};
 
 	// Returns a representation of a goal state Rubiks Cube.
@@ -256,18 +256,35 @@ namespace Rubiks
 		int cornerValue6 = GetCornerPermutationValue(cornerCubies[6]);
 		int cornerValue7 = GetCornerPermutationValue(cornerCubies[7]);
 		// From corners 0 to 7, stores the value of cubies
-		std::vector<int> cubesPos{ cornerValue0, cornerValue1, cornerValue2, cornerValue3, cornerValue4, cornerValue5, cornerValue6, cornerValue7 };
-		std::vector<int> absCubesPos = cubesPos; // ABSOLUTE corner positions, immutable don't change
+		int cubePositions [8] = { cornerValue0, cornerValue1, cornerValue2, cornerValue3, cornerValue4, cornerValue5, cornerValue6, cornerValue7 };
 		for (int i = 0; i < 7; ++i) // For each corner cubie VALUE (eg RYG = 0)
 		{
-			std::vector<int>::iterator posIt = find(cubesPos.begin(), cubesPos.end(), i); // Find where the corner cubie is dynamically
-			std::vector<int>::iterator absPosIt = find(absCubesPos.begin(), absCubesPos.end(), i); // Find where the corner cubie is absolutely
-			int positionVal = posIt - cubesPos.begin(); // Where is this cubie in the modified collection!
-			int absPosition = absPosIt - absCubesPos.begin(); // Where is this cubie in our cornerCubies collection!
+			int positionVal;
+			int posOffset = 0;
+			for (int index = 0; index < 8; ++index)
+			{
+				if (cubePositions[index] == -1)
+				{
+					++posOffset;
+				}
+				else if (cubePositions[index] == i)
+				{
+					cubePositions[index] = -1;
+					positionVal = index - posOffset;
+					break;
+				}
+			}
+			int absPosition;
+			if (i == cornerValue0) { absPosition = 0; }
+			else if (i == cornerValue1) { absPosition = 1; }
+			else if (i == cornerValue2) { absPosition = 2; }
+			else if (i == cornerValue3) { absPosition = 3; }
+			else if (i == cornerValue4) { absPosition = 4; }
+			else if (i == cornerValue5) { absPosition = 5; }
+			else { absPosition = 6; }
 			int threePow = GetThreePow(i);
 			int orientation = GetCornerOrientationValue(cornerCubies[absPosition], absPosition); // Check the cubie orientation in its actual position.
 			value += (positionVal * 3 + orientation) * (GetFactorial(8) / GetFactorial(8 - i)) * threePow; //(cp_i * 3 + co_i) * (8! / 8-i!) * 3^i
-			cubesPos.erase(posIt);
 		}
 // 		static unsigned long long largestValue = 0;
 // 		if (value > largestValue)
@@ -417,11 +434,10 @@ namespace Rubiks
 		int edgeValue9 = GetEdgePermutationValue(edgeCubies[9]);
 		int edgeValue10 = GetEdgePermutationValue(edgeCubies[10]);
 		int edgeValue11 = GetEdgePermutationValue(edgeCubies[11]);
-		std::vector<int> cubesPos = { edgeValue0, edgeValue1, edgeValue2, edgeValue3, edgeValue4, edgeValue5, edgeValue6, edgeValue7, edgeValue8, edgeValue9, edgeValue10, edgeValue11 };
-		std::vector<int> absCubesPos = cubesPos;
+		int cubePositions [12] = { edgeValue0, edgeValue1, edgeValue2, edgeValue3, edgeValue4, edgeValue5, edgeValue6, edgeValue7, edgeValue8, edgeValue9, edgeValue10, edgeValue11 };
 		int i = 0;
 		int maxI = 6;
-		int offSet = 0; // Independent from i because of dual edge sets.
+		int cubieOffSet = 0; // Independent from i because of dual edge sets.
 		if (!setA)
 		{
 			i = 6;
@@ -429,16 +445,39 @@ namespace Rubiks
 		}
 		for (; i < maxI; ++i) // i is the Cubie edge value (e.g i = RW cubie)
 		{
-			std::vector<int>::iterator posIt = find(cubesPos.begin(), cubesPos.end(), i); // Find where the corner cubie is dynamically
-			std::vector<int>::iterator absPosIt = find(absCubesPos.begin(), absCubesPos.end(), i); // Find where the corner cubie is absolutely
-			int position = posIt - cubesPos.begin(); // Where is this cubie in the modified collection!
-			int absPosition = absPosIt - absCubesPos.begin(); // Where is this cubie in our cornerCubies collection!
-			cubesPos.erase(posIt);
+			int position;
+			int posOffset = 0;
+			for (int index = 0; index < 12; ++index)
+			{
+				if (cubePositions[index] == -1)
+				{
+					++posOffset;
+				}
+				else if (cubePositions[index] == i)
+				{
+					cubePositions[index] = -1;
+					position = index - posOffset;
+					break;
+				}
+			}
+			int absPosition;
+			if (i == edgeValue0) { absPosition = 0; }
+			else if (i == edgeValue1) { absPosition = 1; }
+			else if (i == edgeValue2) { absPosition = 2; }
+			else if (i == edgeValue3) { absPosition = 3; }
+			else if (i == edgeValue4) { absPosition = 4; }
+			else if (i == edgeValue5) { absPosition = 5; }
+			else if (i == edgeValue6) { absPosition = 6; }
+			else if (i == edgeValue7) { absPosition = 7; }
+			else if (i == edgeValue8) { absPosition = 8; }
+			else if (i == edgeValue9) { absPosition = 9; }
+			else if (i == edgeValue10) { absPosition = 10; }
+			else { absPosition = 11; } // Where is this cubie in our cornerCubies collection!
 			int orientation = GetEdgeOrientationValue(edgeCubies[absPosition], absPosition); // We want the orientation of cubie i at its position
-			int twoPow =  1 <<  (5-offSet);
+			int twoPow =  1 <<  (5-cubieOffSet);
 			// (p * 2 + o) * (12-count!/ 6!) * 2
-			value += (position * 2 + orientation) * ((GetFactorial(11 - offSet) / GetFactorial(6)) * twoPow);
-			++offSet;
+			value += (position * 2 + orientation) * ((GetFactorial(11 - cubieOffSet) / GetFactorial(6)) * twoPow);
+			++cubieOffSet;
 		}
 		DeleteEdgeCubies(edgeCubies);
 // 		static unsigned long long largestValue = 0;
