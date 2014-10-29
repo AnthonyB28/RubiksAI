@@ -7,8 +7,8 @@
 namespace Rubiks
 {
 
-	int Cube::GetMaxMoveSolve(std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
-	{
+	int Cube::GetMaxMinMoveSolve(bool max, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
+{
 		unsigned long long cornerHash = GetCornerHash();
 		unsigned long long edgeHashA = GetEdgeHash(true);
 		unsigned long long edgeHashB = GetEdgeHash(false);
@@ -47,24 +47,29 @@ namespace Rubiks
 			moveCountEdgeB = byteNum >> 4;
 		}
 
-		return (moveCountCorner > moveCountEdgeA ? moveCountCorner : moveCountEdgeA) > moveCountEdgeB ? moveCountCorner : moveCountEdgeB;
+		if (max)
+		{
+			return (moveCountCorner > moveCountEdgeA ? moveCountCorner : moveCountEdgeA) > moveCountEdgeB ? moveCountCorner : moveCountEdgeB;
+		}
+		else
+		{
+			return (moveCountCorner < moveCountEdgeA ? moveCountCorner : moveCountEdgeA) < moveCountEdgeB ? moveCountCorner : moveCountEdgeB;
+		}
 	}
 
 	
 	struct Cube::AState
 	{
 		// Each Cube state is only ~22 bytes!
-		AState(int prevCost, std::vector<int> const & prevMoves, Cube const & cube)
+		AState(std::vector<int> const & prevMoves, Cube const & cube)
 			: m_Cube(cube)
 			, m_PrevMoves(prevMoves) // 30 is a placeholder so we don't skip the goal state at 0
 			, m_CutOff(false)
-			, m_PrevMoveCount(prevCost)
 		{}
 
 		Cube m_Cube;
 		std::vector<int> m_PrevMoves;
 		bool m_CutOff = false;
-		unsigned int m_PrevMoveCount : 4; // Total # of moves to this position
 	};
 
 	Cube::AState RecursiveDLS(Cube::AState& state, unsigned int const limit, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
@@ -73,12 +78,12 @@ namespace Rubiks
 		static boost::timer t;
 		static unsigned long long nodes = 0;
 		static unsigned long long skippedNodes = 0;
-		int h = state.m_Cube.GetMaxMoveSolve(cornerMap, edgeMapA, edgeMapB); // h(n) 
+		int h = state.m_Cube.GetMaxMinMoveSolve(false, cornerMap, edgeMapA, edgeMapB); // h(n) 
 		if (h == 0) // We've solved the cube.
 		{
 			return state;
 		}
-		else if ((state.m_PrevMoveCount) > limit) // If g(n) > limit, we need to cut off. TODO Could this be prevMove + h > limit for f(n) = g(n) + h(n)
+		else if (state.m_PrevMoves.size() + h > limit) // If g(n) > limit, we need to cut off. TODO Could this be prevMove + h > limit for f(n) = g(n) + h(n)
 		{
 			state.m_CutOff = true;
 			return state;
@@ -109,7 +114,7 @@ namespace Rubiks
 					currentMove != (lastMove + 1) &&
 					currentMove != (lastMove + 2))
 				{
-					Cube::AState newState(state.m_PrevMoveCount + 1, state.m_PrevMoves, state.m_Cube);
+					Cube::AState newState(state.m_PrevMoves, state.m_Cube);
 					newState.m_PrevMoves.push_back(currentMove);
 					switch (currentMove) // Manipulate the state with a move action
 					{
@@ -149,8 +154,8 @@ namespace Rubiks
 
 	Cube::AState IDS(Cube::AState& state, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
 	{
-		int maxCount = state.m_Cube.GetMaxMoveSolve(cornerMap, edgeMapA, edgeMapB);
-		for (int i = 0; i <= maxCount; ++i)
+		//int maxCount = state.m_Cube.GetMaxMinMoveSolve(cornerMap, edgeMapA, edgeMapB);
+		for (int i = 0; i <= 20; ++i)
 		{
 			Cube::AState result = RecursiveDLS(state, i, cornerMap, edgeMapA, edgeMapB);
 			if (!result.m_CutOff)
@@ -169,7 +174,7 @@ namespace Rubiks
 		boost::timer t;
 		// f = g + h where g = cost to get to this node and h = heuristic estimate of getting to goal
 		// search node as long as f <= threshold, or f >= threshold in our case?
-		AState result = IDS(AState(0, std::vector<int>(), *this), cornerMap, edgeMapA, edgeMapB);
+		AState result = IDS(AState(std::vector<int>(), *this), cornerMap, edgeMapA, edgeMapB);
 		printf("\nTime to solve: %f ", t.elapsed());
 		if (result.m_CutOff)
 		{

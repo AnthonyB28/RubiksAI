@@ -451,6 +451,77 @@ namespace Rubiks
 
 	*********************/
 
+	void Cube::GetEdgeCubie(int edge, UInt32* out)
+	{
+		EdgeCubies redEdges = m_Faces[0].GetEdges();
+		EdgeCubies greenEdges = m_Faces[1].GetEdges();
+		EdgeCubies yellowEdges = m_Faces[2].GetEdges();
+		EdgeCubies blueEdges = m_Faces[3].GetEdges();
+		EdgeCubies orangeEdges = m_Faces[4].GetEdges();
+		EdgeCubies whiteEdges = m_Faces[5].GetEdges();
+
+		if (edge == 0)
+		{
+			out[0] = redEdges.x;
+			out[1] = whiteEdges.w;
+		}
+		else if (edge == 1)
+		{
+			out[0] = redEdges.y;
+			out[1] = greenEdges.x;
+		}
+		else if (edge == 2)
+		{
+			out[0] = redEdges.z;
+			out[1] = blueEdges.x;
+		}
+		else if (edge == 3)
+		{
+			out[0] = redEdges.w;
+			out[1] = yellowEdges.x;
+		}
+		else if (edge == 4)
+		{
+			out[0] = greenEdges.y;
+			out[1] = whiteEdges.y;
+		}
+		else if (edge == 5)
+		{
+			out[0] = greenEdges.z;
+			out[1] = yellowEdges.y;
+		}
+		else if (edge == 6)
+		{
+			out[0] = greenEdges.w;
+			out[1] = orangeEdges.y;
+		}
+		else if (edge == 7)
+		{
+			out[0] = yellowEdges.z;
+			out[1] = blueEdges.y;
+		}
+		else if (edge == 8)
+		{
+			out[0] = yellowEdges.w;
+			out[1] = orangeEdges.x;
+		}
+		else if (edge == 9)
+		{
+			out[0] = blueEdges.z;
+			out[1] = whiteEdges.z;
+		}
+		else if (edge == 10)
+		{
+			out[0] = blueEdges.w;
+			out[1] = orangeEdges.z;
+		}
+		else if (edge == 11)
+		{
+			out[0] = orangeEdges.w;
+			out[1] = whiteEdges.x;
+		}
+	}
+
 	// Gets a 12x2 array of all edge cubies
 	// RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW
 	// DON'T FORGET TO CALL DELETEEDGECUBIES FROM THIS!!

@@ -34,7 +34,7 @@ namespace Rubiks
 		static void TestTableFileRead(char* fileName, bool corners);
 		static void TableFileLoad(char* fileName, std::vector<char>& map);
 		void Solve(std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB);
-		int GetMaxMoveSolve(std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB);
+		int GetMaxMinMoveSolve(bool max, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB);
 		void LogCube();
 
 	private :
@@ -49,6 +49,7 @@ namespace Rubiks
 		bool CheckCornerParity(UInt32 ** cornerCubies);
 		bool CheckValidCornerColors(UInt32 cornerCubie[3], int corner);
 		
+		void GetEdgeCubie(int corner, UInt32* out);
 		UInt32 ** GetEdgeCubies(); // RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW
 		inline void DeleteEdgeCubies(UInt32 ** edgeCubies);
 		inline unsigned long long GetEdgeHash(bool setA);

@@ -247,15 +247,15 @@ namespace Rubiks
 		unsigned long long value = 1;
 		// inlining this shaves off several seconds of speed!
 		UInt32 corner0[3]; GetCornerCubie(0, corner0);
-		UInt32 corner1[3];	GetCornerCubie(1, corner1);
-		UInt32 corner2[3];	GetCornerCubie(2, corner2);
-		UInt32 corner3[3];	GetCornerCubie(3, corner3);
-		UInt32 corner4[3];	GetCornerCubie(4, corner4);
-		UInt32 corner5[3];	GetCornerCubie(5, corner5);
-		UInt32 corner6[3];	GetCornerCubie(6, corner6);
-		UInt32 corner7[3];	GetCornerCubie(7, corner7);
-		
+		UInt32 corner1[3]; GetCornerCubie(1, corner1);
+		UInt32 corner2[3]; GetCornerCubie(2, corner2);
+		UInt32 corner3[3]; GetCornerCubie(3, corner3);
+		UInt32 corner4[3]; GetCornerCubie(4, corner4);
+		UInt32 corner5[3]; GetCornerCubie(5, corner5);
+		UInt32 corner6[3]; GetCornerCubie(6, corner6);
+		UInt32 corner7[3]; GetCornerCubie(7, corner7);
 		UInt32* cornerCubies[8] = { corner0, corner1, corner2, corner3, corner4, corner5, corner6, corner7 };
+
 		int cornerValue0 = GetCornerPermutationValue(corner0);
 		int cornerValue1 = GetCornerPermutationValue(corner1);
 		int cornerValue2 = GetCornerPermutationValue(corner2);
@@ -428,8 +428,20 @@ namespace Rubiks
 	unsigned long long Cube::GetEdgeHash(bool setA)
 	{
 		unsigned long long value = 1;
-		UInt32** edgeCubies = this->GetEdgeCubies();
 		// inlining this shaves off several seconds of speed!
+		UInt32 edge0[2]; GetEdgeCubie(0, edge0);
+		UInt32 edge1[2]; GetEdgeCubie(1, edge1);
+		UInt32 edge2[2]; GetEdgeCubie(2, edge2);
+		UInt32 edge3[2]; GetEdgeCubie(3, edge3);
+		UInt32 edge4[2]; GetEdgeCubie(4, edge4);
+		UInt32 edge5[2]; GetEdgeCubie(5, edge5);
+		UInt32 edge6[2]; GetEdgeCubie(6, edge6);
+		UInt32 edge7[2]; GetEdgeCubie(7, edge7);
+		UInt32 edge8[2]; GetEdgeCubie(8, edge8);
+		UInt32 edge9[2]; GetEdgeCubie(9, edge9);
+		UInt32 edge10[2]; GetEdgeCubie(10, edge10);
+		UInt32 edge11[2]; GetEdgeCubie(11, edge11);
+		UInt32* edgeCubies[12] = { edge0, edge1, edge2, edge3, edge4, edge5, edge6, edge7, edge8, edge9, edge10, edge11 };
 		int edgeValue0 = GetEdgePermutationValue(edgeCubies[0]);
 		int edgeValue1 = GetEdgePermutationValue(edgeCubies[1]);
 		int edgeValue2 = GetEdgePermutationValue(edgeCubies[2]);
@@ -487,7 +499,6 @@ namespace Rubiks
 			value += (position * 2 + orientation) * ((GetFactorial(11 - cubieOffSet) / GetFactorial(6)) * twoPow);
 			++cubieOffSet;
 		}
-		DeleteEdgeCubies(edgeCubies);
 // 		static unsigned long long largestValue = 0;
 // 		if (value > largestValue)
 // 		{
