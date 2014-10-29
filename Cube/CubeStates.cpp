@@ -257,12 +257,12 @@ namespace Rubiks
 			value += (positionVal * 3 + orientation) * (GetFactorial(8) / GetFactorial(8 - i)) * threePow; //(cp_i * 3 + co_i) * (8! / 8-i!) * 3^i
 			cubesPos.erase(posIt);
 		}
-		static unsigned long long largestValue = 0;
-		if (value > largestValue)
-		{
-			largestValue = value;
-			printf("\n%d", largestValue);
-		}
+// 		static unsigned long long largestValue = 0;
+// 		if (value > largestValue)
+// 		{
+// 			largestValue = value;
+// 			printf("\n%d", largestValue);
+// 		}
 		DeleteCornerCubies(cornerCubies);
 		return value;
 	}
@@ -433,12 +433,12 @@ namespace Rubiks
 			//value += (threePow * eightFact * orientation) + (position * GetFactorial(i) * threePow); // (3^i * 8! * co_i) + (3^i * cp_i * i!)
 		}
 		DeleteEdgeCubies(edgeCubies);
-		static unsigned long long largestValue = 0;
-		if (value > largestValue)
-		{
-			largestValue = value;
-			printf("\n%d", largestValue);
-		}
+// 		static unsigned long long largestValue = 0;
+// 		if (value > largestValue)
+// 		{
+// 			largestValue = value;
+// 			printf("\n%d", largestValue);
+// 		}
 		return value;
 	}
 }

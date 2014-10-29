@@ -25,11 +25,14 @@ namespace Rubiks
 		void TurnBackACW();
 
 		struct State;
+		struct AState;
 		static Cube GetGoalCube();
 		static void GenerateCornerTables(int heuristic);
 		static void GenerateEdgeTables(int heuristic, bool setA);
 		static void TestTableFileRead(char* fileName, bool corners);
 		static void TableFileLoad(char* fileName, std::vector<char>& map);
+		void Solve(std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB);
+		std::vector<int> GetIDAHashCounts(std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB);
 		void LogCube();
 
 	private :

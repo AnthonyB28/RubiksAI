@@ -17,18 +17,14 @@ int main(int argc, const char* argv[])
 	Rubiks::Cube::TableFileLoad("corners.bin", cornersMap);
 	Rubiks::Cube::TableFileLoad("edges.bin", edgesAMap);
 	Rubiks::Cube::TableFileLoad("edges2.bin", edgesBMap);
-	Rubiks::Cube goal = Rubiks::Cube::GetGoalCube();
-	goal.TurnFrontCW();
-	goal.Solve(cornersMap, edgesAMap, edgesBMap);
 	if (argv[1] && !testValidityFolder) // Single file to test if valid Rubiks Cube
 	{
 #ifdef DEBUG_MODE // Only for putting debug information out. Else just print if its a valid cube.
-		if (input->LoadCubeFile(argv[1], false))
+		if (input->LoadCubeFile(argv[1], true))
 		{
 			std::cout << "VALID_INPUT\n";
 			input->m_Cube.LogCube();
-			input->m_Cube.TurnTopCW();
-			input->m_Cube.LogCube();
+			input->m_Cube.Solve(cornersMap, edgesAMap, edgesBMap);
 		}
 		else
 		{
@@ -36,7 +32,12 @@ int main(int argc, const char* argv[])
 		}
 		system("pause");
 #else
-		std::cout << std::boolalpha << input->LoadCubeFile(argv[1], false);
+		bool valid = input->LoadCubeFile(argv[1], true);
+		std::cout << std::boolalpha << valid;
+		if (valid)
+		{
+			input->m_Cube.Solve(cornersMap, edgesAMap, edgesBMap);
+		}
 		system("pause");
 #endif
 	}
@@ -55,6 +56,7 @@ int main(int argc, const char* argv[])
 			else
 			{
 				++passed;
+				input->m_Cube.Solve(cornersMap, edgesAMap, edgesBMap);
 			}
 			delete input;
 		}
