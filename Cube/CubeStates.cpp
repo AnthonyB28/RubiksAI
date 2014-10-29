@@ -245,16 +245,25 @@ namespace Rubiks
 	unsigned long long Cube::GetCornerHash()
 	{
 		unsigned long long value = 1;
-		UInt32** cornerCubies = this->GetCornerCubies();
 		// inlining this shaves off several seconds of speed!
-		int cornerValue0 = GetCornerPermutationValue(cornerCubies[0]);
-		int cornerValue1 = GetCornerPermutationValue(cornerCubies[1]);
-		int cornerValue2 = GetCornerPermutationValue(cornerCubies[2]);
-		int cornerValue3 = GetCornerPermutationValue(cornerCubies[3]);
-		int cornerValue4 = GetCornerPermutationValue(cornerCubies[4]);
-		int cornerValue5 = GetCornerPermutationValue(cornerCubies[5]);
-		int cornerValue6 = GetCornerPermutationValue(cornerCubies[6]);
-		int cornerValue7 = GetCornerPermutationValue(cornerCubies[7]);
+		UInt32 corner0[3]; GetCornerCubie(0, corner0);
+		UInt32 corner1[3];	GetCornerCubie(1, corner1);
+		UInt32 corner2[3];	GetCornerCubie(2, corner2);
+		UInt32 corner3[3];	GetCornerCubie(3, corner3);
+		UInt32 corner4[3];	GetCornerCubie(4, corner4);
+		UInt32 corner5[3];	GetCornerCubie(5, corner5);
+		UInt32 corner6[3];	GetCornerCubie(6, corner6);
+		UInt32 corner7[3];	GetCornerCubie(7, corner7);
+		
+		UInt32* cornerCubies[8] = { corner0, corner1, corner2, corner3, corner4, corner5, corner6, corner7 };
+		int cornerValue0 = GetCornerPermutationValue(corner0);
+		int cornerValue1 = GetCornerPermutationValue(corner1);
+		int cornerValue2 = GetCornerPermutationValue(corner2);
+		int cornerValue3 = GetCornerPermutationValue(corner3);
+		int cornerValue4 = GetCornerPermutationValue(corner4);
+		int cornerValue5 = GetCornerPermutationValue(corner5);
+		int cornerValue6 = GetCornerPermutationValue(corner6);
+		int cornerValue7 = GetCornerPermutationValue(corner7);
 		// From corners 0 to 7, stores the value of cubies
 		int cubePositions [8] = { cornerValue0, cornerValue1, cornerValue2, cornerValue3, cornerValue4, cornerValue5, cornerValue6, cornerValue7 };
 		for (int i = 0; i < 7; ++i) // For each corner cubie VALUE (eg RYG = 0)
@@ -292,7 +301,6 @@ namespace Rubiks
 // 			largestValue = value;
 // 			printf("\n%d", largestValue);
 // 		}
-		DeleteCornerCubies(cornerCubies);
 		return value;
 	}
 
