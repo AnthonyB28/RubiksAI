@@ -66,6 +66,12 @@ int main(int argc, const char* argv[])
 	else
 	{
 		std::cout << "Please provide input file path as argument before execution\n";
+		bool valid = input->LoadCubeFile("input.txt", true);
+		std::cout << std::boolalpha << valid;
+		if (valid)
+		{
+			input->m_Cube.Solve(cornersMap, edgesAMap, edgesBMap);
+		}
 		system("pause");
 	}
 }

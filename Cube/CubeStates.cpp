@@ -87,7 +87,6 @@ namespace Rubiks
 		std::fstream file;
 		file.open(fileName, std::ios::binary | std::ios::in);
 		file.seekg(0);
-		unsigned long long size;
 		file.read((char*)&map[0], map.size());
 		file.close();
 	}
@@ -237,7 +236,7 @@ namespace Rubiks
 	unsigned long long Cube::GetCornerHash()
 	{
 		unsigned long long value = 1;
-		UInt32** cornerCubies = this->GetCornerCubies();
+		CubieCollection cornerCubies = this->GetCornerCubies();
 		std::vector<int> cubesPos; // From corners 0 to 7, stores the value of cubies
 		std::vector<int> absCubesPos; // ABSOLUTE corner positions, immutable don't change
 		for (int x = 0; x < 8; ++x)
@@ -263,7 +262,6 @@ namespace Rubiks
 // 			largestValue = value;
 // 			printf("\n%d", largestValue);
 // 		}
-		DeleteCornerCubies(cornerCubies);
 		return value;
 	}
 
@@ -391,7 +389,7 @@ namespace Rubiks
 	unsigned long long Cube::GetEdgeHash(bool setA)
 	{
 		unsigned long long value = 1;
-		UInt32** edgeCubies = this->GetEdgeCubies();
+		CubieCollection edgeCubies = this->GetEdgeCubies();
 		std::vector<int> cubesPos;
 		std::vector<int> absCubesPos;
 
@@ -420,19 +418,9 @@ namespace Rubiks
 			int twoPow = (int)pow(2, 5-count);
 			// (p * 2 + o) * (12-count!/ 6!) * 2
 			value += (position * 2 + orientation) * ((GetFactorial(11 - count) / GetFactorial(6)) * twoPow);
-
-			// (p * 2^i + o * 12) * (12! / 12-i!) * 2^i
-			// With * 12 it gets to 42.1 mil~ and without its 39 mil~
-			//value += (position * 2 * orientation) * (GetFactorial(11) / GetFactorial(11 - count)) * 2;
-			
-			//value += (position * 2 + orientation) * (GetFactorial(12) / GetFactorial(6)) + ((GetFactorial(11 - count) / GetFactorial(6)) * count);
 			++count;
 
-			//value += ((GetFactorial(i) * position) + (2 * orientation * GetFactorial(11))) / GetFactorial(6);
-			//value += (position * 3 + CheckCornerValue(cornerCubies[i], i)) * GetFactorial(i - 1) * 3;
-			//value += (threePow * eightFact * orientation) + (position * GetFactorial(i) * threePow); // (3^i * 8! * co_i) + (3^i * cp_i * i!)
 		}
-		DeleteEdgeCubies(edgeCubies);
 // 		static unsigned long long largestValue = 0;
 // 		if (value > largestValue)
 // 		{

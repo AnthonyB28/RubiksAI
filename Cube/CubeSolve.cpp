@@ -12,8 +12,8 @@ namespace Rubiks
 		int h = 0;
 	}
 
-	std::vector<int> Cube::GetIDAHashCounts(std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
-	{
+	int Cube::GetMaxMoveSolve(std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
+{
 		unsigned long long cornerHash = GetCornerHash();
 		unsigned long long edgeHashA = GetEdgeHash(true);
 		unsigned long long edgeHashB = GetEdgeHash(false);
@@ -52,7 +52,7 @@ namespace Rubiks
 			moveCountEdgeB = byteNum >> 4;
 		}
 
-		return std::vector < int > {moveCountCorner, moveCountEdgeA, moveCountEdgeB};
+		return (moveCountCorner > moveCountEdgeA ? moveCountCorner : moveCountEdgeA) > moveCountEdgeB ? moveCountCorner : moveCountEdgeB;
 	}
 
 	
@@ -70,21 +70,20 @@ namespace Rubiks
 		std::vector<int> m_PrevMoves;
 		bool m_CutOff = false;
 		unsigned int m_PrevMoveCount : 4; // Total # of moves to this position
-		//std::vector<State*> m_Children; // We dont need children for this assignment technically.
 	};
 
-	Cube::AState RecursiveDLS(Cube::AState& state, int limit, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
+	Cube::AState RecursiveDLS(Cube::AState& state, unsigned int limit, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
 	{
+		// Don't exceed f(n) = g(n) + h(n)
 		static boost::timer t;
 		static unsigned long long nodes = 0;
 		static unsigned long long skippedNodes = 0;
-		std::vector<int> moveCounts = state.m_Cube.GetIDAHashCounts(cornerMap, edgeMapA, edgeMapB);
-		int h = *std::max_element(moveCounts.begin(), moveCounts.end());
-		if (h == 0)
+		int h = state.m_Cube.GetMaxMoveSolve(cornerMap, edgeMapA, edgeMapB); // h(n) 
+		if (h == 0) // We've solved the cube.
 		{
 			return state;
 		}
-		else if ((state.m_PrevMoveCount) > limit)
+		else if ((state.m_PrevMoveCount) > limit) // If g(n) > limit, we need to cut off. TODO Could this be prevMove + h > limit for f(n) = g(n) + h(n)
 		{
 			state.m_CutOff = true;
 			return state;
@@ -92,21 +91,22 @@ namespace Rubiks
 		else
 		{
 			int lastMove;
-			if (state.m_PrevMoves.size() == 0)
-			{
-				lastMove = 30;
-			}
-			else
+			if (state.m_PrevMoves.size() > 0) // Make sure we're not doing the initial state, else we go out of bounds.
 			{
 				lastMove = state.m_PrevMoves[state.m_PrevMoves.size() - 1];
 			}
+			else
+			{
+				lastMove = 30; // Placeholder for first move
+			}
+
 			// Generate a state for every possible move (18 of them)
 			for (int currentMove = 0; currentMove < 18; ++currentMove)
 			{
 				++nodes;
-				if (nodes % 10000 == 0)
+				if (nodes % 1000000 == 0)
 				{
-					printf("\nNodes:%d - %f", nodes, t.elapsed());
+					std::cout << "\nNodes: " << nodes << " - " << t.elapsed();
 					t.restart();
 				}
 				// Only make a new state if the previous move is not repeated in anyway.
@@ -137,15 +137,15 @@ namespace Rubiks
 					case 16: newState.m_Cube.TurnBackACW(); break;
 					case 17: newState.m_Cube.TurnBackCW(); newState.m_Cube.TurnBackCW(); break;
 					}
-					Cube::AState result = RecursiveDLS(newState, limit, cornerMap, edgeMapA, edgeMapB);
-					if (!result.m_CutOff)
+					Cube::AState result = RecursiveDLS(newState, limit, cornerMap, edgeMapA, edgeMapB); // Iterative deepening
+					if (!result.m_CutOff) // If the result is not cut off, we have a solution.
 					{
 						return result;
 					}
 				}
 			}
 
-			// Nothing found.
+			// Nothing found, cut off.
 			state.m_CutOff = true;
 			return state;
 		}
@@ -154,9 +154,7 @@ namespace Rubiks
 
 	Cube::AState IDS(Cube::AState& state, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
 	{
-		std::vector<int> moveCounts = state.m_Cube.GetIDAHashCounts(cornerMap, edgeMapA, edgeMapB);
-		//int minCount = *std::min_element(moveCounts.begin(), moveCounts.end());
-		int maxCount = *std::max_element(moveCounts.begin(), moveCounts.end());
+		int maxCount = state.m_Cube.GetMaxMoveSolve(cornerMap, edgeMapA, edgeMapB);
 		for (int i = 0; i <= maxCount; ++i)
 		{
 			Cube::AState result = RecursiveDLS(state, i, cornerMap, edgeMapA, edgeMapB);
