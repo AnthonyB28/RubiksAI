@@ -7,7 +7,7 @@
 namespace Rubiks
 {
 
-	int Cube::GetMaxMinMoveSolve(bool max, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
+	int Cube::GetMaxMinMoveSolve(bool max, int& total, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
 {
 		unsigned long long cornerHash = GetCornerHash();
 		unsigned long long edgeHashA = GetEdgeHash(true);
@@ -47,6 +47,7 @@ namespace Rubiks
 			moveCountEdgeB = byteNum >> 4;
 		}
 
+		total = moveCountCorner + moveCountEdgeA + moveCountEdgeB;
 		if (max)
 		{
 			int maxCountCA = (moveCountCorner > moveCountEdgeA ? moveCountCorner : moveCountEdgeA);
@@ -80,8 +81,9 @@ namespace Rubiks
 		static boost::timer t;
 		static unsigned long long nodes = 0;
 		static unsigned long long skippedNodes = 0;
-		int h = state.m_Cube.GetMaxMinMoveSolve(true, cornerMap, edgeMapA, edgeMapB); // h(n) 
-		if (h == 0) // We've solved the cube.
+		int totalh = 0;
+		int h = state.m_Cube.GetMaxMinMoveSolve(false,totalh, cornerMap, edgeMapA, edgeMapB); // h(n) 
+		if (totalh == 0) // We've solved the cube.
 		{
 			return state;
 		}
