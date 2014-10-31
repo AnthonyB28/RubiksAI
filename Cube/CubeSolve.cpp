@@ -80,89 +80,96 @@ namespace Rubiks
 		// Don't exceed f(n) = g(n) + h(n)
 		static boost::timer t;
 		static unsigned long long nodes = 0;
-		int h = state.m_Cube.GetMaxMinMoveSolve(true, cornerMap, edgeMapA, edgeMapB); // h(n) 
-		if (h == 0) // We've solved the cube.
+		IDAState * copyState = new IDAState(state.m_PrevMoves, state.m_Cube);
+		std::stack<IDAState *> s;
+		s.push(copyState);
+		while (!s.empty())
 		{
-			std::cout << "\nNodes processed to solved state : " << nodes;
-			return state;
-		}
-		else if (state.m_PrevMoves.size() + h > limit) // If prevMove + h > limit for f(n) = g(n) + h(n), we need to cut off
-		{
-			state.m_CutOff = true;
-			return state;
-		}
-		else
-		{
-			int lastMove;
-			if (state.m_PrevMoves.size() > 0) // Make sure we're not doing the initial state, else we go out of bounds.
+			IDAState * currentState = s.top();
+			s.pop();
+			int h = currentState->m_Cube.GetMaxMinMoveSolve(true, cornerMap, edgeMapA, edgeMapB); // h(n) 
+			if (h == 0) // We've solved the cube.
 			{
-				lastMove = state.m_PrevMoves[state.m_PrevMoves.size() - 1];
+				std::cout << "\nNodes: " << nodes;
+				return *currentState;
+			}
+			else if (currentState->m_PrevMoves.size() + h > limit) // If prevMove + h > limit for f(n) = g(n) + h(n), we need to cut off
+			{
+				delete currentState;
 			}
 			else
 			{
-				lastMove = 30; // Placeholder for first move
-			}
+				int lastMove;
+				if (state.m_PrevMoves.size() > 0) // Make sure we're not doing the initial state, else we go out of bounds.
+				{
+					lastMove = state.m_PrevMoves[state.m_PrevMoves.size() - 1];
+				}
+				else
+				{
+					lastMove = 30; // Placeholder for first move
+				}
 
-			// Generate a state for every possible move (18 of them)
-			for (int currentMove = 0; currentMove < 18; ++currentMove)
-			{
-				++nodes;
-				static bool nodeTime = false;
-				if (!nodeTime && nodes % 1000000 == 0)
+				// Generate a state for every possible move (18 of them)
+				for (int currentMove = 0; currentMove < 18; ++currentMove)
 				{
-					std::cout << "\nNodes: " << nodes << " - " << t.elapsed();
-					t.restart();
-					nodeTime = true;
-				}
-				bool skipMove = false;
-				// Only make a new state if the previous move is not repeated in anyway.
-				Cube::IDAState newState(state.m_PrevMoves, state.m_Cube);
-				newState.m_PrevMoves.push_back(currentMove);
-				switch (currentMove) // Manipulate the state with a move action
-				{
-				case 0: if (lastMove != 0 && lastMove != 1 && lastMove != 2) { newState.m_Cube.TurnTopCW(); }
-						else { skipMove = true; } break;
-				case 1: if (lastMove != 0 && lastMove != 1 && lastMove != 2) { newState.m_Cube.TurnTopACW(); }
-						else { skipMove = true; } break;
-				case 2: if (lastMove != 0 && lastMove != 1 && lastMove != 2) { newState.m_Cube.TurnTopCW(); newState.m_Cube.TurnTopCW(); }
-						else { skipMove = true; } break;
-				case 3: if (lastMove != 3 && lastMove != 4 && lastMove != 5) { newState.m_Cube.TurnBottomCW(); }
-						else { skipMove = true; } break;
-				case 4:  if (lastMove != 3 && lastMove != 4 && lastMove != 5) { newState.m_Cube.TurnBottomACW(); }
-						 else { skipMove = true; } break;
-				case 5:  if (lastMove != 3 && lastMove != 4 && lastMove != 5) { newState.m_Cube.TurnBottomCW(); newState.m_Cube.TurnBottomCW(); }
-						 else { skipMove = true; } break;
-				case 6: if (lastMove != 6 && lastMove != 7 && lastMove != 8) { newState.m_Cube.TurnLeftCW(); }
-						else { skipMove = true; } break;
-				case 7: if (lastMove != 6 && lastMove != 7 && lastMove != 8) { newState.m_Cube.TurnLeftACW(); }
-						else { skipMove = true; } break;
-				case 8: if (lastMove != 6 && lastMove != 7 && lastMove != 8) { newState.m_Cube.TurnLeftCW(); newState.m_Cube.TurnLeftCW(); }
-						else { skipMove = true; } break;
-				case 9:  if (lastMove != 9 && lastMove != 10 && lastMove != 11) { newState.m_Cube.TurnRightCW(); }
-						 else { skipMove = true; } break;
-				case 10:  if (lastMove != 9 && lastMove != 10 && lastMove != 11) { newState.m_Cube.TurnRightACW(); }
-						  else { skipMove = true; } break;
-				case 11: if (lastMove != 9 && lastMove != 10 && lastMove != 11) { newState.m_Cube.TurnRightCW(); newState.m_Cube.TurnRightCW(); }
-						 else { skipMove = true; } break;
-				case 12: if (lastMove != 12 && lastMove != 13 && lastMove != 14) { newState.m_Cube.TurnFrontCW(); }
-						 else { skipMove = true; } break;
-				case 13: if (lastMove != 12 && lastMove != 13 && lastMove != 14) { newState.m_Cube.TurnFrontACW(); }
-						 else { skipMove = true; }break;
-				case 14: if (lastMove != 12 && lastMove != 13 && lastMove != 14) { newState.m_Cube.TurnFrontCW(); newState.m_Cube.TurnFrontCW(); }
-						 else { skipMove = true; } break;
-				case 15: if (lastMove != 15 && lastMove != 16 && lastMove != 17) { newState.m_Cube.TurnBackCW(); }
-						 else { skipMove = true; }break;
-				case 16: if (lastMove != 15 && lastMove != 16 && lastMove != 17) { newState.m_Cube.TurnBackACW(); }
-						 else { skipMove = true; }break;
-				case 17: if (lastMove != 15 && lastMove != 16 && lastMove != 17) { newState.m_Cube.TurnBackCW(); newState.m_Cube.TurnBackCW();}
-						 else { skipMove = true; } break;
-				}
-				if (!skipMove)
-				{
-					Cube::IDAState result = IterativeDepthSearch(newState, limit, cornerMap, edgeMapA, edgeMapB); // Iterative deepening
-					if (!result.m_CutOff) // If the result is not cut off, we have a solution.
+					++nodes;
+					static bool nodeTime = false;
+					if (!nodeTime && nodes % 1000000 == 0)
 					{
-						return result;
+						std::cout << "\nNodes: " << nodes << " - " << t.elapsed();
+						t.restart();
+						nodeTime = true;
+					}
+					bool skipMove = false;
+					// Only make a new state if the previous move is not repeated in anyway.
+					Cube::IDAState * newState = new Cube::IDAState(currentState->m_PrevMoves, currentState->m_Cube);
+					newState->m_PrevMoves.push_back(currentMove);
+					switch (currentMove) // Manipulate the state with a move action
+					{
+					case 0: if (lastMove != 0 && lastMove != 1 && lastMove != 2) { newState->m_Cube.TurnTopCW(); }
+							else { skipMove = true; } break;
+					case 1: if (lastMove != 0 && lastMove != 1 && lastMove != 2) { newState->m_Cube.TurnTopACW(); }
+							else { skipMove = true; } break;
+					case 2: if (lastMove != 0 && lastMove != 1 && lastMove != 2) { newState->m_Cube.TurnTopCW(); newState->m_Cube.TurnTopCW(); }
+							else { skipMove = true; } break;
+					case 3: if (lastMove != 3 && lastMove != 4 && lastMove != 5) { newState->m_Cube.TurnBottomCW(); }
+							else { skipMove = true; } break;
+					case 4:  if (lastMove != 3 && lastMove != 4 && lastMove != 5) { newState->m_Cube.TurnBottomACW(); }
+							 else { skipMove = true; } break;
+					case 5:  if (lastMove != 3 && lastMove != 4 && lastMove != 5) { newState->m_Cube.TurnBottomCW(); newState->m_Cube.TurnBottomCW(); }
+							 else { skipMove = true; } break;
+					case 6: if (lastMove != 6 && lastMove != 7 && lastMove != 8) { newState->m_Cube.TurnLeftCW(); }
+							else { skipMove = true; } break;
+					case 7: if (lastMove != 6 && lastMove != 7 && lastMove != 8) { newState->m_Cube.TurnLeftACW(); }
+							else { skipMove = true; } break;
+					case 8: if (lastMove != 6 && lastMove != 7 && lastMove != 8) { newState->m_Cube.TurnLeftCW(); newState->m_Cube.TurnLeftCW(); }
+							else { skipMove = true; } break;
+					case 9:  if (lastMove != 9 && lastMove != 10 && lastMove != 11) { newState->m_Cube.TurnRightCW(); }
+							 else { skipMove = true; } break;
+					case 10:  if (lastMove != 9 && lastMove != 10 && lastMove != 11) { newState->m_Cube.TurnRightACW(); }
+							  else { skipMove = true; } break;
+					case 11: if (lastMove != 9 && lastMove != 10 && lastMove != 11) { newState->m_Cube.TurnRightCW(); newState->m_Cube.TurnRightCW(); }
+							 else { skipMove = true; } break;
+					case 12: if (lastMove != 12 && lastMove != 13 && lastMove != 14) { newState->m_Cube.TurnFrontCW(); }
+							 else { skipMove = true; } break;
+					case 13: if (lastMove != 12 && lastMove != 13 && lastMove != 14) { newState->m_Cube.TurnFrontACW(); }
+							 else { skipMove = true; }break;
+					case 14: if (lastMove != 12 && lastMove != 13 && lastMove != 14) { newState->m_Cube.TurnFrontCW(); newState->m_Cube.TurnFrontCW(); }
+							 else { skipMove = true; } break;
+					case 15: if (lastMove != 15 && lastMove != 16 && lastMove != 17) { newState->m_Cube.TurnBackCW(); }
+							 else { skipMove = true; }break;
+					case 16: if (lastMove != 15 && lastMove != 16 && lastMove != 17) { newState->m_Cube.TurnBackACW(); }
+							 else { skipMove = true; }break;
+					case 17: if (lastMove != 15 && lastMove != 16 && lastMove != 17) { newState->m_Cube.TurnBackCW(); newState->m_Cube.TurnBackCW(); }
+							 else { skipMove = true; } break;
+					}
+					if (!skipMove)
+					{
+						s.push(newState);
+					}
+					else
+					{
+						delete currentState;
 					}
 				}
 			}

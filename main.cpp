@@ -8,7 +8,7 @@
 
 int main(int argc, const char* argv[])
 {
-	bool testValidityFolder = false;
+	bool testValidityFolder = true;
 	Reader *input = new Reader();
 
 	//Rubiks::Cube::GenerateCornerTables(12);
@@ -47,11 +47,16 @@ int main(int argc, const char* argv[])
 	else if (testValidityFolder) // Test an entire folder for validity
 	{
 		int passed = 0;
-		for (int i = 0; i < 2000; ++i)
+		for (int i = 0; i < 16; ++i)
 		{
 			input = new Reader();
 			std::stringstream file;
-			file << "valid\\test" << i << ".txt";
+			//file << "valid\\test" << i << ".txt";
+#ifdef DEBUG_MODE
+			file << "scrambles\\countstates\\cube" << i ;
+#else
+			file << "..\\..\\scrambles\\countstates\\cube" << i ;
+#endif
 			if (!input->LoadCubeFile(file.str(), true))
 			{
 				std::cout << "Test " << i << " failed\n";
