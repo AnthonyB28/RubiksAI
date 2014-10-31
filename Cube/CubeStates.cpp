@@ -290,7 +290,8 @@ namespace Rubiks
 			else if (i == cornerValue3) { absPosition = 3; }
 			else if (i == cornerValue4) { absPosition = 4; }
 			else if (i == cornerValue5) { absPosition = 5; }
-			else { absPosition = 6; }
+			else if (i == cornerValue6) { absPosition = 6; }
+			else { absPosition = 7; }
 			int threePow = GetThreePow(i);
 			int orientation = GetCornerOrientationValue(cornerCubies[absPosition], absPosition); // Check the cubie orientation in its actual position.
 			value += (positionVal * 3 + orientation) * (GetFactorial(8) / GetFactorial(8 - i)) * threePow; //(cp_i * 3 + co_i) * (8! / 8-i!) * 3^i

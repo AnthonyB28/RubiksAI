@@ -2,7 +2,7 @@
 #include <stack>
 #include <algorithm>
 #include <iostream>
-//#include <boost/timer.hpp>
+#include <boost/timer.hpp>
 
 namespace Rubiks
 {
@@ -77,7 +77,7 @@ namespace Rubiks
 	Cube::AState RecursiveDLS(Cube::AState& state, unsigned int const limit, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
 	{
 		// Don't exceed f(n) = g(n) + h(n)
-		//static boost::timer t;
+		static boost::timer t;
 		static unsigned long long nodes = 0;
 		static unsigned long long skippedNodes = 0;
 		int h = state.m_Cube.GetMaxMinMoveSolve(true, cornerMap, edgeMapA, edgeMapB); // h(n) 
@@ -85,7 +85,7 @@ namespace Rubiks
 		{
 			return state;
 		}
-		else if (state.m_PrevMoves.size() > limit) // If g(n) > limit, we need to cut off. TODO Could this be prevMove + h > limit for f(n) = g(n) + h(n)
+		else if (state.m_PrevMoves.size() + h > limit) // If g(n) > limit, we need to cut off. TODO Could this be prevMove + h > limit for f(n) = g(n) + h(n)
 		{
 			state.m_CutOff = true;
 			return state;
@@ -108,8 +108,8 @@ namespace Rubiks
 				++nodes;
 				if (nodes % 1000000 == 0)
 				{
-					//std::cout << "\nNodes: " << nodes << " - " << t.elapsed();
-					//t.restart();
+					std::cout << "\nNodes: " << nodes << " - " << t.elapsed();
+					t.restart();
 				}
 				// Only make a new state if the previous move is not repeated in anyway.
 				if (currentMove != lastMove &&
@@ -173,11 +173,11 @@ namespace Rubiks
 
 	void Cube::Solve(std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
 	{
-		//boost::timer t;
+		boost::timer t;
 		// f = g + h where g = cost to get to this node and h = heuristic estimate of getting to goal
 		// search node as long as f <= threshold, or f >= threshold in our case?
 		AState result = IDS(AState(std::vector<int>(), *this), cornerMap, edgeMapA, edgeMapB);
-		//printf("\nTime to solve: %f ", t.elapsed());
+		printf("\nTime to solve: %f ", t.elapsed());
 		if (result.m_CutOff)
 		{
 			return;

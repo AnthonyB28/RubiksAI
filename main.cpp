@@ -11,9 +11,10 @@ int main(int argc, const char* argv[])
 	bool testValidityFolder = false;
 	Reader *input = new Reader();
 
-	std::vector<char> cornersMap(UNIQUE_CORNERS / 2);
-	std::vector<char> edgesAMap(UNIQUE_EDGES / 2);
-	std::vector<char> edgesBMap(UNIQUE_EDGES / 2);
+	//Rubiks::Cube::GenerateCornerTables(12);
+	std::vector<char> cornersMap(UNIQUE_CORNERS / 2+1);
+	std::vector<char> edgesAMap(UNIQUE_EDGES / 2+1);
+	std::vector<char> edgesBMap(UNIQUE_EDGES / 2+1);
 	Rubiks::Cube::TableFileLoad("corners.bin", cornersMap);
 	Rubiks::Cube::TableFileLoad("edges.bin", edgesAMap);
 	Rubiks::Cube::TableFileLoad("edges2.bin", edgesBMap);
