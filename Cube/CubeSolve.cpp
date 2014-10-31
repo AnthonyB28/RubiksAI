@@ -75,87 +75,85 @@ namespace Rubiks
 		bool m_CutOff = false;
 	};
 
-	Cube::IDAState Cube::IterativeDepthSearch(IDAState & state, unsigned int const limit, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
+	Cube::IDAState Cube::IterativeDepthSearch(Cube::IDAState & state, unsigned int const limit, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
 	{
 		// Don't exceed f(n) = g(n) + h(n)
 		static boost::timer t;
 		static unsigned long long nodes = 0;
 		static unsigned long long skippedNodes = 0;
-		IDAState * copyState = new IDAState(state.m_PrevMoves, state.m_Cube);
-		std::stack<IDAState *> s;
-		s.push(copyState);
-		while (!s.empty())
+		int h = state.m_Cube.GetMaxMinMoveSolve(true, cornerMap, edgeMapA, edgeMapB); // h(n) 
+		if (h == 0) // We've solved the cube.
 		{
-			IDAState * currentState = s.top();
-			s.pop();
-			int h = currentState->m_Cube.GetMaxMinMoveSolve(true, cornerMap, edgeMapA, edgeMapB); // h(n) 
-			if (h == 0) // We've solved the cube.
+			std::cout << "\nNodes: " << nodes;
+			return state;
+		}
+		else if (state.m_PrevMoves.size() + h > limit) // If prevMove + h > limit for f(n) = g(n) + h(n), we need to cut off
+		{
+			state.m_CutOff = true;
+			return state;
+		}
+		else
+		{
+			int lastMove;
+			if (state.m_PrevMoves.size() > 0) // Make sure we're not doing the initial state, else we go out of bounds.
 			{
-				std::cout << "\nNodes: " << nodes;
-				return *currentState;
-			}
-			else if (currentState->m_PrevMoves.size() + h > limit) // If prevMove + h > limit for f(n) = g(n) + h(n), we need to cut off
-			{
-				delete currentState;
+				lastMove = state.m_PrevMoves[state.m_PrevMoves.size() - 1];
 			}
 			else
 			{
-				int lastMove;
-				if (state.m_PrevMoves.size() > 0) // Make sure we're not doing the initial state, else we go out of bounds.
-				{
-					lastMove = currentState->m_PrevMoves[currentState->m_PrevMoves.size() - 1];
-				}
-				else
-				{
-					lastMove = 30; // Placeholder for first move TODO fix this
-				}
-
-				// Generate a state for every possible move (18 of them)
-				for (int currentMove = 0; currentMove < 18; ++currentMove)
-				{
-					++nodes;
-					if (nodes % 1000000 == 0)
-					{
-						std::cout << "\nNodes: " << nodes << " - " << t.elapsed();
-						t.restart();
-					}
-					// Only make a new state if the previous move is not repeated in anyway.
-					if (currentMove != lastMove &&
-						currentMove != (lastMove + 1) &&
-						currentMove != (lastMove + 2))
-					{
-						Cube::IDAState * newState = new Cube::IDAState(currentState->m_PrevMoves, currentState->m_Cube);
-						newState->m_PrevMoves.push_back(currentMove);
-						switch (currentMove) // Manipulate the state with a move action
-						{
-						case 0: newState->m_Cube.TurnTopCW(); break;
-						case 1: newState->m_Cube.TurnTopACW(); break;
-						case 2: newState->m_Cube.TurnTopCW(); newState->m_Cube.TurnTopCW(); break;
-						case 3: newState->m_Cube.TurnBottomCW(); break;
-						case 4: newState->m_Cube.TurnBottomACW(); break;
-						case 5: newState->m_Cube.TurnBottomCW(); newState->m_Cube.TurnBottomCW(); break;
-						case 6: newState->m_Cube.TurnLeftCW(); break;
-						case 7: newState->m_Cube.TurnLeftACW(); break;
-						case 8: newState->m_Cube.TurnLeftCW(); newState->m_Cube.TurnLeftCW(); break;
-						case 9: newState->m_Cube.TurnRightCW(); break;
-						case 10: newState->m_Cube.TurnRightACW(); break;
-						case 11: newState->m_Cube.TurnRightCW(); newState->m_Cube.TurnRightCW(); break;
-						case 12: newState->m_Cube.TurnFrontCW(); break;
-						case 13: newState->m_Cube.TurnFrontACW(); break;
-						case 14: newState->m_Cube.TurnFrontCW(); newState->m_Cube.TurnFrontCW(); break;
-						case 15: newState->m_Cube.TurnBackCW(); break;
-						case 16: newState->m_Cube.TurnBackACW(); break;
-						case 17: newState->m_Cube.TurnBackCW(); newState->m_Cube.TurnBackCW(); break;
-						}
-						s.push(newState);
-					}
-				}
-				delete currentState;
+				lastMove = 30; // Placeholder for first move
 			}
+
+			// Generate a state for every possible move (18 of them)
+			for (int currentMove = 0; currentMove < 18; ++currentMove)
+			{
+				++nodes;
+				if (nodes % 1000000 == 0)
+				{
+					std::cout << "\nNodes: " << nodes << " - " << t.elapsed();
+					t.restart();
+				}
+				// Only make a new state if the previous move is not repeated in anyway.
+				if (currentMove != lastMove &&
+					currentMove != (lastMove + 1) &&
+					currentMove != (lastMove + 2))
+				{
+					Cube::IDAState newState(state.m_PrevMoves, state.m_Cube);
+					newState.m_PrevMoves.push_back(currentMove);
+					switch (currentMove) // Manipulate the state with a move action
+					{
+					case 0: newState.m_Cube.TurnTopCW(); break;
+					case 1: newState.m_Cube.TurnTopACW(); break;
+					case 2: newState.m_Cube.TurnTopCW(); newState.m_Cube.TurnTopCW(); break;
+					case 3: newState.m_Cube.TurnBottomCW(); break;
+					case 4: newState.m_Cube.TurnBottomACW(); break;
+					case 5: newState.m_Cube.TurnBottomCW(); newState.m_Cube.TurnBottomCW(); break;
+					case 6: newState.m_Cube.TurnLeftCW(); break;
+					case 7: newState.m_Cube.TurnLeftACW(); break;
+					case 8: newState.m_Cube.TurnLeftCW(); newState.m_Cube.TurnLeftCW(); break;
+					case 9: newState.m_Cube.TurnRightCW(); break;
+					case 10: newState.m_Cube.TurnRightACW(); break;
+					case 11: newState.m_Cube.TurnRightCW(); newState.m_Cube.TurnRightCW(); break;
+					case 12: newState.m_Cube.TurnFrontCW(); break;
+					case 13: newState.m_Cube.TurnFrontACW(); break;
+					case 14: newState.m_Cube.TurnFrontCW(); newState.m_Cube.TurnFrontCW(); break;
+					case 15: newState.m_Cube.TurnBackCW(); break;
+					case 16: newState.m_Cube.TurnBackACW(); break;
+					case 17: newState.m_Cube.TurnBackCW(); newState.m_Cube.TurnBackCW(); break;
+					}
+					Cube::IDAState result = IterativeDepthSearch(newState, limit, cornerMap, edgeMapA, edgeMapB); // Iterative deepening
+					if (!result.m_CutOff) // If the result is not cut off, we have a solution.
+					{
+						return result;
+					}
+				}
+			}
+
+			// Nothing found, cut off.
+			state.m_CutOff = true;
+			return state;
 		}
 
-		state.m_CutOff = true; // Didn't find anything in our stack... No solution
-		return state;
 	}
 
 	Cube::IDAState Cube::IDASearch(IDAState & state, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
