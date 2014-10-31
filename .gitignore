@@ -41,6 +41,7 @@ Icon
 Debug/
 Release/
 Invalid/
+x64/
 Valid/
 *.user
 *.psess
