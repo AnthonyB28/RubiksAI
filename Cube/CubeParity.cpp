@@ -88,59 +88,53 @@ namespace Rubiks
 
 	void Cube::GetCornerCubie(int const corner, UInt32* out) const
 	{
-		CornerCubies redCorners = m_Faces[0].GetCorners();
-		CornerCubies greenCorners = m_Faces[1].GetCorners();
-		CornerCubies yellowCorners = m_Faces[2].GetCorners();
-		CornerCubies blueCorners = m_Faces[3].GetCorners();
-		CornerCubies orangeCorners = m_Faces[4].GetCorners();
-		CornerCubies whiteCorners = m_Faces[5].GetCorners();
 		if (corner == 0)
 		{
-			out[0] = redCorners.x;
-			out[1] = greenCorners.x;
-			out[2] = whiteCorners.z;
+			out[0] = m_Faces[0].m_TopLeft;
+			out[1] = m_Faces[1].m_TopLeft;
+			out[2] = m_Faces[5].m_BottomLeft;
 		}
 		else if (corner == 1)
 		{
-			out[0] = redCorners.y;
-			out[1] = blueCorners.y;
-			out[2] = whiteCorners.w;
+			out[0] = m_Faces[0].m_TopRight;
+			out[1] = m_Faces[3].m_TopRight;
+			out[2] = m_Faces[5].m_BottomRight;
 		}
 		else if (corner == 2)
 		{
-			out[0] = redCorners.z; 
-			out[1] = greenCorners.y;
-			out[2] = yellowCorners.x;
+			out[0] = m_Faces[0].m_BottomLeft; 
+			out[1] = m_Faces[1].m_TopRight;
+			out[2] = m_Faces[2].m_TopLeft;
 		}
 		else if (corner == 3)
 		{
-			out[0] = redCorners.w;
-			out[1] = blueCorners.x;
-			out[2] = yellowCorners.y;
+			out[0] = m_Faces[0].m_BottomRight;
+			out[1] = m_Faces[3].m_TopLeft;
+			out[2] = m_Faces[2].m_TopRight;
 		}
 		else if (corner == 4)
 		{
-			out[0] = greenCorners.z;
-			out[1] = orangeCorners.z;
-			out[2] = whiteCorners.x;
+			out[0] = m_Faces[1].m_BottomLeft;
+			out[1] = m_Faces[4].m_BottomLeft;
+			out[2] = m_Faces[5].m_TopLeft;
 		}
 		else if (corner == 5)
 		{
-			out[0] = greenCorners.w;
-			out[1] = orangeCorners.x;
-			out[2] = yellowCorners.z;
+			out[0] = m_Faces[1].m_BottomRight;
+			out[1] = m_Faces[4].m_TopLeft;
+			out[2] = m_Faces[2].m_BottomLeft;
 		}
 		else if (corner == 6)
 		{
-			out[0] = blueCorners.z; 
-			out[1] = orangeCorners.y;
-			out[2] = yellowCorners.w;
+			out[0] = m_Faces[3].m_BottomLeft; 
+			out[1] = m_Faces[4].m_TopRight;
+			out[2] = m_Faces[2].m_BottomRight;
 		}
 		else if (corner == 7)
 		{
-			out[0] = blueCorners.w;
-			out[1] = orangeCorners.w;
-			out[2] = whiteCorners.y;
+			out[0] = m_Faces[3].m_BottomRight;
+			out[1] = m_Faces[4].m_BottomRight;
+			out[2] = m_Faces[5].m_TopRight;
 		}
 	}
 
@@ -453,72 +447,65 @@ namespace Rubiks
 
 	void Cube::GetEdgeCubie(int const edge, UInt32* out) const
 	{
-		EdgeCubies redEdges = m_Faces[0].GetEdges();
-		EdgeCubies greenEdges = m_Faces[1].GetEdges();
-		EdgeCubies yellowEdges = m_Faces[2].GetEdges();
-		EdgeCubies blueEdges = m_Faces[3].GetEdges();
-		EdgeCubies orangeEdges = m_Faces[4].GetEdges();
-		EdgeCubies whiteEdges = m_Faces[5].GetEdges();
-
 		if (edge == 0)
 		{
-			out[0] = redEdges.x;
-			out[1] = whiteEdges.w;
+			out[0] = m_Faces[0].m_TopMiddle;
+			out[1] = m_Faces[5].m_BottomMiddle;
 		}
 		else if (edge == 1)
 		{
-			out[0] = redEdges.y;
-			out[1] = greenEdges.x;
+			out[0] = m_Faces[0].m_CenterLeft;
+			out[1] = m_Faces[1].m_TopMiddle;
 		}
 		else if (edge == 2)
 		{
-			out[0] = redEdges.z;
-			out[1] = blueEdges.x;
+			out[0] = m_Faces[0].m_CenterRight;
+			out[1] = m_Faces[3].m_TopMiddle;
 		}
 		else if (edge == 3)
 		{
-			out[0] = redEdges.w;
-			out[1] = yellowEdges.x;
+			out[0] = m_Faces[0].m_BottomMiddle;
+			out[1] = m_Faces[2].m_TopMiddle;
 		}
 		else if (edge == 4)
 		{
-			out[0] = greenEdges.y;
-			out[1] = whiteEdges.y;
+			out[0] = m_Faces[1].m_CenterLeft;
+			out[1] = m_Faces[5].m_CenterLeft;
 		}
 		else if (edge == 5)
 		{
-			out[0] = greenEdges.z;
-			out[1] = yellowEdges.y;
+			out[0] = m_Faces[1].m_CenterRight;
+			out[1] = m_Faces[2].m_CenterLeft;
 		}
 		else if (edge == 6)
 		{
-			out[0] = greenEdges.w;
-			out[1] = orangeEdges.y;
+			out[0] = m_Faces[1].m_BottomMiddle;
+			out[1] = m_Faces[4].m_CenterLeft;
 		}
 		else if (edge == 7)
 		{
-			out[0] = yellowEdges.z;
-			out[1] = blueEdges.y;
+			out[0] = m_Faces[2].m_CenterRight;
+			out[1] = m_Faces[3].m_CenterLeft;
 		}
 		else if (edge == 8)
 		{
-			out[0] = yellowEdges.w;
-			out[1] = orangeEdges.x;
+			out[0] = m_Faces[2].m_BottomMiddle;
+			out[1] = m_Faces[4].m_TopMiddle;
 		}
 		else if (edge == 9)
 		{
-			out[0] = blueEdges.z;
-			out[1] = whiteEdges.z;
+			out[0] = m_Faces[3].m_CenterRight;
+			out[1] = m_Faces[5].m_CenterRight;
 		}
 		else if (edge == 10)
 		{
-			out[0] = blueEdges.w;
-			out[1] = orangeEdges.z;
+			out[0] = m_Faces[3].m_BottomMiddle;
+			out[1] = m_Faces[4].m_CenterRight;
 		}
 		else if (edge == 11)
 		{
-			out[0] = orangeEdges.w;
-			out[1] = whiteEdges.x;
+			out[0] = m_Faces[4].m_BottomMiddle;
+			out[1] = m_Faces[5].m_TopMiddle;
 		}
 	}
 

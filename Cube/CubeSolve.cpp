@@ -84,6 +84,7 @@ namespace Rubiks
 		int h = state.m_Cube.GetMaxMinMoveSolve(true, cornerMap, edgeMapA, edgeMapB); // h(n) 
 		if (h == 0) // We've solved the cube.
 		{
+			std::cout << "\nNodes: " << nodes;
 			return state;
 		}
 		else if (state.m_PrevMoves.size() + h > limit) // If prevMove + h > limit for f(n) = g(n) + h(n), we need to cut off
