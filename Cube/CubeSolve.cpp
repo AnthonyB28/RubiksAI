@@ -80,11 +80,10 @@ namespace Rubiks
 		// Don't exceed f(n) = g(n) + h(n)
 		static boost::timer t;
 		static unsigned long long nodes = 0;
-		static unsigned long long skippedNodes = 0;
 		int h = state.m_Cube.GetMaxMinMoveSolve(true, cornerMap, edgeMapA, edgeMapB); // h(n) 
 		if (h == 0) // We've solved the cube.
 		{
-			std::cout << "\nNodes: " << nodes;
+			std::cout << "\nNodes processed to solved state : " << nodes;
 			return state;
 		}
 		else if (state.m_PrevMoves.size() + h > limit) // If prevMove + h > limit for f(n) = g(n) + h(n), we need to cut off
@@ -108,10 +107,12 @@ namespace Rubiks
 			for (int currentMove = 0; currentMove < 18; ++currentMove)
 			{
 				++nodes;
-				if (nodes % 1000000 == 0)
+				static bool nodeTime = false;
+				if (!nodeTime && nodes % 1000000 == 0)
 				{
 					std::cout << "\nNodes: " << nodes << " - " << t.elapsed();
 					t.restart();
+					nodeTime = true;
 				}
 				bool skipMove = false;
 				// Only make a new state if the previous move is not repeated in anyway.
@@ -172,16 +173,20 @@ namespace Rubiks
 		return state;
 	}
 
+	// IDA* search for a goal in a state using the maps for h(n)
 	Cube::IDAState Cube::IDASearch(IDAState & state, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
 	{
+		boost::timer t;
+		boost::timer s;
 		//int maxCount = state.m_Cube.GetMaxMinMoveSolve(cornerMap, edgeMapA, edgeMapB);
 		for (int i = 0; i <= 20; ++i)
 		{
-			printf("\nDepth: %d", i);
+			printf("\nDepth: %d Time: %f", i, t.elapsed());
+			t.restart();
 			Cube::IDAState result = IterativeDepthSearch(state, i, cornerMap, edgeMapA, edgeMapB);
 			if (!result.m_CutOff)
 			{
-				printf("\nsolution @ %d", i);
+				printf("\nSolution Time: %f", s.elapsed());
 				return result;
 			}
 		}
@@ -190,13 +195,12 @@ namespace Rubiks
 		return state;
 	}
 
+	// Solve a rubiks cube and print solution using face color turns
 	void Cube::Solve(std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB) const
 	{
-		boost::timer t;
 		// f = g + h where g = cost to get to this node and h = heuristic estimate of getting to goal
 		// search node as long as f <= threshold, or f >= threshold in our case?
 		IDAState result = IDASearch(IDAState(std::vector<int>(), *this), cornerMap, edgeMapA, edgeMapB);
-		printf("\nTime to solve: %f ", t.elapsed());
 		if (result.m_CutOff)
 		{
 			return;

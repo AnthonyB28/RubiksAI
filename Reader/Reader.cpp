@@ -1,5 +1,5 @@
 #include "Reader.h"
-
+#include <algorithm>
 Reader::Reader()
 	: m_Cube()
 	, m_CheckValid(true)
@@ -41,9 +41,7 @@ bool Reader::LoadCubeFile(std::string const & filePath, bool const checkValid)
 			std::size_t end = inputLine.find_last_not_of('\r');
 			std::size_t beginning = inputLine.find_first_not_of('\r');
 			std::string inputTrim = inputLine.substr(beginning, end - beginning + 1);
-// 			end = inputLine.find_last_not_of(' ');
-// 			beginning = inputLine.find_first_not_of(' ');
-// 			inputTrim = inputLine.substr(beginning, end - beginning + 1);
+			inputTrim.erase(std::remove_if(inputTrim.begin(), inputTrim.end(), ::isspace), inputTrim.end());
 			if (!BuildFace(facesDone, row, &inputTrim))
 			{
 				input.close();
