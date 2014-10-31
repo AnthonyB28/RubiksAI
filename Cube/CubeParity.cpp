@@ -2,8 +2,8 @@
 
 namespace Rubiks
 {
-	// Do our 3 tests to find the 1/12 combinations that can be incorrect
-	bool Cube::CheckValidParity()
+	// Test if cube is valid
+	bool Cube::CheckValidParity() const
 	{
 		UInt32 ** cornerCubies = GetCornerCubies();
 		UInt32 ** edgeCubies = GetEdgeCubies();
@@ -23,8 +23,8 @@ namespace Rubiks
 	}
 
 	// Checks for permutation parity
-	bool Cube::CheckPermutations(UInt32 ** cornerCubies, UInt32 ** edgeCubies)
-	{
+	bool Cube::CheckPermutations(UInt32 const * const * const cornerCubies, UInt32 const * const * const edgeCubies) const
+{
 		int edgePositions[12];
 		// Check number of edge swaps
 		// RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW
@@ -86,7 +86,7 @@ namespace Rubiks
 
 	*******************/
 
-	void Cube::GetCornerCubie(int corner, UInt32* out)
+	void Cube::GetCornerCubie(int const corner, UInt32* out) const
 	{
 		CornerCubies redCorners = m_Faces[0].GetCorners();
 		CornerCubies greenCorners = m_Faces[1].GetCorners();
@@ -148,7 +148,7 @@ namespace Rubiks
 	// RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
 	// DON'T FORGET TO CALL DELETECORNERCUBIES FROM THIS!!
 	// TODO make this a class or something
-	Cube::UInt32 ** Cube::GetCornerCubies()
+	Cube::UInt32 ** Cube::GetCornerCubies() const
 	{
 		CornerCubies redCorners = m_Faces[0].GetCorners();
 		CornerCubies greenCorners = m_Faces[1].GetCorners();
@@ -182,7 +182,7 @@ namespace Rubiks
 		delete[] cornerCubies;
 	}
 
-	int Cube::GetCornerPermutationValue(UInt32 cornerCubie[3])
+	int Cube::GetCornerPermutationValue(UInt32 const cornerCubie[3]) const
 	{
 		UInt32 x = cornerCubie[0];
 		UInt32 y = cornerCubie[1];
@@ -272,7 +272,7 @@ namespace Rubiks
 	// correct orientation = 0
 	// clockwise = 1
 	// anti-clockwise = 2
-	int Cube::GetCornerOrientationValue(UInt32 cornerValues[3], int corner)
+	int Cube::GetCornerOrientationValue(UInt32 const cornerValues[3], int const corner) const
 	{
 		for (int i = 0; i < 3; ++i)
 		{
@@ -308,8 +308,8 @@ namespace Rubiks
 	}
 
 	// Corner cubie parity test
-	bool Cube::CheckCornerParity(UInt32 ** cornerCubies)
-	{
+	bool Cube::CheckCornerParity(UInt32 const * const * const cornerCubies) const
+{
 		int totalValue = 0;
 
 		for (int i = 0; i < 8; ++i)
@@ -330,7 +330,7 @@ namespace Rubiks
 
 	// Check to make sure corner colors are valid
 	// RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
-	bool Cube::CheckValidCornerColors(UInt32 cornerCubie[3], int corner)
+	bool Cube::CheckValidCornerColors(UInt32 const cornerCubie[3], int const corner) const
 	{
 		if (corner == 0 || corner == 3 || corner == 4 || corner == 6)
 		{
@@ -451,7 +451,7 @@ namespace Rubiks
 
 	*********************/
 
-	void Cube::GetEdgeCubie(int edge, UInt32* out)
+	void Cube::GetEdgeCubie(int const edge, UInt32* out) const
 	{
 		EdgeCubies redEdges = m_Faces[0].GetEdges();
 		EdgeCubies greenEdges = m_Faces[1].GetEdges();
@@ -526,7 +526,7 @@ namespace Rubiks
 	// RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW
 	// DON'T FORGET TO CALL DELETEEDGECUBIES FROM THIS!!
 	// TODO make this a class or something
-	Cube::UInt32 ** Cube::GetEdgeCubies()
+	Cube::UInt32 ** Cube::GetEdgeCubies() const
 	{
 		EdgeCubies redEdges = m_Faces[0].GetEdges();
 		EdgeCubies greenEdges = m_Faces[1].GetEdges();
@@ -564,7 +564,7 @@ namespace Rubiks
 		delete[] edgeCubies;
 	}
 
-	int Cube::GetEdgePermutationValue(UInt32 edgeCubie[2])
+	int Cube::GetEdgePermutationValue(UInt32 const edgeCubie[2]) const
 	{
 		UInt32 x = edgeCubie[0];
 		UInt32 y = edgeCubie[1];
@@ -637,8 +637,8 @@ namespace Rubiks
 	}
 
 	// Edge cubie parity test
-	bool Cube::CheckEdgeParity(UInt32 ** edgeCubies)
-	{
+	bool Cube::CheckEdgeParity(UInt32 const * const * const edgeCubies) const
+{
 		// Value of all edge orientations is even
 		// LEFT RIGHT TOP AND BOTTOM flips zero edges
 		// FRONT AND BACK by 90 degrees flips 4
@@ -1289,7 +1289,7 @@ namespace Rubiks
 		}
 	}
 
-	int Cube::GetEdgeOrientationValue(UInt32 edgeCubie[2], int i)
+	int Cube::GetEdgeOrientationValue(UInt32 const edgeCubie[2], int const i) const
 	{
 		if (i == 0) // RW
 		{
@@ -1908,7 +1908,7 @@ namespace Rubiks
 	}
 
 	// Edges are either one of two color combinations
-	bool Cube::CheckValidEdgeColors(UInt32 edge[2])
+	bool Cube::CheckValidEdgeColors(UInt32 const edge[2]) const
 	{
 		if (
 			(edge[0] == RED && edge[1] == WHITE) || (edge[0] == WHITE && edge[1] == RED) ||

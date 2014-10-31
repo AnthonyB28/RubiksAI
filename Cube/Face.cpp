@@ -17,8 +17,8 @@ namespace Rubiks
 	}
 
 	// Given row & column, set color to this face.
-	void Face::SetColor(int row, int column, int val)
-	{
+	void Face::SetColor(int const row, int const column, int const val)
+{
 		if (row == 0 && column == 0)
 		{
 			m_TopLeft = val;
@@ -57,7 +57,7 @@ namespace Rubiks
 		}
 	}
 
-	CornerCubies Face::GetCorners()
+	CornerCubies Face::GetCorners() const
 	{
 		CornerCubies corners;
 		corners.x = m_TopLeft;
@@ -67,7 +67,7 @@ namespace Rubiks
 		return corners;
 	}
 
-	EdgeCubies Face::GetEdges()
+	EdgeCubies Face::GetEdges() const
 	{
 		EdgeCubies edges;
 		edges.x = m_TopMiddle;
@@ -77,8 +77,8 @@ namespace Rubiks
 		return edges;
 	}
 
-	unsigned int Face::GetColor(int row, int column)
-	{
+	unsigned int Face::GetColor(int const row, int const column) const
+{
 		if (row == 0 && column == 0)
 		{
 			return m_TopLeft;

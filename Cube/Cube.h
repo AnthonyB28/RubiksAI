@@ -9,10 +9,8 @@ namespace Rubiks
 	{
 	public:
 		typedef unsigned int UInt32;
-		bool CheckValidParity();
 
-		// "RED 0 GREEN 1 YELLOW 2 BLUE 3 ORANGE 4 WHITE 5 "
-		Rubiks::Face m_Faces[6]; // Rubik's Cube representation - note for assignment each index happens to represent face color!
+		void LogCube() const;
 		void TurnTopCW();
 		void TurnTopACW();
 		void TurnBottomCW();
@@ -25,37 +23,43 @@ namespace Rubiks
 		void TurnFrontACW();
 		void TurnBackCW();
 		void TurnBackACW();
+		void Solve(std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB) const;
+		int GetMaxMinMoveSolve(bool max, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB) const;
+		bool CheckValidParity() const;
 
-		struct State;
-		struct AState;
 		static Cube GetGoalCube();
-		static void GenerateCornerTables(int heuristic);
-		static void GenerateEdgeTables(int heuristic, bool setA);
-		static void TestTableFileRead(char* fileName, bool corners);
-		static void TableFileLoad(char* fileName, std::vector<char>& map);
-		void Solve(std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB);
-		int GetMaxMinMoveSolve(bool max, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB);
-		void LogCube();
+		static void GenerateCornerTables(int const heuristic);
+		static void GenerateEdgeTables(int const heuristic, bool const setA);
+		static void TestTableFileRead(char const * const  fileName, bool const corners);
+		static void TableFileLoad(char const * const fileName, std::vector<char>& map);
+
+		// "RED 0 GREEN 1 YELLOW 2 BLUE 3 ORANGE 4 WHITE 5 "
+		Rubiks::Face m_Faces[6]; // Rubik's Cube representation - note for assignment each index happens to represent face color!
 
 	private :
-		bool CheckPermutations(UInt32 ** cornerCubies, UInt32 ** edgeCubies);
+		struct IDAState;
+		struct State;
+
+		static Cube::IDAState IDASearch(IDAState & state, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB);
+		static IDAState IterativeDepthSearch(IDAState & state, unsigned int const limit, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB);
+		bool CheckPermutations(UInt32 const * const * const cornerCubies, UInt32 const * const * const edgeCubies) const;
 		
-		void GetCornerCubie(int corner, UInt32* out);
-		UInt32 ** GetCornerCubies(); // RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
-		inline void DeleteCornerCubies(UInt32 ** cornerCubies);
-		inline unsigned long long GetCornerHash();
-		int GetCornerOrientationValue(UInt32 cornerValues[3], int corner);
-		int GetCornerPermutationValue(UInt32 cornerCubie[3]);
-		bool CheckCornerParity(UInt32 ** cornerCubies);
-		bool CheckValidCornerColors(UInt32 cornerCubie[3], int corner);
+		void GetCornerCubie(int const corner, UInt32* out) const;
+		UInt32 ** GetCornerCubies() const; // RGW - RBW - RGY - RBY - GOW - GOY - YOB - BOW
+		static void DeleteCornerCubies(UInt32 ** cornerCubies);
+		inline unsigned long long GetCornerHash() const;
+		int GetCornerOrientationValue(UInt32 const cornerValues[3], int const corner) const;
+		int GetCornerPermutationValue(UInt32 const cornerCubie[3]) const;
+		bool CheckCornerParity(UInt32 const * const * const cornerCubies) const;
+		bool CheckValidCornerColors(UInt32 const cornerCubie[3], int const corner) const;
 		
-		void GetEdgeCubie(int corner, UInt32* out);
-		UInt32 ** GetEdgeCubies(); // RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW
-		inline void DeleteEdgeCubies(UInt32 ** edgeCubies);
-		inline unsigned long long GetEdgeHash(bool setA);
-		int GetEdgePermutationValue(UInt32 edgeCubie[2]);
-		int GetEdgeOrientationValue(UInt32 edgeCubie[2], int i);
-		bool CheckEdgeParity(UInt32 ** edgeCubies);
-		bool CheckValidEdgeColors(UInt32 edge[2]);
+		void GetEdgeCubie(int const corner, UInt32* out) const;
+		UInt32 ** GetEdgeCubies() const; // RW - RG - RB - RY - GW - GY - GO - YB - YO - BW - BO - OW
+		static void DeleteEdgeCubies(UInt32 ** edgeCubies);
+		inline unsigned long long GetEdgeHash(bool const setA) const;
+		int GetEdgePermutationValue(UInt32 const edgeCubie[2]) const;
+		int GetEdgeOrientationValue(UInt32 const edgeCubie[2], int const i) const;
+		bool CheckEdgeParity(UInt32 const * const * const edgeCubies) const;
+		bool CheckValidEdgeColors(UInt32 const edge[2]) const;
 	};
 }

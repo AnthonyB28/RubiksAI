@@ -13,7 +13,15 @@ Reader::Reader()
 	}
 }
 
-bool Reader::LoadCubeFile(std::string filePath, bool checkValid)
+// Returns a Rubiks Cube
+Rubiks::Cube Reader::GetCube() const
+{
+	return m_Cube;
+}
+
+// Loads a Rubiks Cube input file and returns if it loads cube
+// Pass true checkValid for parity check as well
+bool Reader::LoadCubeFile(std::string const & filePath, bool const checkValid)
 {
 	m_CheckValid = checkValid;
 	std::ifstream input(filePath.c_str());
@@ -33,6 +41,9 @@ bool Reader::LoadCubeFile(std::string filePath, bool checkValid)
 			std::size_t end = inputLine.find_last_not_of('\r');
 			std::size_t beginning = inputLine.find_first_not_of('\r');
 			std::string inputTrim = inputLine.substr(beginning, end - beginning + 1);
+// 			end = inputLine.find_last_not_of(' ');
+// 			beginning = inputLine.find_first_not_of(' ');
+// 			inputTrim = inputLine.substr(beginning, end - beginning + 1);
 			if (!BuildFace(facesDone, row, &inputTrim))
 			{
 				input.close();
@@ -111,7 +122,7 @@ bool Reader::LoadCubeFile(std::string filePath, bool checkValid)
 // Builds upon a face of a cube given a row number and the string line of input color 
 // upper face (0) - second row (2) - 'RGR'
 // returns if the input is a valid for our rubiks cube
-bool Reader::BuildFace(int face, int row, const std::string * const values)
+bool Reader::BuildFace(int const cube, int const row, std::string const * const values)
 {
 	int i = 0;
 	int colorToAdd = 0;
@@ -151,7 +162,7 @@ bool Reader::BuildFace(int face, int row, const std::string * const values)
 				EG the face # happens to represent the color by order of appearence
 				R is always 0, G is always 1
 			*/
-			if (colorToAdd != face)
+			if (colorToAdd != cube)
 			{
 				return false;
 			}
@@ -183,7 +194,7 @@ bool Reader::BuildFace(int face, int row, const std::string * const values)
 		}
 
 		
-		m_Cube.m_Faces[face].SetColor(row, i, colorToAdd);
+		m_Cube.m_Faces[cube].SetColor(row, i, colorToAdd);
 
 		++i;
 
@@ -195,7 +206,7 @@ bool Reader::BuildFace(int face, int row, const std::string * const values)
 	}
 
 	// Valid input with size in 3 steps
-	int size = values->length();
+	int size = (int) values->length();
 	if (size % 3) // If our input is not divisible by the number of cubes in a row, its invalid.
 	{
 		return false;
@@ -203,7 +214,7 @@ bool Reader::BuildFace(int face, int row, const std::string * const values)
 	else if (size > 3) // Input line can be multi-faced, need to recursively build the next face.
 	{
 		std::string substr = values->substr(3);
-		return BuildFace(face + 1, row, &substr);
+		return BuildFace(cube + 1, row, &substr);
 	}
 	else // Otherwise we should be valid
 	{

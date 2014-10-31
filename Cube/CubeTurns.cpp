@@ -3,7 +3,7 @@
 namespace Rubiks
 {
 
-	void Cube::LogCube()
+	void Cube::LogCube() const
 	{
 		std::cout << "----------\n";
 		std::cout << RUBIKS_KEY << '\n';

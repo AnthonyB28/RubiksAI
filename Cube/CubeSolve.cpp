@@ -7,8 +7,9 @@
 namespace Rubiks
 {
 
-	int Cube::GetMaxMinMoveSolve(bool max, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
-{
+	// Returns the min or max of the 3 possible move counts from corners, edgesA, edgesB from their hash table
+	int Cube::GetMaxMinMoveSolve(bool max, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB) const
+	{
 		unsigned long long cornerHash = GetCornerHash();
 		unsigned long long edgeHashA = GetEdgeHash(true);
 		unsigned long long edgeHashB = GetEdgeHash(false);
@@ -59,22 +60,22 @@ namespace Rubiks
 		}
 	}
 
-	
-	struct Cube::AState
+	// A cube state specifically for IDA* search
+	struct Cube::IDAState
 	{
 		// Each Cube state is only ~22 bytes!
-		AState(std::vector<int> const & prevMoves, Cube const & cube)
+		IDAState(std::vector<int> const & prevMoves, Cube const & cube)
 			: m_Cube(cube)
 			, m_PrevMoves(prevMoves) // 30 is a placeholder so we don't skip the goal state at 0
 			, m_CutOff(false)
 		{}
 
 		Cube m_Cube;
-		std::vector<int> m_PrevMoves;
+		std::vector<int> m_PrevMoves; // All the previous moves made up to this state, our g(n) for depth
 		bool m_CutOff = false;
 	};
 
-	Cube::AState RecursiveDLS(Cube::AState& state, unsigned int const limit, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
+	Cube::IDAState Cube::IterativeDepthSearch(Cube::IDAState & state, unsigned int const limit, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
 	{
 		// Don't exceed f(n) = g(n) + h(n)
 		static boost::timer t;
@@ -85,7 +86,7 @@ namespace Rubiks
 		{
 			return state;
 		}
-		else if (state.m_PrevMoves.size() + h > limit) // If g(n) > limit, we need to cut off. TODO Could this be prevMove + h > limit for f(n) = g(n) + h(n)
+		else if (state.m_PrevMoves.size() + h > limit) // If prevMove + h > limit for f(n) = g(n) + h(n), we need to cut off
 		{
 			state.m_CutOff = true;
 			return state;
@@ -116,7 +117,7 @@ namespace Rubiks
 					currentMove != (lastMove + 1) &&
 					currentMove != (lastMove + 2))
 				{
-					Cube::AState newState(state.m_PrevMoves, state.m_Cube);
+					Cube::IDAState newState(state.m_PrevMoves, state.m_Cube);
 					newState.m_PrevMoves.push_back(currentMove);
 					switch (currentMove) // Manipulate the state with a move action
 					{
@@ -139,7 +140,7 @@ namespace Rubiks
 					case 16: newState.m_Cube.TurnBackACW(); break;
 					case 17: newState.m_Cube.TurnBackCW(); newState.m_Cube.TurnBackCW(); break;
 					}
-					Cube::AState result = RecursiveDLS(newState, limit, cornerMap, edgeMapA, edgeMapB); // Iterative deepening
+					Cube::IDAState result = IterativeDepthSearch(newState, limit, cornerMap, edgeMapA, edgeMapB); // Iterative deepening
 					if (!result.m_CutOff) // If the result is not cut off, we have a solution.
 					{
 						return result;
@@ -154,12 +155,12 @@ namespace Rubiks
 
 	}
 
-	Cube::AState IDS(Cube::AState& state, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
+	Cube::IDAState Cube::IDASearch(IDAState & state, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
 	{
 		//int maxCount = state.m_Cube.GetMaxMinMoveSolve(cornerMap, edgeMapA, edgeMapB);
 		for (int i = 0; i <= 20; ++i)
 		{
-			Cube::AState result = RecursiveDLS(state, i, cornerMap, edgeMapA, edgeMapB);
+			Cube::IDAState result = IterativeDepthSearch(state, i, cornerMap, edgeMapA, edgeMapB);
 			if (!result.m_CutOff)
 			{
 				printf("\nsolution @ %d", i);
@@ -171,12 +172,12 @@ namespace Rubiks
 		return state;
 	}
 
-	void Cube::Solve(std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
+	void Cube::Solve(std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB) const
 	{
 		boost::timer t;
 		// f = g + h where g = cost to get to this node and h = heuristic estimate of getting to goal
 		// search node as long as f <= threshold, or f >= threshold in our case?
-		AState result = IDS(AState(std::vector<int>(), *this), cornerMap, edgeMapA, edgeMapB);
+		IDAState result = IDASearch(IDAState(std::vector<int>(), *this), cornerMap, edgeMapA, edgeMapB);
 		printf("\nTime to solve: %f ", t.elapsed());
 		if (result.m_CutOff)
 		{

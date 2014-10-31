@@ -14,11 +14,11 @@ namespace Rubiks
 	{
 	public:
 		Face();
-		CornerCubies GetCorners(); // Gets the array of corner values
-		EdgeCubies GetEdges(); // Gets the array of edge values
+		CornerCubies GetCorners() const; // Gets the array of corner values
+		EdgeCubies GetEdges() const; // Gets the array of edge values
 		
-		void SetColor(int row, int column, int val);
-		unsigned int GetColor(int row, int column);
+		void SetColor(int const row, int const column, int const val);
+		unsigned int GetColor(int const row, int const column) const;
 
 		// three-bit unsigned field,
 		// allowed values are 0...7

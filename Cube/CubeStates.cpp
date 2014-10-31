@@ -39,7 +39,7 @@ namespace Rubiks
 		return goal;
 	}
 
-	void Cube::TestTableFileRead(char* fileName, bool corners)
+	void Cube::TestTableFileRead(char const * const fileName, bool const corners)
 	{
 		std::fstream file;
 		file.open(fileName, std::ios::binary | std::ios::in);
@@ -81,8 +81,8 @@ namespace Rubiks
 		}
 	}
 
-	void Cube::TableFileLoad(char* fileName, std::vector<char>& map)
-{
+	void Cube::TableFileLoad(char const * const fileName, std::vector<char>& map)
+	{
 		std::fstream file;
 		file.open(fileName, std::ios::binary | std::ios::in);
 		file.seekg(0);
@@ -125,7 +125,7 @@ namespace Rubiks
 
 	// Generates a hash table for all the unique states of corners for a given hueristic, and writes it to a file. 
 	// Heuristic shouldnt be larger than 12
-	void Cube::GenerateCornerTables(int heuristic)
+	void Cube::GenerateCornerTables(int const heuristic)
 	{
 		if (heuristic > 12)
 		{
@@ -242,7 +242,7 @@ namespace Rubiks
 	}
 
 	// Returns the hash for corners for a Cube's state
-	unsigned long long Cube::GetCornerHash()
+	unsigned long long Cube::GetCornerHash() const
 	{
 		unsigned long long value = 1;
 		// inlining this shaves off several seconds of speed!
@@ -308,7 +308,7 @@ namespace Rubiks
 
 	// Generates a hash table for all the unique states of one set of edges for a given hueristic, and writes it to a file.
 	// Heuristic shouldnt be larger than 11
-	void Cube::GenerateEdgeTables(int heuristic, bool setA)
+	void Cube::GenerateEdgeTables(int const heuristic, bool const setA)
 	{
 		if (heuristic > 11)
 		{
@@ -426,7 +426,7 @@ namespace Rubiks
 	}
 
 	// True if from 1 to 6, else from 7 to 12
-	unsigned long long Cube::GetEdgeHash(bool setA)
+	unsigned long long Cube::GetEdgeHash(bool const setA) const
 	{
 		unsigned long long value = 1;
 		// inlining this shaves off several seconds of speed!

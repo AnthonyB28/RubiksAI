@@ -24,8 +24,9 @@ int main(int argc, const char* argv[])
 		if (input->LoadCubeFile(argv[1], true))
 		{
 			std::cout << "VALID_INPUT\n";
-			input->m_Cube.LogCube();
-			input->m_Cube.Solve(cornersMap, edgesAMap, edgesBMap);
+			Rubiks::Cube cube = input->GetCube();
+			cube.LogCube();
+			cube.Solve(cornersMap, edgesAMap, edgesBMap);
 		}
 		else
 		{
@@ -35,9 +36,10 @@ int main(int argc, const char* argv[])
 #else
 		bool valid = input->LoadCubeFile(argv[1], true);
 		std::cout << std::boolalpha << valid;
+		Rubiks::Cube cube = input->GetCube();
 		if (valid)
 		{
-			input->m_Cube.Solve(cornersMap, edgesAMap, edgesBMap);
+			cube.Solve(cornersMap, edgesAMap, edgesBMap);
 		}
 		system("pause");
 #endif
@@ -56,8 +58,9 @@ int main(int argc, const char* argv[])
 			}
 			else
 			{
+				Rubiks::Cube cube = input->GetCube();
 				++passed;
-				input->m_Cube.Solve(cornersMap, edgesAMap, edgesBMap);
+				cube.Solve(cornersMap, edgesAMap, edgesBMap);
 			}
 			delete input;
 		}
@@ -71,7 +74,8 @@ int main(int argc, const char* argv[])
 		std::cout << std::boolalpha << valid;
 		if (valid)
 		{
-			input->m_Cube.Solve(cornersMap, edgesAMap, edgesBMap);
+			Rubiks::Cube cube = input->GetCube();
+			cube.Solve(cornersMap, edgesAMap, edgesBMap);
 		}
 		system("pause");
 	}
