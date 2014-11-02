@@ -36,7 +36,7 @@ bool Reader::LoadCubeFile(std::string const & filePath, bool const checkValid)
 		while (std::getline(input, inputLine))
 		{
 #ifdef DEBUG_MODE
-			std::cout << inputLine << '\n';
+			std::cout << '\n' << inputLine ;
 #endif
 			std::size_t end = inputLine.find_last_not_of('\r');
 			std::size_t beginning = inputLine.find_first_not_of('\r');

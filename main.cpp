@@ -8,7 +8,7 @@
 
 int main(int argc, const char* argv[])
 {
-	bool testValidityFolder = true;
+	bool testValidityFolder = false;
 	Reader *input = new Reader();
 
 	//Rubiks::Cube::GenerateCornerTables(12);
