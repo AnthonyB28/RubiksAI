@@ -216,7 +216,7 @@ namespace Rubiks
 			}
 			delete curState;
 		}
-		printf("\n Skipped: %d - total: %d - Unique: %d", skipped, count, count - skipped);
+		printf("\n Skipped: %llu - total: %llu - Unique: %llu", skipped, count, count - skipped);
 		std::fstream file;
 		file.open("corners1.bin", std::ios::binary | std::ios::out | std::ios::trunc);
 		unsigned long long missed = 0;
@@ -239,11 +239,11 @@ namespace Rubiks
 			}
 			else
 			{
-				printf("\n%d HashSkipped", hash);
+				printf("\n%llu HashSkipped", hash);
 				++missed;
 			}
 		}
-		printf("\nSkipped array %d", missed);
+		printf("\nSkipped array %llu", missed);
 		file.close();
 	}
 
@@ -399,7 +399,7 @@ namespace Rubiks
 			}
 			delete curState;
 		}
-		printf("\n Skipped: %d - total: %d - Unique: %d", skipped, count, count-skipped);
+		printf("\n Skipped: %llu - total: %llu - Unique: %llu", skipped, count, count-skipped);
 		std::fstream file;
 		file.open("Edges2.bin", std::ios::binary | std::ios::out | std::ios::trunc);
 		unsigned long long missed = 0;
@@ -423,11 +423,11 @@ namespace Rubiks
 			}
 			else
 			{
-				printf("\n%d HashSkipped", hash);
+				printf("\n%llu HashSkipped", hash);
 				++missed;
 			}
 		}
-		printf("\nSkipped array %d", missed);
+		printf("\nSkipped array %llu", missed);
 		file.close();
 	}
 
