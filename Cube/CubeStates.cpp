@@ -10,7 +10,7 @@ namespace Rubiks
 	struct Cube::State
 	{
 		// Each Cube state is only ~22 bytes!
-		State(int moveCount, Cube& cube)
+		State(int moveCount, Cube const& cube)
 			: m_PreviousMove(30) // 30 is a placeholder so we don't skip the goal state at 0
 			, m_MoveCount(moveCount)
 			, m_Cube(cube)
@@ -81,13 +81,18 @@ namespace Rubiks
 		}
 	}
 
-	void Cube::TableFileLoad(char const * const fileName, std::vector<char>& map)
+	bool Cube::TableFileLoad(char const * const fileName, std::vector<char>& map)
 	{
 		std::fstream file;
 		file.open(fileName, std::ios::binary | std::ios::in);
+		if (!file)
+		{
+			return false;
+		}
 		file.seekg(0);
 		file.read((char*)&map[0], map.size());
 		file.close();
+		return true;
 	}
 
 	int GetThreePow(int num)
@@ -136,7 +141,8 @@ namespace Rubiks
 		std::vector<int> *uniqueStates = new std::vector < int > ;
 		uniqueStates->resize(UNIQUE_CORNERS, -1);
 		std::queue<State*> q;
-		q.push(new State(0, Cube::GetGoalCube())); // start with goal state
+		State* goal = new State(0, Cube::GetGoalCube());
+		q.push(goal); // start with goal state
 		uniqueStates->at(q.front()->m_Cube.GetCornerHash()) = 0; // Make sure we save the goal state's value
 		unsigned long long skipped = 0;
 		unsigned long long count = 0;

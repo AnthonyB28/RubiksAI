@@ -2,7 +2,6 @@
 #include <stack>
 #include <algorithm>
 #include <iostream>
-#include <boost/timer.hpp>
 
 namespace Rubiks
 {
@@ -78,8 +77,6 @@ namespace Rubiks
 	Cube::IDAState Cube::IterativeDepthSearch(Cube::IDAState & state, unsigned int const limit, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
 	{
 		// Don't exceed f(n) = g(n) + h(n)
-		static boost::timer t;
-		static unsigned long long nodes = 0;
 		IDAState * copyState = new IDAState(state.m_PrevMoves, state.m_Cube);
 		std::stack<IDAState *> s;
 		s.push(copyState);
@@ -90,7 +87,11 @@ namespace Rubiks
 			int h = currentState->m_Cube.GetMaxMinMoveSolve(true, cornerMap, edgeMapA, edgeMapB); // h(n) 
 			if (h == 0) // We've solved the cube.
 			{
-				std::cout << "\nNodes: " << nodes;
+				while (!s.empty())
+				{
+					delete s.top();
+					s.pop();
+				}
 				return *currentState;
 			}
 			else if (currentState->m_PrevMoves.size() + h > limit) // If prevMove + h > limit for f(n) = g(n) + h(n), we need to cut off
@@ -112,14 +113,6 @@ namespace Rubiks
 				// Generate a state for every possible move (18 of them)
 				for (int currentMove = 0; currentMove < 18; ++currentMove)
 				{
-					++nodes;
-					static bool nodeTime = false;
-					if (!nodeTime && nodes % 1000000 == 0)
-					{
-						std::cout << "\nNodes: " << nodes << " - " << t.elapsed();
-						t.restart();
-						nodeTime = true;
-					}
 					bool skipMove = false;
 					// Only make a new state if the previous move is not repeated in anyway.
 					Cube::IDAState * newState = new Cube::IDAState(currentState->m_PrevMoves, currentState->m_Cube);
@@ -169,9 +162,10 @@ namespace Rubiks
 					}
 					else
 					{
-						delete currentState;
+						delete newState;
 					}
 				}
+				delete currentState;
 			}
 		}
 
@@ -183,21 +177,17 @@ namespace Rubiks
 	// IDA* search for a goal in a state using the maps for h(n)
 	Cube::IDAState Cube::IDASearch(IDAState & state, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB)
 	{
-		boost::timer t;
-		boost::timer s;
-		//int maxCount = state.m_Cube.GetMaxMinMoveSolve(cornerMap, edgeMapA, edgeMapB);
 		for (int i = 0; i <= 20; ++i)
 		{
-			printf("\nDepth: %d Time: %f", i, t.elapsed());
-			t.restart();
+			//printf("\nDepth: %d Time: %f", i, t.elapsed());
 			Cube::IDAState result = IterativeDepthSearch(state, i, cornerMap, edgeMapA, edgeMapB);
 			if (!result.m_CutOff)
 			{
-				printf("\nSolution Time: %f", s.elapsed());
+				//printf("\nSolution Time: %f", s.elapsed());
 				return result;
 			}
 		}
-		printf("\nDidnt find solution");
+		//printf("\nDidnt find solution");
 		state.m_CutOff = true;
 		return state;
 	}
@@ -207,7 +197,8 @@ namespace Rubiks
 	{
 		// f = g + h where g = cost to get to this node and h = heuristic estimate of getting to goal
 		// search node as long as f <= threshold, or f >= threshold in our case?
-		IDAState result = IDASearch(IDAState(std::vector<int>(), *this), cornerMap, edgeMapA, edgeMapB);
+		IDAState thisCube(std::vector<int>(), *this);
+		IDAState result = IDASearch(thisCube, cornerMap, edgeMapA, edgeMapB);
 		if (result.m_CutOff)
 		{
 			return;
@@ -238,6 +229,6 @@ namespace Rubiks
 			}
 		}
 
-		printf("\n SOLUTION: %s", solveTurns.c_str());
+		printf("%s", solveTurns.c_str());
 	}
 }

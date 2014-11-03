@@ -259,7 +259,7 @@ namespace Rubiks
 		{
 			// Completely invalid cube?
 			return 0;
-			printf("invalid cube");
+			//printf("invalid cube");
 		}
 	}
 
