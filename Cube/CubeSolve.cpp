@@ -169,9 +169,10 @@ namespace Rubiks
 					}
 					else
 					{
-						delete currentState;
+						delete newState;
 					}
 				}
+				delete currentState;
 			}
 		}
 

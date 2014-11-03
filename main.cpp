@@ -51,7 +51,6 @@ int main(int argc, const char* argv[])
 		{
 			input = new Reader();
 			std::stringstream file;
-			//file << "valid\\test" << i << ".txt";
 #ifdef DEBUG_MODE
 			file << "scrambles\\countstates\\cube" << i ;
 #else

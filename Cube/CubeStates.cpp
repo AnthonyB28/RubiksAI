@@ -10,7 +10,7 @@ namespace Rubiks
 	struct Cube::State
 	{
 		// Each Cube state is only ~22 bytes!
-		State(int moveCount, Cube& cube)
+		State(int moveCount, Cube const & cube)
 			: m_PreviousMove(30) // 30 is a placeholder so we don't skip the goal state at 0
 			, m_MoveCount(moveCount)
 			, m_Cube(cube)
