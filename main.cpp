@@ -8,10 +8,10 @@
 
 int main(int argc, const char* argv[])
 {
-	bool testValidityFolder = false;
+	bool testValidityFolder = true;
 	Reader *input = new Reader();
 
-	//Rubiks::Cube::GenerateCornerTables(12);
+	//Rubiks::Cube::GenerateEdgeTables(12, true);
 	std::vector<char> cornersMap(UNIQUE_CORNERS / 2+1);
 	std::vector<char> edgesAMap(UNIQUE_EDGES / 2+1);
 	std::vector<char> edgesBMap(UNIQUE_EDGES / 2+1);
