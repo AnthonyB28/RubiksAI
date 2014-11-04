@@ -11,7 +11,6 @@ int main(int argc, const char* argv[])
 	bool testValidityFolder = false;
 	Reader *input = new Reader();
 
-	Rubiks::Cube::GenerateEdgeTables(12, true);
 	std::vector<char> cornersMap(UNIQUE_CORNERS / 2+1);
 	std::vector<char> edgesAMap(UNIQUE_EDGES / 2+1);
 	std::vector<char> edgesBMap(UNIQUE_EDGES / 2+1);
@@ -41,7 +40,7 @@ int main(int argc, const char* argv[])
 		{
 			std::cout << "INVALID_INPUT\n";
 		}
-		//system("pause");
+		system("pause");
 #else
 		bool valid = input->LoadCubeFile(argv[1], true);
 		if (!valid)
@@ -53,7 +52,7 @@ int main(int argc, const char* argv[])
 			Rubiks::Cube cube = input->GetCube();
 			cube.Solve(cornersMap, edgesAMap, edgesBMap);
 		}
-		//system("pause");
+		system("pause");
 #endif
 	}
 	else if (testValidityFolder) // Test an entire folder for validity
@@ -63,11 +62,7 @@ int main(int argc, const char* argv[])
 		{
 			input = new Reader();
 			std::stringstream file;
-#ifdef DEBUG_MODE
-			file << "scrambles//countstates//cube" << i ;
-#else
 			file << "..\\..\\scrambles\\countstates\\cube" << i ;
-#endif
 			if (!input->LoadCubeFile(file.str(), true))
 			{
 				std::cout << "Test " << i << " failed\n";
@@ -81,11 +76,11 @@ int main(int argc, const char* argv[])
 			delete input;
 		}
 		std::cout << "Finished all tests " << " Passed:" << passed << "\n";
-		//system("pause");
+		system("pause");
 	}
 	else
 	{
 		std::cout << "Please provide input file path as argument before execution\n";
-		//system("pause");
+		system("pause");
 	}
 }

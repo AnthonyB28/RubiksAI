@@ -41,6 +41,7 @@ namespace Rubiks
 		return goal;
 	}
 
+	// Debug for hash table, true if corners, else edges
 	void Cube::TestTableFileRead(char const * const fileName, bool const corners)
 	{
 		std::fstream file;
@@ -83,6 +84,7 @@ namespace Rubiks
 		}
 	}
 
+	// Load a table file into a vector of char (like a map)
 	bool Cube::TableFileLoad(char const * const fileName, std::vector<char>& map)
 	{
 		std::fstream file;
@@ -97,6 +99,7 @@ namespace Rubiks
 		return true;
 	}
 
+	// Return powers of 3 (up to 6 is precomputed)
 	int GetThreePow(int num)
 	{
 		if (num == 0) { return 1; }
@@ -109,7 +112,7 @@ namespace Rubiks
 		else return num  * GetThreePow(num);
 	}
 
-	// Up to 12 is precomputed
+	// Returns factorial of num, precomputed up to 12
 	int GetFactorial(int num)
 	{
 		if (num <= 1) { return 1; }
@@ -346,26 +349,6 @@ namespace Rubiks
 						newState->m_PreviousMove = currentMove;
 						newState->m_PreviousMoves = curState->m_PreviousMoves;
 						newState->m_PreviousMoves.push_back(currentMove);
-						if (newState->m_PreviousMoves.size() == 7 && newState->m_PreviousMoves[0] == 5
-							&& newState->m_PreviousMoves[1] == 2 && newState->m_PreviousMoves[2] == 6 && newState->m_PreviousMoves[3]==5)
-						{
-							std::vector<int>test{ 5, 2, 6, 5, 16, 11, 12 };
-							if (newState->m_PreviousMoves == test)
-							{
-								printf("Here1");
-							}
-							
-						}
-						if (newState->m_PreviousMoves.size() == 11 && newState->m_PreviousMoves[0] == 5)
-						{
-							std::vector<int>test{ 5, 2, 6, 5, 16, 11, 12, 4, 13, 6, 2 };
-							if (newState->m_PreviousMoves == test)
-							{
-								int x = 0;
-								printf("Here2");
-							}
-
-						}
 						bool skipMove = false;
 						switch (currentMove) // Manipulate the state with a move action
 						{
@@ -448,7 +431,7 @@ namespace Rubiks
 		}
 		printf("\n Skipped: %llu - total: %llu - Unique: %llu", skipped, count, count-skipped);
 		std::fstream file;
-		file.open("Edgesaaaa.bin", std::ios::binary | std::ios::out | std::ios::trunc);
+		file.open("Edges.bin", std::ios::binary | std::ios::out | std::ios::trunc);
 		unsigned long long missed = 0;
 		for (int hash = 0; hash < UNIQUE_EDGES; hash += 2)
 		{
@@ -553,12 +536,12 @@ namespace Rubiks
 			value += (position * 2 + orientation) * ((GetFactorial(11 - cubieOffSet) / GetFactorial(6)) * twoPow);
 			++cubieOffSet;
 		}
-		static unsigned long long largestValue = 0;
-		if (value > largestValue)
-		{
-			largestValue = value;
-			printf("\n%d", largestValue);
-		}
+// 		static unsigned long long largestValue = 0;
+// 		if (value > largestValue)
+// 		{
+// 			largestValue = value;
+// 			printf("\n%d", largestValue);
+// 		}
 		return value;
 	}
 }

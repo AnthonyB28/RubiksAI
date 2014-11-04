@@ -192,7 +192,7 @@ namespace Rubiks
 		return state;
 	}
 
-	// Solve a rubiks cube and print solution using face color turns
+	// Solve a rubiks cube using IDA* and print solution using face color turns string
 	void Cube::Solve(std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB) const
 	{
 		// f = g + h where g = cost to get to this node and h = heuristic estimate of getting to goal
@@ -229,6 +229,6 @@ namespace Rubiks
 			}
 		}
 
-		printf("%s\n", solveTurns.c_str());
+		printf("%s", solveTurns.c_str());
 	}
 }
