@@ -11,19 +11,19 @@ int main(int argc, const char* argv[])
 	bool testValidityFolder = false;
 	Reader *input = new Reader();
 
-	//Rubiks::Cube::GenerateEdgeTables(12, true);
+	Rubiks::Cube::GenerateEdgeTables(12, true);
 	std::vector<char> cornersMap(UNIQUE_CORNERS / 2+1);
 	std::vector<char> edgesAMap(UNIQUE_EDGES / 2+1);
 	std::vector<char> edgesBMap(UNIQUE_EDGES / 2+1);
-	if (!Rubiks::Cube::TableFileLoad("Tables//corners.bin", cornersMap))
+	if (!Rubiks::Cube::TableFileLoad("Tables\\corners.bin", cornersMap))
 	{
 		std::cout << "Corners.bin failed to load!\n";
 	}
-	if (!Rubiks::Cube::TableFileLoad("Tables//edges.bin", edgesAMap))
+	if (!Rubiks::Cube::TableFileLoad("Tables\\edges.bin", edgesAMap))
 	{
 		std::cout << "Edges.bin failed to load!\n";
 	}
-	if(!Rubiks::Cube::TableFileLoad("Tables//edges2.bin", edgesBMap))
+	if(!Rubiks::Cube::TableFileLoad("Tables\\edges2.bin", edgesBMap))
 	{
 		std::cout << "Edges2.bin failed to load!\n";
 	}
@@ -66,7 +66,7 @@ int main(int argc, const char* argv[])
 #ifdef DEBUG_MODE
 			file << "scrambles//countstates//cube" << i ;
 #else
-			file << "..//..//scrambles//countstates//cube" << i ;
+			file << "..\\..\\scrambles\\countstates\\cube" << i ;
 #endif
 			if (!input->LoadCubeFile(file.str(), true))
 			{

@@ -445,9 +445,11 @@ namespace Rubiks
 
 	*********************/
 
+
+	// Returns a specific Edge Cubie using the UInt32* out as a [2] array
 	void Cube::GetEdgeCubie(int const edge, UInt32* out) const
 	{
-		if (edge == 0)
+		if (edge == 0)								
 		{
 			out[0] = m_Faces[0].m_TopMiddle;
 			out[1] = m_Faces[5].m_BottomMiddle;

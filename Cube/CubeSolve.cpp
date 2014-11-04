@@ -101,9 +101,9 @@ namespace Rubiks
 			else
 			{
 				int lastMove;
-				if (state.m_PrevMoves.size() > 0) // Make sure we're not doing the initial state, else we go out of bounds.
+				if (currentState->m_PrevMoves.size() > 0) // Make sure we're not doing the initial state, else we go out of bounds.
 				{
-					lastMove = state.m_PrevMoves[state.m_PrevMoves.size() - 1];
+					lastMove = currentState->m_PrevMoves[currentState->m_PrevMoves.size() - 1];
 				}
 				else
 				{
@@ -125,11 +125,11 @@ namespace Rubiks
 							else { skipMove = true; } break;
 					case 2: if (lastMove != 0 && lastMove != 1 && lastMove != 2 && lastMove != 3 && lastMove != 4 && lastMove != 5) { newState->m_Cube.TurnTopCW(); newState->m_Cube.TurnTopCW(); }
 							else { skipMove = true; } break;
-					case 3: if (lastMove != 3 && lastMove != 4 && lastMove != 5 && lastMove != 0 && lastMove != 1 && lastMove != 2) { newState->m_Cube.TurnBottomCW(); }
+					case 3: if (lastMove != 3 && lastMove != 4 && lastMove != 5) { newState->m_Cube.TurnBottomCW(); }
 							else { skipMove = true; } break;
-					case 4:  if (lastMove != 3 && lastMove != 4 && lastMove != 5 && lastMove != 0 && lastMove != 1 && lastMove != 2) { newState->m_Cube.TurnBottomACW(); }
+					case 4:  if (lastMove != 3 && lastMove != 4 && lastMove != 5) { newState->m_Cube.TurnBottomACW(); }
 							 else { skipMove = true; } break;
-					case 5:  if (lastMove != 3 && lastMove != 4 && lastMove != 5 && lastMove != 0 && lastMove != 1 && lastMove != 2) { newState->m_Cube.TurnBottomCW(); newState->m_Cube.TurnBottomCW(); }
+					case 5:  if (lastMove != 3 && lastMove != 4 && lastMove != 5) { newState->m_Cube.TurnBottomCW(); newState->m_Cube.TurnBottomCW(); }
 							 else { skipMove = true; } break;
 					case 6: if (lastMove != 6 && lastMove != 7 && lastMove != 8 && lastMove != 9 && lastMove != 10 && lastMove != 11) { newState->m_Cube.TurnLeftCW(); }
 							else { skipMove = true; } break;
@@ -137,11 +137,11 @@ namespace Rubiks
 							else { skipMove = true; } break;
 					case 8: if (lastMove != 6 && lastMove != 7 && lastMove != 8 && lastMove != 9 && lastMove != 10 && lastMove != 11) { newState->m_Cube.TurnLeftCW(); newState->m_Cube.TurnLeftCW(); }
 							else { skipMove = true; } break;
-					case 9:  if (lastMove != 9 && lastMove != 10 && lastMove != 11 && lastMove != 6 && lastMove != 7 && lastMove != 8) { newState->m_Cube.TurnRightCW(); }
+					case 9:  if (lastMove != 9 && lastMove != 10 && lastMove != 11) { newState->m_Cube.TurnRightCW(); }
 							 else { skipMove = true; } break;
-					case 10:  if (lastMove != 9 && lastMove != 10 && lastMove != 11 && lastMove != 6 && lastMove != 7 && lastMove != 8) { newState->m_Cube.TurnRightACW(); }
+					case 10:  if (lastMove != 9 && lastMove != 10 && lastMove != 11) { newState->m_Cube.TurnRightACW(); }
 							  else { skipMove = true; } break;
-					case 11: if (lastMove != 9 && lastMove != 10 && lastMove != 11 && lastMove != 6 && lastMove != 7 && lastMove != 8) { newState->m_Cube.TurnRightCW(); newState->m_Cube.TurnRightCW(); }
+					case 11: if (lastMove != 9 && lastMove != 10 && lastMove != 11) { newState->m_Cube.TurnRightCW(); newState->m_Cube.TurnRightCW(); }
 							 else { skipMove = true; } break;
 					case 12: if (lastMove != 12 && lastMove != 13 && lastMove != 14 && lastMove != 15 && lastMove != 16 && lastMove != 17) { newState->m_Cube.TurnFrontCW(); }
 							 else { skipMove = true; } break;
@@ -149,11 +149,11 @@ namespace Rubiks
 							 else { skipMove = true; }break;
 					case 14: if (lastMove != 12 && lastMove != 13 && lastMove != 14 && lastMove != 15 && lastMove != 16 && lastMove != 17) { newState->m_Cube.TurnFrontCW(); newState->m_Cube.TurnFrontCW(); }
 							 else { skipMove = true; } break;
-					case 15: if (lastMove != 15 && lastMove != 16 && lastMove != 17 && lastMove != 12 && lastMove != 13 && lastMove != 14) { newState->m_Cube.TurnBackCW(); }
+					case 15: if (lastMove != 15 && lastMove != 16 && lastMove != 17) { newState->m_Cube.TurnBackCW(); }
 							 else { skipMove = true; }break;
-					case 16: if (lastMove != 15 && lastMove != 16 && lastMove != 17 && lastMove != 12 && lastMove != 13 && lastMove != 14) { newState->m_Cube.TurnBackACW(); }
+					case 16: if (lastMove != 15 && lastMove != 16 && lastMove != 17) { newState->m_Cube.TurnBackACW(); }
 							 else { skipMove = true; }break;
-					case 17: if (lastMove != 15 && lastMove != 16 && lastMove != 17 && lastMove != 12 && lastMove != 13 && lastMove != 14) { newState->m_Cube.TurnBackCW(); newState->m_Cube.TurnBackCW(); }
+					case 17: if (lastMove != 15 && lastMove != 16 && lastMove != 17) { newState->m_Cube.TurnBackCW(); newState->m_Cube.TurnBackCW(); }
 							 else { skipMove = true; } break;
 					}
 					if (!skipMove)
@@ -229,6 +229,6 @@ namespace Rubiks
 			}
 		}
 
-		printf("%s", solveTurns.c_str());
+		printf("%s\n", solveTurns.c_str());
 	}
 }
