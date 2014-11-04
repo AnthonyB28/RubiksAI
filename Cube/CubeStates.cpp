@@ -10,7 +10,7 @@ namespace Rubiks
 	struct Cube::State
 	{
 		// Each Cube state is only ~22 bytes!
-		State(int moveCount, Cube const & cube)
+		State(int moveCount, Cube const& cube)
 			: m_PreviousMove(30) // 30 is a placeholder so we don't skip the goal state at 0
 			, m_MoveCount(moveCount)
 			, m_Cube(cube)
@@ -81,13 +81,18 @@ namespace Rubiks
 		}
 	}
 
-	void Cube::TableFileLoad(char const * const fileName, std::vector<char>& map)
+	bool Cube::TableFileLoad(char const * const fileName, std::vector<char>& map)
 	{
 		std::fstream file;
 		file.open(fileName, std::ios::binary | std::ios::in);
+		if (!file)
+		{
+			return false;
+		}
 		file.seekg(0);
 		file.read((char*)&map[0], map.size());
 		file.close();
+		return true;
 	}
 
 	int GetThreePow(int num)
@@ -136,7 +141,8 @@ namespace Rubiks
 		std::vector<int> *uniqueStates = new std::vector < int > ;
 		uniqueStates->resize(UNIQUE_CORNERS, -1);
 		std::queue<State*> q;
-		q.push(new State(0, Cube::GetGoalCube())); // start with goal state
+		State* goal = new State(0, Cube::GetGoalCube());
+		q.push(goal); // start with goal state
 		uniqueStates->at(q.front()->m_Cube.GetCornerHash()) = 0; // Make sure we save the goal state's value
 		unsigned long long skipped = 0;
 		unsigned long long count = 0;
@@ -210,7 +216,7 @@ namespace Rubiks
 			}
 			delete curState;
 		}
-		printf("\n Skipped: %d - total: %d - Unique: %d", skipped, count, count - skipped);
+		printf("\n Skipped: %llu - total: %llu - Unique: %llu", skipped, count, count - skipped);
 		std::fstream file;
 		file.open("corners1.bin", std::ios::binary | std::ios::out | std::ios::trunc);
 		unsigned long long missed = 0;
@@ -233,11 +239,11 @@ namespace Rubiks
 			}
 			else
 			{
-				printf("\n%d HashSkipped", hash);
+				printf("\n%llu HashSkipped", hash);
 				++missed;
 			}
 		}
-		printf("\nSkipped array %d", missed);
+		printf("\nSkipped array %llu", missed);
 		file.close();
 	}
 
@@ -310,7 +316,7 @@ namespace Rubiks
 	// Heuristic shouldnt be larger than 11
 	void Cube::GenerateEdgeTables(int const heuristic, bool const setA)
 	{
-		if (heuristic > 11)
+		if (heuristic > 12)
 		{
 			printf("\nHeuristic too large for edge tables");
 			return;
@@ -334,68 +340,91 @@ namespace Rubiks
 				// Generate a state for every possible move (18 of them)
 				for (int currentMove = 0; currentMove < 18; ++currentMove)
 				{
-					// Only make a new state if the previous move is not repeated in anyway.
-					if (currentMove != curState->m_PreviousMove && 
-						currentMove != (curState->m_PreviousMove + 1) && 
-						currentMove != (curState->m_PreviousMove + 2))
-					{
 						State* newState = new State(moveCount, curState->m_Cube);
 						newState->m_PreviousMove = currentMove;
+						bool skipMove = false;
 						switch (currentMove) // Manipulate the state with a move action
 						{
-						case 0: newState->m_Cube.TurnTopCW(); break;
-						case 1: newState->m_Cube.TurnTopACW(); break;
-						case 2: newState->m_Cube.TurnTopCW(); newState->m_Cube.TurnTopCW(); break;
-						case 3: newState->m_Cube.TurnBottomCW(); break;
-						case 4: newState->m_Cube.TurnBottomACW(); break;
-						case 5: newState->m_Cube.TurnBottomCW(); newState->m_Cube.TurnBottomCW(); break;
-						case 6: newState->m_Cube.TurnLeftCW(); break;
-						case 7: newState->m_Cube.TurnLeftACW(); break;
-						case 8: newState->m_Cube.TurnLeftCW(); newState->m_Cube.TurnLeftCW(); break;
-						case 9: newState->m_Cube.TurnRightCW(); break;
-						case 10: newState->m_Cube.TurnRightACW(); break;
-						case 11: newState->m_Cube.TurnRightCW(); newState->m_Cube.TurnRightCW(); break;
-						case 12: newState->m_Cube.TurnFrontCW(); break;
-						case 13: newState->m_Cube.TurnFrontACW(); break;
-						case 14: newState->m_Cube.TurnFrontCW(); newState->m_Cube.TurnFrontCW(); break;
-						case 15: newState->m_Cube.TurnBackCW(); break;
-						case 16: newState->m_Cube.TurnBackACW(); break;
-						case 17: newState->m_Cube.TurnBackCW(); newState->m_Cube.TurnBackCW(); break;
+						case 0: if (curState->m_PreviousMove != 0 && curState->m_PreviousMove != 1 && curState->m_PreviousMove != 2 && curState->m_PreviousMove != 3 && curState->m_PreviousMove != 4 && curState->m_PreviousMove != 5) { newState->m_Cube.TurnTopCW(); }
+								else { skipMove = true; } break;
+						case 1: if (curState->m_PreviousMove != 0 && curState->m_PreviousMove != 1 && curState->m_PreviousMove != 2 && curState->m_PreviousMove != 3 && curState->m_PreviousMove != 4 && curState->m_PreviousMove != 5) { newState->m_Cube.TurnTopACW(); }
+								else { skipMove = true; } break;
+						case 2: if (curState->m_PreviousMove != 0 && curState->m_PreviousMove != 1 && curState->m_PreviousMove != 2 && curState->m_PreviousMove != 3 && curState->m_PreviousMove != 4 && curState->m_PreviousMove != 5) { newState->m_Cube.TurnTopCW(); newState->m_Cube.TurnTopCW(); }
+								else { skipMove = true; } break;
+						case 3: if (curState->m_PreviousMove != 3 && curState->m_PreviousMove != 4 && curState->m_PreviousMove != 5) { newState->m_Cube.TurnBottomCW(); }
+								else { skipMove = true; } break;
+						case 4:  if (curState->m_PreviousMove != 3 && curState->m_PreviousMove != 4 && curState->m_PreviousMove != 5) { newState->m_Cube.TurnBottomACW(); }
+								 else { skipMove = true; } break;
+						case 5:  if (curState->m_PreviousMove != 3 && curState->m_PreviousMove != 4 && curState->m_PreviousMove != 5) { newState->m_Cube.TurnBottomCW(); newState->m_Cube.TurnBottomCW(); }
+								 else { skipMove = true; } break;
+						case 6: if (curState->m_PreviousMove != 6 && curState->m_PreviousMove != 7 && curState->m_PreviousMove != 8 && curState->m_PreviousMove != 9 && curState->m_PreviousMove != 10 && curState->m_PreviousMove != 11) { newState->m_Cube.TurnLeftCW(); }
+								else { skipMove = true; } break;
+						case 7: if (curState->m_PreviousMove != 6 && curState->m_PreviousMove != 7 && curState->m_PreviousMove != 8 && curState->m_PreviousMove != 9 && curState->m_PreviousMove != 10 && curState->m_PreviousMove != 11) { newState->m_Cube.TurnLeftACW(); }
+								else { skipMove = true; } break;
+						case 8: if (curState->m_PreviousMove != 6 && curState->m_PreviousMove != 7 && curState->m_PreviousMove != 8 && curState->m_PreviousMove != 9 && curState->m_PreviousMove != 10 && curState->m_PreviousMove != 11) { newState->m_Cube.TurnLeftCW(); newState->m_Cube.TurnLeftCW(); }
+								else { skipMove = true; } break;
+						case 9:  if (curState->m_PreviousMove != 9 && curState->m_PreviousMove != 10 && curState->m_PreviousMove != 11) { newState->m_Cube.TurnRightCW(); }
+								 else { skipMove = true; } break;
+						case 10:  if (curState->m_PreviousMove != 9 && curState->m_PreviousMove != 10 && curState->m_PreviousMove != 11 ) { newState->m_Cube.TurnRightACW(); }
+								  else { skipMove = true; } break;
+						case 11: if (curState->m_PreviousMove != 9 && curState->m_PreviousMove != 10 && curState->m_PreviousMove != 11) { newState->m_Cube.TurnRightCW(); newState->m_Cube.TurnRightCW(); }
+								 else { skipMove = true; } break;
+						case 12: if (curState->m_PreviousMove != 12 && curState->m_PreviousMove != 13 && curState->m_PreviousMove != 14 && curState->m_PreviousMove != 15 && curState->m_PreviousMove != 16 && curState->m_PreviousMove != 17) { newState->m_Cube.TurnFrontCW(); }
+								 else { skipMove = true; } break;
+						case 13: if (curState->m_PreviousMove != 12 && curState->m_PreviousMove != 13 && curState->m_PreviousMove != 14 && curState->m_PreviousMove != 15 && curState->m_PreviousMove != 16 && curState->m_PreviousMove != 17) { newState->m_Cube.TurnFrontACW(); }
+								 else { skipMove = true; }break;
+						case 14: if (curState->m_PreviousMove != 12 && curState->m_PreviousMove != 13 && curState->m_PreviousMove != 14 && curState->m_PreviousMove != 15 && curState->m_PreviousMove != 16 && curState->m_PreviousMove != 17) { newState->m_Cube.TurnFrontCW(); newState->m_Cube.TurnFrontCW(); }
+								 else { skipMove = true; } break;
+						case 15: if (curState->m_PreviousMove != 15 && curState->m_PreviousMove != 16 && curState->m_PreviousMove != 17 )  { newState->m_Cube.TurnBackCW(); }
+								 else { skipMove = true; }break;
+						case 16: if (curState->m_PreviousMove != 15 && curState->m_PreviousMove != 16 && curState->m_PreviousMove != 17 ) { newState->m_Cube.TurnBackACW(); }
+								 else { skipMove = true; }break;
+						case 17: if (curState->m_PreviousMove != 15 && curState->m_PreviousMove != 16 && curState->m_PreviousMove != 17 ) { newState->m_Cube.TurnBackCW(); newState->m_Cube.TurnBackCW(); }
+								 else { skipMove = true; } break;
 						}
 
-						unsigned long long hash = newState->m_Cube.GetEdgeHash(setA);
-						// If the hash doesnt exist, we need to add it to the queue else we delete and skip it.
-						if (uniqueStates->at(hash) == -1)
+						if (!skipMove)
 						{
-							q.push(newState);
-							uniqueStates->at(hash) = moveCount;
-						}
-						else // Hash existed, we can safely skip. Unless stored hash is bigger? Should be impossible. Log it
-						{
-							if (uniqueStates->at(hash) > moveCount)
+							unsigned long long hash = newState->m_Cube.GetEdgeHash(setA);
+							// If the hash doesnt exist, we need to add it to the queue else we delete and skip it.
+							if (uniqueStates->at(hash) == -1)
+							{
+								q.push(newState);
+								uniqueStates->at(hash) = moveCount;
+							}
+							else // Hash existed, we can safely skip. Unless stored hash is bigger? Should be impossible. Log it
+							{
+								if (uniqueStates->at(hash) > moveCount)
+								{
+									std::cout.imbue(std::locale(""));
+									std::cout << "\nHash: " << hash << " RecordedMC: " << uniqueStates->at(hash) << " CurrentMC: " << moveCount;
+									return;
+								}
+								++skipped;
+								delete newState;
+							}
+
+							++count;
+							if (count % 10000000 == 0)
 							{
 								std::cout.imbue(std::locale(""));
-								std::cout << "\nHash: " << hash << " RecordedMC: " << uniqueStates->at(hash) << " CurrentMC: " << moveCount;
-								return;
+								std::cout << "\nSkipped: " << skipped << " - total: " << count;
 							}
-							skipped++;
-							delete newState;
 						}
-
-						++count;
-						if (count % 10000000 == 0)
+						else
 						{
-							std::cout.imbue(std::locale(""));
-							std::cout << "\nSkipped: " << skipped << " - total: " << count;
+							delete newState;
+							++skipped;
+							++count;
 						}
-					}
+						
 				}
 			}
 			delete curState;
 		}
-		printf("\n Skipped: %d - total: %d - Unique: %d", skipped, count, count-skipped);
+		printf("\n Skipped: %llu - total: %llu - Unique: %llu", skipped, count, count-skipped);
 		std::fstream file;
-		file.open("Edges2.bin", std::ios::binary | std::ios::out | std::ios::trunc);
+		file.open("Edgesaaaa.bin", std::ios::binary | std::ios::out | std::ios::trunc);
 		unsigned long long missed = 0;
 		for (int hash = 0; hash < UNIQUE_EDGES; hash += 2)
 		{
@@ -417,11 +446,11 @@ namespace Rubiks
 			}
 			else
 			{
-				printf("\n%d HashSkipped", hash);
+				printf("\n%llu HashSkipped", hash);
 				++missed;
 			}
 		}
-		printf("\nSkipped array %d", missed);
+		printf("\nSkipped array %llu", missed);
 		file.close();
 	}
 

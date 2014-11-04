@@ -15,9 +15,18 @@ int main(int argc, const char* argv[])
 	std::vector<char> cornersMap(UNIQUE_CORNERS / 2+1);
 	std::vector<char> edgesAMap(UNIQUE_EDGES / 2+1);
 	std::vector<char> edgesBMap(UNIQUE_EDGES / 2+1);
-	Rubiks::Cube::TableFileLoad("corners.bin", cornersMap);
-	Rubiks::Cube::TableFileLoad("edges.bin", edgesAMap);
-	Rubiks::Cube::TableFileLoad("edges2.bin", edgesBMap);
+	if (!Rubiks::Cube::TableFileLoad("Tables\\corners.bin", cornersMap))
+	{
+		std::cout << "Corners.bin failed to load!\n";
+	}
+	if (!Rubiks::Cube::TableFileLoad("Tables\\edges.bin", edgesAMap))
+	{
+		std::cout << "Edges.bin failed to load!\n";
+	}
+	if(!Rubiks::Cube::TableFileLoad("Tables\\edges2.bin", edgesBMap))
+	{
+		std::cout << "Edges2.bin failed to load!\n";
+	}
 	if (argv[1] && !testValidityFolder) // Single file to test if valid Rubiks Cube
 	{
 #ifdef DEBUG_MODE // Only for putting debug information out. Else just print if its a valid cube.
@@ -32,16 +41,19 @@ int main(int argc, const char* argv[])
 		{
 			std::cout << "INVALID_INPUT\n";
 		}
-		system("pause");
+		//system("pause");
 #else
 		bool valid = input->LoadCubeFile(argv[1], true);
-		std::cout << std::boolalpha << valid;
-		Rubiks::Cube cube = input->GetCube();
-		if (valid)
+		if (!valid)
 		{
+			std::cout << "Not a valid cube or file input.\n";
+		}
+		else
+		{
+			Rubiks::Cube cube = input->GetCube();
 			cube.Solve(cornersMap, edgesAMap, edgesBMap);
 		}
-		system("pause");
+		//system("pause");
 #endif
 	}
 	else if (testValidityFolder) // Test an entire folder for validity
@@ -52,7 +64,7 @@ int main(int argc, const char* argv[])
 			input = new Reader();
 			std::stringstream file;
 #ifdef DEBUG_MODE
-			file << "scrambles\\countstates\\cube" << i ;
+			file << "scrambles//countstates//cube" << i ;
 #else
 			file << "..\\..\\scrambles\\countstates\\cube" << i ;
 #endif
@@ -69,18 +81,11 @@ int main(int argc, const char* argv[])
 			delete input;
 		}
 		std::cout << "Finished all tests " << " Passed:" << passed << "\n";
-		system("pause");
+		//system("pause");
 	}
 	else
 	{
 		std::cout << "Please provide input file path as argument before execution\n";
-		bool valid = input->LoadCubeFile("input.txt", true);
-		std::cout << std::boolalpha << valid;
-		if (valid)
-		{
-			Rubiks::Cube cube = input->GetCube();
-			cube.Solve(cornersMap, edgesAMap, edgesBMap);
-		}
-		system("pause");
+		//system("pause");
 	}
 }
