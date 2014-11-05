@@ -34,7 +34,7 @@ namespace Rubiks
 		static void TestTableFileRead(char* fileName, bool corners);
 		static void TableFileLoad(char* fileName, std::vector<char>& map);
 		void Solve(std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB);
-		int GetMaxMinMoveSolve(bool max, int& total, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB);
+		int GetMaxMinMoveSolve(bool max, std::vector<char> const & cornerMap, std::vector<char> const & edgeMapA, std::vector<char>const & edgeMapB);
 		void LogCube();
 
 	private :
